@@ -27,7 +27,7 @@ const tours = {
     label: "SHARED ADVENTURE · FROM 3 GUESTS",
     title: "Good roads.<br /><em>Great company.</em>",
     copy: "Bring your people together for a considered group journey through open valleys, mountain lakes and nomadic landscapes.",
-    image: "https://d36tnp772eyphs.cloudfront.net/blogs/1/2019/02/Kyrgyzstan-mountain-landscape.jpg",
+    image: "https://static.tildacdn.com/tild3939-3931-4866-b438-633435333933/2023-09-06_014611.jpg",
     details: ["Designed for groups of 3 or more", "Comfortable transport and local insight", "A route that leaves room for shared discovery"],
   },
   "extreme-group": {
@@ -52,7 +52,7 @@ export default async function TourDetailPage({ params }: PageProps<"/tours/[slug
 
   return <main className="tour-detail">
     <header className="tour-detail-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link><Link className="tour-detail-back" href="/#explore">← BACK TO ADVENTURES</Link></header>
-    <section className="tour-detail-hero"><img src={tour.image} alt={slug === "individual" ? "Jeep on a mountain road in Kyrgyzstan" : "Mountain landscape in Kyrgyzstan"} /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span><Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link></div></section>
+    <section className="tour-detail-hero"><img src={tour.image} alt={slug === "individual" ? "Jeep on a mountain road in Kyrgyzstan" : slug === "group" ? "A convoy of jeeps in the mountains of Kyrgyzstan" : "Mountain landscape in Kyrgyzstan"} /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span><Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link></div></section>
     {slug === "individual" && <section className="recommended-route"><div className="recommended-route-heading"><p>OUR RECOMMENDED ROUTE · 6 DAYS</p><h2>Mountains.<br /><em>Nomadic spirit.</em></h2><span>This is our recommended first journey through Kyrgyzstan&apos;s wildest landscapes: high lakes, yurts, horses, mountain roads and the places where nomadic culture still feels close.</span><div className="route-price"><span>PROGRAM FROM</span><strong>$1,800</strong><em>6 days · private itinerary</em><p>Includes B&amp;B accommodation, comfortable Jeep transfer, delicious mountain picnics, a bar on wheels and a local guide who knows Kyrgyz culture and mountains inside out.</p></div><div className="route-inquiry"><p>YOUR JOURNEY, YOUR WAY</p><strong>Ready to make it yours?</strong><span>Leave an inquiry for an exact price and a route shaped around you. We&apos;ll create your personal program together.</span><Link className="recommended-route-cta" href="/#contact">CREATE MY PROGRAM <b>↗</b></Link></div></div><ol>{recommendedRoute.map((stop) => <li key={stop.day}><span>DAY {stop.day}</span><div><h3>{stop.title}</h3><p>{stop.text}</p><small>{stop.stay}</small></div></li>)}</ol></section>}
     <section className="tour-detail-info"><p>KYRGYZSTAN, YOUR WAY</p><h2>The details<br /><em>matter.</em></h2><ul>{tour.details.map((detail, index) => <li key={detail}><span>0{index + 1}</span>{detail}</li>)}</ul></section>
   </main>;
