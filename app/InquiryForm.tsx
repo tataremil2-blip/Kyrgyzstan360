@@ -34,7 +34,7 @@ export default function InquiryForm({ compact = false }: { compact?: boolean }) 
       <label>WhatsApp number<input name="whatsapp" type="tel" placeholder="+996 ..." required /></label>
       {!compact && <label className="form-email">Your email<input name="email" type="email" autoComplete="email" placeholder="you@email.com" required /></label>}
     </div>
-    <div className="form-submit"><button type="submit" disabled={status === "sending"}>{status === "sending" ? "Sending..." : "Send inquiry"} <span aria-hidden="true">{"\u2197"}</span></button><p>{status === "sent" ? "Thank you — your inquiry has been sent." : status === "error" ? "We could not send it. Please try again." : "We will contact you shortly."}</p></div>
+    <div className="form-submit"><button type="submit" disabled={status === "sending" || status === "sent"}>{status === "sending" ? "Sending..." : status === "sent" ? "Sent ✓" : status === "error" ? "Try again" : "Send inquiry"} <span aria-hidden="true">{status === "sent" ? "" : "\u2197"}</span></button><p>{status === "sent" ? "Thank you — your inquiry has been sent." : status === "error" ? "We could not send it. Please try again." : "We will contact you shortly."}</p></div>
     <div className="direct-contact"><p>Or contact us directly</p><a href="https://wa.me/996557444225" target="_blank" rel="noreferrer">WhatsApp: +996 557 444 225</a><a href="mailto:tataremil2@gmail.com">tataremil2@gmail.com</a></div>
   </form>;
 }
