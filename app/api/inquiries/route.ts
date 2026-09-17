@@ -17,10 +17,11 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  const { name, email, phone, whatsapp } = input as Record<string, unknown>;
+  const { name, email, phone, whatsapp, tour, preferredDates, riders, ridingLevel, message } = input as Record<string, unknown>;
   const fields = { name, email, phone, whatsapp };
+  const optionalFields = { tour, preferredDates, riders, ridingLevel, message };
 
-  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || typeof name !== "string" || typeof email !== "string" || typeof whatsapp !== "string") {
+  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || typeof name !== "string" || typeof email !== "string" || typeof whatsapp !== "string") {
     return Response.json({ error: "Please complete the required fields." }, { status: 400 });
   }
 
@@ -29,6 +30,11 @@ export async function POST(request: Request) {
     ["Email", email],
     ["Phone", typeof phone === "string" && phone ? phone : "Not provided"],
     ["WhatsApp", whatsapp],
+    ...(typeof tour === "string" && tour ? [["Tour", tour]] : []),
+    ...(typeof preferredDates === "string" && preferredDates ? [["Preferred dates", preferredDates]] : []),
+    ...(typeof riders === "string" && riders ? [["Riders", riders]] : []),
+    ...(typeof ridingLevel === "string" && ridingLevel ? [["Freeride experience", ridingLevel]] : []),
+    ...(typeof message === "string" && message ? [["Message", message]] : []),
   ];
 
   const response = await fetch("https://api.resend.com/emails", {
