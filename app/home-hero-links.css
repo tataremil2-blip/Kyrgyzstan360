@@ -1,8 +1,9 @@
 .hero-tour-links {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
-  gap: 7px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+  max-width: 760px;
 }
 
 .hero-tour-links .button {
@@ -12,9 +13,17 @@
   white-space: nowrap;
 }
 
+.hero-bottom {
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 28px;
+}
+
 @media (max-width: 700px) {
   .hero-tour-links {
     justify-content: flex-start;
+    gap: 7px;
   }
 
   .hero-tour-links .button {
@@ -22,5 +31,9 @@
     padding: 11px 10px;
     font-size: 6px;
     letter-spacing: .1em;
+  }
+
+  .hero-bottom {
+    gap: 26px;
   }
 }
