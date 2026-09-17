@@ -8,7 +8,8 @@ export default function InquiryForm({ compact = false }: { compact?: boolean }) 
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     setStatus("sending");
 
     try {
@@ -20,7 +21,7 @@ export default function InquiryForm({ compact = false }: { compact?: boolean }) 
 
       if (!response.ok) throw new Error("Inquiry request failed");
       setStatus("sent");
-      event.currentTarget.reset();
+      formElement.reset();
     } catch {
       setStatus("error");
     }
