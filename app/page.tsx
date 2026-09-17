@@ -3,9 +3,9 @@ import "./home-hero-links.css";
 import InquiryForm from "./InquiryForm";
 
 const adventures = [
-  { title: "INDIVIDUAL TOUR", description: "From 1 guest · A private route, built around you.", href: "/tours/individual", image: "https://www.alpin-ism.com/media/page/news/_fullWidth/untitled-7167-Pano.jpg" },
-  { title: "GROUP TOUR", description: "From 3 guests · Share the road and the stories.", href: "/tours/group", image: "https://d36tnp772eyphs.cloudfront.net/blogs/1/2019/02/Kyrgyzstan-mountain-landscape.jpg" },
-  { title: "EXTREME GROUP TOUR", description: "From 3 guests · For those who go further.", href: "/tours/extreme-group", image: "https://35photo.pro/photos_temp/sizes/1275/6375224_1500n.jpg" },
+  { title: "INDIVIDUAL TOUR", description: "From 1 guest · A private route, built around you.", href: "/tours/individual", image: "https://static.tildacdn.com/tild6433-6464-4331-a663-626566666632/DJI_0355.jpg" },
+  { title: "GROUP TOUR", description: "From 3 guests · Share the road and the stories.", href: "/tours/group", image: "https://asiamountains.net/assets/lib/2019/06/10/aroundlake_6.jpeg" },
+  { title: "EXTREME GROUP TOUR", description: "From 3 guests · For those who go further.", href: "/tours/extreme-group", image: "https://static.tildacdn.com/tild3939-3931-4866-b438-633435333933/2023-09-06_014611.jpg" },
 ];
 
 const tours = [
