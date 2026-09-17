@@ -7,7 +7,7 @@ const tours = {
     label: "PRIVATE TRAVEL · FROM 1 GUEST",
     title: "Your route.<br />Your <em>pace.</em>",
     copy: "A personal journey across Kyrgyzstan, designed around the places, rhythm and experiences that matter to you.",
-    image: "https://www.alpin-ism.com/media/page/news/_fullWidth/untitled-7167-Pano.jpg",
+    image: "https://static.tildacdn.com/tild6433-6464-4331-a663-626566666632/DJI_0355.jpg",
     details: ["Private driver and flexible route", "Start from 1 guest", "Local planning from first idea to final day"],
   },
   group: {
@@ -39,7 +39,7 @@ export default async function TourDetailPage({ params }: PageProps<"/tours/[slug
 
   return <main className="tour-detail">
     <header className="tour-detail-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link><Link className="tour-detail-back" href="/#explore">← BACK TO ADVENTURES</Link></header>
-    <section className="tour-detail-hero"><img src={tour.image} alt="Mountain landscape in Kyrgyzstan" /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span><Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link></div></section>
+    <section className="tour-detail-hero"><img src={tour.image} alt={slug === "individual" ? "Jeep on a mountain road in Kyrgyzstan" : "Mountain landscape in Kyrgyzstan"} /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span><Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link></div></section>
     <section className="tour-detail-info"><p>KYRGYZSTAN, YOUR WAY</p><h2>The details<br /><em>matter.</em></h2><ul>{tour.details.map((detail, index) => <li key={detail}><span>0{index + 1}</span>{detail}</li>)}</ul></section>
   </main>;
 }
