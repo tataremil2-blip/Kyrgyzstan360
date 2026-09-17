@@ -6,7 +6,7 @@ const tours = {
   individual: {
     label: "PRIVATE TRAVEL · FROM 1 GUEST",
     title: "Your route.<br />Your <em>pace.</em>",
-    copy: "A personal journey across Kyrgyzstan, designed around the places, rhythm and experiences that matter to you.",
+    copy: "We shape a private itinerary around your wishes: horse riding and hikes, serious off-road adventure, or an easy journey on comfortable roads with carefully chosen hotels. Your Kyrgyzstan, your way.",
     image: "https://static.tildacdn.com/tild6433-6464-4331-a663-626566666632/DJI_0355.jpg",
     details: ["Private driver and flexible route", "Start from 1 guest", "Local planning from first idea to final day"],
   },
