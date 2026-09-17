@@ -1,6 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import "./tour-detail.css";
+import "./recommended-route.css";
+
+const recommendedRoute = [
+  { day: "01", title: "Bishkek & Ala-Archa", text: "Begin in the capital, then head into Ala-Archa National Park for your first views of the high Tien Shan." },
+  { day: "02", title: "Burana & Issyk-Kul", text: "Follow the old Silk Road to Burana Tower, then continue towards the vast blue water of Issyk-Kul." },
+  { day: "03", title: "Karakol & Altyn-Arashan", text: "Explore Karakol and choose a rugged 4×4 ride or a hike into Altyn-Arashan for mountain views and hot springs." },
+  { day: "04", title: "Jeti-Oguz, Barskoon & Skazka", text: "Travel the southern shore through red-rock gorges, waterfalls and the otherworldly shapes of Fairy Tale Canyon." },
+  { day: "05", title: "Bokonbaevo & Song-Kul", text: "Meet local eagle hunters, cross into the highlands and settle into a yurt camp beside Song-Kul Lake." },
+  { day: "06", title: "Song-Kul Jailoo", text: "Slow down on the summer pastures: ride horses, walk by the lake and share the quiet rhythm of nomadic life." },
+  { day: "07", title: "High passes to Bishkek", text: "Take the scenic road back through the mountains — with time for the final views and roadside stops that make the journey yours." },
+];
 
 const tours = {
   individual: {
@@ -40,6 +51,7 @@ export default async function TourDetailPage({ params }: PageProps<"/tours/[slug
   return <main className="tour-detail">
     <header className="tour-detail-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link><Link className="tour-detail-back" href="/#explore">← BACK TO ADVENTURES</Link></header>
     <section className="tour-detail-hero"><img src={tour.image} alt={slug === "individual" ? "Jeep on a mountain road in Kyrgyzstan" : "Mountain landscape in Kyrgyzstan"} /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span><Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link></div></section>
+    {slug === "individual" && <section className="recommended-route"><div className="recommended-route-heading"><p>RECOMMENDED ITINERARY · 7 DAYS</p><h2>See the best<br /><em>of Kyrgyzstan.</em></h2><span>A beautiful first route through mountain landscapes, lake country and nomadic highlands. We adjust every day around your interests, travel style and the season.</span></div><ol>{recommendedRoute.map((stop) => <li key={stop.day}><span>DAY {stop.day}</span><div><h3>{stop.title}</h3><p>{stop.text}</p></div></li>)}</ol></section>}
     <section className="tour-detail-info"><p>KYRGYZSTAN, YOUR WAY</p><h2>The details<br /><em>matter.</em></h2><ul>{tour.details.map((detail, index) => <li key={detail}><span>0{index + 1}</span>{detail}</li>)}</ul></section>
   </main>;
 }
