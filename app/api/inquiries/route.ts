@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const { name, email, phone, whatsapp } = input as Record<string, unknown>;
   const fields = { name, email, phone, whatsapp };
 
-  if (Object.values(fields).some((value) => value !== undefined && (typeof value !== "string" || value.length > 200)) || typeof name !== "string" || typeof email !== "string" || typeof whatsapp !== "string") {
+  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || typeof name !== "string" || typeof email !== "string" || typeof whatsapp !== "string") {
     return Response.json({ error: "Please complete the required fields." }, { status: 400 });
   }
 
