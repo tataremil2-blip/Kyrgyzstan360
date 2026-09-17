@@ -13,6 +13,16 @@
   white-space: nowrap;
 }
 
+.hero-tour-links .button svg {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
 .hero-bottom {
   align-items: flex-start;
   flex-direction: column;
@@ -31,6 +41,11 @@
     padding: 11px 10px;
     font-size: 6px;
     letter-spacing: .1em;
+  }
+
+  .hero-tour-links .button svg {
+    width: 12px;
+    height: 12px;
   }
 
   .hero-bottom {
