@@ -2,15 +2,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import "./tour-detail.css";
 import "./recommended-route.css";
+import "./recommended-route-refinement.css";
 
 const recommendedRoute = [
-  { day: "01", title: "Bishkek & Ala-Archa", text: "Begin in the capital, then head into Ala-Archa National Park for your first views of the high Tien Shan." },
-  { day: "02", title: "Burana & Issyk-Kul", text: "Follow the old Silk Road to Burana Tower, then continue towards the vast blue water of Issyk-Kul." },
-  { day: "03", title: "Karakol & Altyn-Arashan", text: "Explore Karakol and choose a rugged 4×4 ride or a hike into Altyn-Arashan for mountain views and hot springs." },
-  { day: "04", title: "Jeti-Oguz, Barskoon & Skazka", text: "Travel the southern shore through red-rock gorges, waterfalls and the otherworldly shapes of Fairy Tale Canyon." },
-  { day: "05", title: "Bokonbaevo & Song-Kul", text: "Meet local eagle hunters, cross into the highlands and settle into a yurt camp beside Song-Kul Lake." },
-  { day: "06", title: "Song-Kul Jailoo", text: "Slow down on the summer pastures: ride horses, walk by the lake and share the quiet rhythm of nomadic life." },
-  { day: "07", title: "High passes to Bishkek", text: "Take the scenic road back through the mountains — with time for the final views and roadside stops that make the journey yours." },
+  { day: "01", title: "Bishkek → Kochkor → Song-Kul", stay: "Yurt camp at Song-Kul", text: "Drive through Kochkor to the highland lake of Song-Kul. Sleep in yurts and begin to feel the rhythm of Kyrgyz nomadic culture." },
+  { day: "02", title: "Song-Kul → Naryn → Kel-Suu", stay: "Mountain-view camp at Kel-Suu", text: "Travel through Naryn towards Kel-Suu, a dramatic alpine lake beneath the high peaks of the Tien Shan." },
+  { day: "03", title: "Kel-Suu → Naryn", stay: "Hotel in Naryn", text: "Choose your way to the lake: hike, ride horses or take a special off-road transfer. Spend time on the water by boat, then return to camp before driving to Naryn." },
+  { day: "04", title: "Naryn → South Issyk-Kul", stay: "Comfortable yurts on Issyk-Kul", text: "Cross a mountain pass towards the southern shore of Issyk-Kul and settle into a comfortable yurt camp by the lake." },
+  { day: "05", title: "Barskoon → Skazka → Karakol", stay: "Hotel in Karakol", text: "See the Barskoon waterfalls, explore Fairy Tale Canyon, watch an eagle-hunting show and continue to Karakol." },
+  { day: "06", title: "Kyrchyn Gorge → Bishkek", stay: "Evening arrival in Bishkek", text: "Travel back via Kyrchyn Gorge, the setting of the World Nomad Games, then arrive in Bishkek in the evening." },
 ];
 
 const tours = {
@@ -51,7 +51,7 @@ export default async function TourDetailPage({ params }: PageProps<"/tours/[slug
   return <main className="tour-detail">
     <header className="tour-detail-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link><Link className="tour-detail-back" href="/#explore">← BACK TO ADVENTURES</Link></header>
     <section className="tour-detail-hero"><img src={tour.image} alt={slug === "individual" ? "Jeep on a mountain road in Kyrgyzstan" : "Mountain landscape in Kyrgyzstan"} /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span><Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link></div></section>
-    {slug === "individual" && <section className="recommended-route"><div className="recommended-route-heading"><p>RECOMMENDED ITINERARY · 7 DAYS</p><h2>See the best<br /><em>of Kyrgyzstan.</em></h2><span>A beautiful first route through mountain landscapes, lake country and nomadic highlands. We adjust every day around your interests, travel style and the season.</span></div><ol>{recommendedRoute.map((stop) => <li key={stop.day}><span>DAY {stop.day}</span><div><h3>{stop.title}</h3><p>{stop.text}</p></div></li>)}</ol></section>}
+    {slug === "individual" && <section className="recommended-route"><div className="recommended-route-heading"><p>SIGNATURE ITINERARY · 6 DAYS</p><h2>Mountains.<br /><em>Nomadic spirit.</em></h2><span>A six-day journey through Kyrgyzstan&apos;s wildest landscapes: high lakes, yurts, horses, mountain roads and the places where nomadic culture still feels close.</span><p className="recommended-route-note">For an exact price and a route shaped around you, leave an inquiry. We&apos;ll be in touch to create your personal program.</p><Link className="recommended-route-cta" href="/#contact">CREATE MY PROGRAM <b>↗</b></Link></div><ol>{recommendedRoute.map((stop) => <li key={stop.day}><span>DAY {stop.day}</span><div><h3>{stop.title}</h3><p>{stop.text}</p><small>{stop.stay}</small></div></li>)}</ol></section>}
     <section className="tour-detail-info"><p>KYRGYZSTAN, YOUR WAY</p><h2>The details<br /><em>matter.</em></h2><ul>{tour.details.map((detail, index) => <li key={detail}><span>0{index + 1}</span>{detail}</li>)}</ul></section>
   </main>;
 }
