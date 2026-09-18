@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import BookTripButton from "./BookTripButton";
-import TourInquiryModal from "./TourInquiryModal";
+import BackButton from "./BackButton";
 
 export const metadata: Metadata = {
   title: "Kyrgyzstan360 — Wild, your way",
@@ -11,7 +11,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}<BookTripButton /><TourInquiryModal /></body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <BackButton />
+        <BookTripButton />
+      </body>
     </html>
   );
 }

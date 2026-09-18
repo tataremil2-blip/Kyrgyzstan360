@@ -7,7 +7,7 @@ const departures = [
   { start: "2026-12-21", end: "2026-12-27", label: "21.12.2026 - 27.12.2026" },
   { start: "2026-12-28", end: "2027-01-03", label: "28.12.2026 - 03.01.2027" },
   { start: "2027-01-04", end: "2027-01-10", label: "04.01.2027 - 10.01.2027" },
-  { start: "2027-01-11", end: "2027-01-17", label: "11.01.2027 - 17.01.2027" },
+  { start: "2027-01-11", end: "2027-01-17", label: "14.01.2027 - 17.01.2027 · FWT Qualifier / Silk Road Freeride" },
   { start: "2027-01-18", end: "2027-01-24", label: "18.01.2027 - 24.01.2027" },
   { start: "2027-01-25", end: "2027-01-31", label: "25.01.2027 - 31.01.2027" },
   { start: "2027-02-01", end: "2027-02-07", label: "01.02.2027 - 07.02.2027" },
@@ -46,14 +46,21 @@ export default function DepartureCalendar() {
   }, [selected]);
 
   return <>
-      <div className="winter-calendar">
+      <div className="winter-calendar" id="calendar">
         <div className="winter-calendar-heading"><div><p className="winter-kicker">FIND YOUR WEEK</p><h3>One season. Fourteen adventures.</h3></div><span className="winter-season">WINTER 2026 / 27</span></div>
         <div className="winter-months">{departureMonths.map((month) => <section className="winter-month" key={month.key} aria-labelledby={`month-${month.key}`}>
           <h4 id={`month-${month.key}`}>{month.name}<span>{month.year}</span></h4>
-          <ul>{departures.filter((departure) => departure.start.startsWith(month.key)).map((departure) => <li key={departure.start}><button type="button" className="winter-date-card" aria-haspopup="dialog" aria-label={`Book Winter freeride: ${departure.label}`} onClick={() => setSelected(departure)}>
-            <span className="winter-date-range"><time dateTime={departure.start}><strong>{Number(departure.start.slice(8))}</strong><span>{shortMonth.format(new Date(departure.start))}</span></time><span className="winter-date-arrow" aria-hidden="true">&rarr;</span><span className="sr-only">to</span><time dateTime={departure.end}><strong>{Number(departure.end.slice(8))}</strong><span>{shortMonth.format(new Date(departure.end))}</span></time></span>
-            <span className="winter-date-caption"><span>7 DAYS</span><span>BOOK &rarr;</span></span>
-          </button></li>)}</ul>
+          <ul>{departures.filter((departure) => departure.start.startsWith(month.key)).map((departure) => <li key={departure.start}>
+            {departure.start === "2027-01-11" ? <button type="button" className="winter-date-card winter-competition-card" aria-haspopup="dialog" aria-label="Book competition transfer: 14–17 January 2027" onClick={() => setSelected(departure)}>
+              <div className="winter-competition-labels"><span><b aria-hidden="true">△</b>FWT QUALIFIER</span><span><b aria-hidden="true">◇</b>SILK ROAD FREERIDE</span></div>
+              <p>Transfer for competitions</p>
+              <time dateTime="2027-01-14">14</time><span aria-hidden="true">–</span><time dateTime="2027-01-17">17 JAN 2027</time>
+              <span className="winter-competition-book">BOOK &rarr;</span>
+            </button> : <button type="button" className="winter-date-card" aria-haspopup="dialog" aria-label={`Book Winter freeride: ${departure.label}`} onClick={() => setSelected(departure)}>
+              <span className="winter-date-range"><time dateTime={departure.start}><strong>{Number(departure.start.slice(8))}</strong><span>{shortMonth.format(new Date(departure.start))}</span></time><span className="winter-date-arrow" aria-hidden="true">&rarr;</span><span className="sr-only">to</span><time dateTime={departure.end}><strong>{Number(departure.end.slice(8))}</strong><span>{shortMonth.format(new Date(departure.end))}</span></time></span>
+              <span className="winter-date-caption"><span>7 DAYS</span><span>BOOK &rarr;</span></span>
+            </button>}
+          </li>)}</ul>
         </section>)}</div>
         <p className="winter-calendar-note">All dates shown are arrival and departure dates. Select your week to send a booking request. We will contact you to confirm availability.</p>
       </div>

@@ -1,8 +1,8 @@
-.book-trip-button {
+.back-button {
   position: fixed;
   z-index: 20;
   top: 82px;
-  right: max(20px, calc((100vw - 1220px) / 2));
+  left: max(20px, calc((100vw - 1220px) / 2));
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -13,32 +13,29 @@
   color: #fff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(10px);
+  cursor: pointer;
+  font: inherit;
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.15em;
   transition: transform 0.2s, background 0.2s;
 }
 
-.book-trip-button:hover {
-  transform: translateY(-2px);
+.back-button:hover {
+  transform: translateX(-2px);
   background: rgba(15, 27, 27, 0.82);
 }
 
-.book-trip-button span {
+.back-button span {
   font-size: 16px;
   line-height: 0;
 }
 
 @media (max-width: 700px) {
-  .book-trip-button {
+  .back-button {
     top: 70px;
-    right: 17px;
-    gap: 8px;
+    left: 17px;
     padding: 11px 14px;
     font-size: 8px;
-  }
-
-  .book-trip-button span {
-    font-size: 14px;
   }
 }

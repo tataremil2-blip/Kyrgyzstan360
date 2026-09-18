@@ -30,6 +30,7 @@ const included = [
 const excluded = [
   "Ski and snowboard equipment rental",
   "Freeride equipment rental",
+  "Travel insurance",
   "Additional and personal expenses",
 ];
 
@@ -39,9 +40,33 @@ const need = [
   "A good mood and appetite for the wild",
 ];
 
+const detailSymbols: Record<string, string> = {
+  "All program transfers, including airport transfers": "🚐",
+  "English-speaking guide": "🗣️",
+  Accommodation: "🛏️",
+  Meals: "🍽️",
+  "Lift pass for Karakol ski resort": "🎿",
+  "Snowcat rides on days 3, 4 and 5": "🚜",
+  "Horseback riding": "🐎",
+  "Eagle show": "🦅",
+  "Ski and snowboard equipment rental": "🎿",
+  "Freeride equipment rental": "🏂",
+  "Travel insurance": "🛡️",
+  "Additional and personal expenses": "💳",
+  "Confident off-piste skiing or snowboarding skills": "⛷️",
+  "Freeride equipment and avalanche safety kit": "🎒",
+  "A good mood and appetite for the wild": "😊",
+};
+
+function DetailIcon({ kind }: { kind: "included" | "excluded" | "bring" }) {
+  if (kind === "included") return <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5" /><path d="m8 12.2 2.5 2.5 5.5-6" /></svg>;
+  if (kind === "excluded") return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 7.5h15v11h-15z" /><path d="M7 7.5V5.8h9v1.7M15.5 12h4M8 13h4" /></svg>;
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8.5h10a2 2 0 0 1 2 2v9H5v-9a2 2 0 0 1 2-2Z" /><path d="M9 8.5V6.8a3 3 0 0 1 6 0v1.7M5 13H3.5v4H5m14-4h1.5v4H19M9 12h6" /></svg>;
+}
+
 export default function WinterFreeridePage() {
   return <main className="winter-tour">
-    <header className="winter-tour-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link><Link className="winter-back" href="/">← BACK TO HOME</Link></header>
+    <header className="winter-tour-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link></header>
     <section className="winter-tour-hero"><img src="/winter-freeride-snowcat.png" alt="Three freeride skiers beside a snowcat in the snowy Tian Shan mountains" /><div className="winter-tour-shade" /><div className="winter-tour-hero-copy"><p>KYRGYZSTAN · WINTER FREERIDE</p><h1>FIRST LINES.<br /><em>Wild places.</em></h1></div><a className="winter-scroll" href="#program">DISCOVER THE RIDE ↓</a></section>
     <section className="winter-videos" aria-labelledby="winter-videos-title"><div className="winter-videos-heading"><div><p className="winter-kicker">SEE IT FOR YOURSELF</p><h2 id="winter-videos-title">The snow,<br /><em>in motion.</em></h2></div><a className="instagram-link" href="https://www.instagram.com/reel/DVX-Z75CIWX/" target="_blank" rel="noreferrer"><span>Instagram Reel</span><strong>Watch on Instagram ↗</strong></a></div><div className="youtube-grid"><article><div className="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/CMJK4tQrscI" title="Freeride in Kyrgyzstan — video one" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><a href="https://www.youtube.com/watch?v=CMJK4tQrscI" target="_blank" rel="noreferrer">Watch on YouTube ↗</a></article><article><div className="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/fc2AbHvf9TM" title="Freeride in Kyrgyzstan — video two" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen /></div><a href="https://www.youtube.com/watch?v=fc2AbHvf9TM" target="_blank" rel="noreferrer">Watch on YouTube ↗</a></article></div></section>
     <section className="winter-program" id="program" aria-labelledby="winter-program-title">
@@ -57,20 +82,23 @@ export default function WinterFreeridePage() {
     </section>
     <section className="winter-details-section" id="details" aria-labelledby="winter-details-title">
       <p className="winter-kicker">THE PRACTICAL DETAILS</p><h2 id="winter-details-title">Your trip,<br /><em>taken care of.</em></h2>
-      <div className="winter-details-grid">{[{ title: "Included", items: included }, { title: "Not included", items: excluded }, { title: "What to bring", items: need }].map((group) => <article key={group.title}><h3>{group.title}</h3><ul>{group.items.map((item) => <li key={item}>{item}</li>)}</ul></article>)}</div>
+      <div className="winter-details-grid">{[
+        { title: "Included", icon: "included" as const, itemIcon: "✓", items: included },
+        { title: "Not included", icon: "excluded" as const, itemIcon: "×", items: excluded },
+        { title: "What to bring", icon: "bring" as const, itemIcon: "→", items: need },
+      ].map((group) => <article key={group.title}><div className="winter-detail-heading"><span className="winter-detail-icon"><DetailIcon kind={group.icon} /></span><h3>{group.title}</h3></div><ul>{group.items.map((item) => <li key={item}><span className={`winter-item-icon winter-item-icon-${group.icon}`} aria-hidden="true">{group.itemIcon}</span><span>{item}</span><span className="winter-item-symbol" aria-hidden="true">{detailSymbols[item]}</span></li>)}</ul></article>)}</div>
     </section>
     <section className="winter-places" id="places" aria-labelledby="winter-places-title">
       <div className="winter-places-heading"><p className="winter-kicker">THE PLACES &amp; THE PEOPLE</p><h2 id="winter-places-title">Beyond<br /><em>the itinerary.</em></h2></div>
       <article className="winter-place-feature"><figure><img src="/winter/karakol.jpg" alt="Snow-covered forest and mountains in Karakol" loading="lazy" /><figcaption>Winter in Karakol &middot; Collab Media / Unsplash</figcaption></figure><div><p className="winter-kicker">DAYS 1 &amp; 2</p><h3>Karakol<br /><em>Ski Resort.</em></h3><p>Your first stop after Bishkek. Settle into a hotel in Karakol, then spend a day at the ski resort getting used to the altitude and finding your rhythm with the group.</p><p>Mountain slopes and conifer forests set the scene for the start of your riding week. Your resort lift pass is included.</p><a href="https://www.karakol-ski.kg/gallery/zima" target="_blank" rel="noreferrer">Explore the resort &rarr;</a></div></article>
-      <article className="winter-village"><p className="winter-kicker">DAYS 3 &ndash; 5</p><h3>Jyrgalan <em>Valley.</em></h3><p>Our base for three days of snowcat freeriding. Ride the surrounding mountains by day and return to the village after the first two riding days, before heading back to Karakol on day five.</p><h4>A place to come home to</h4><p>Explore local guesthouses and a hostel below. We confirm your accommodation and room arrangements when planning your booking.</p>
-        <div className="winter-stays">{[
-          { name: "Alakol-Jyrgalan", slug: "alakol-jyrgalan-guesthouse", image: "alakol", detail: "Guesthouse" },
-          { name: "Salamat", slug: "salamat-guesthouse", image: "salamat", detail: "Guesthouse" },
-          { name: "Rahat", slug: "rahat-guesthouse", image: "rahat", detail: "Guesthouse" },
-          { name: "Baitor", slug: "baitor-guesthouse", image: "baitor", detail: "Guesthouse" },
-          { name: "Ulan", slug: "ulan-hostel", image: "ulan", detail: "Hostel" },
-        ].map((stay) => <a className="winter-stay" href={`https://jyrgalan.com/where-to-stay/${stay.slug}/`} target="_blank" rel="noreferrer" key={stay.slug}><img src={`/winter/${stay.image}.jpg`} alt={`${stay.name} accommodation in Jyrgalan`} loading="lazy" /><div><span>{stay.detail}</span><h5>{stay.name} <span aria-hidden="true">&nearr;</span></h5></div></a>)}</div>
-        <p className="winter-photo-credit">Accommodation photos and listings: <a href="https://jyrgalan.com/where-to-stay/" target="_blank" rel="noreferrer">Destination Jyrgalan</a>.</p>
+      <article className="winter-village"><p className="winter-kicker">DAYS 3 &ndash; 5</p><h3>Jyrgalan <em>Valley.</em></h3><p>Our base for three days of snowcat freeriding. Ride the surrounding mountains by day and return to the village after the first two riding days, before heading back to Karakol on day five.</p><h4>A place to come home to</h4><p>Warm, simple rooms and comfortable beds are waiting after a full day in the mountains. We confirm your accommodation and room arrangements when planning your booking.</p>
+        <div className="winter-stays" aria-label="Guest rooms in Jyrgalan">
+          <figure className="winter-stay"><img src="/winter/room-alakol-020.jpg" alt="Twin room with wooden beds and patterned bedding at Alakol-Jyrgalan Guesthouse" loading="lazy" /></figure>
+          <figure className="winter-stay"><img src="/winter/room-salamat.jpg" alt="Bright triple room with prepared beds at Salamat Guesthouse" loading="lazy" /></figure>
+          <figure className="winter-stay"><img src="/winter/snowcat-slope.webp" alt="Red snowcat climbing a powder-covered mountain slope in the Tian Shan" loading="lazy" /></figure>
+          <figure className="winter-stay"><img src="/winter/skiers-descent.webp" alt="A group of four skiers descending together through fresh powder" loading="lazy" /></figure>
+        </div>
+        <p className="winter-photo-credit">Room photos: Destination Jyrgalan. Mountain scenes are AI-generated illustrations. The exact guesthouse and room are confirmed with your booking.</p>
       </article>
       <div className="winter-culture-grid"><article><img src="/winter/horseback-winter.png" alt="Riders beside a river in a winter gorge with snow-covered spruce trees" loading="lazy" /><div><p className="winter-kicker">DAY 6</p><h3>On <em>horseback.</em></h3><p>Swap skis for a saddle. Discover Kyrgyz culture and enjoy a horseback ride as part of your day away from the slopes.</p><span className="winter-photo-credit">AI-generated winter illustration</span></div></article><article><img src="/winter/eagle-hunter-winter.png" alt="Golden eagle perched on the gloved hand of a mounted hunter in traditional Kyrgyz clothing against snowy mountains" loading="lazy" /><div><p className="winter-kicker">DAY 7</p><h3>The eagle <em>tradition.</em></h3><p>Watch a traditional eagle show before the journey back to Bishkek and your airport transfer. A final encounter with Kyrgyz heritage to round off the week.</p><span className="winter-photo-credit">AI-generated winter illustration</span></div></article></div>
     </section>

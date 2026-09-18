@@ -32,7 +32,7 @@
 .winter-price-link:focus-visible{outline:2px solid #fff;outline-offset:4px}
 .winter-excluded{padding-top:64px;padding-bottom:64px}
 @media(max-width:700px){.winter-price{padding:48px 17px;grid-template-columns:1fr;gap:32px}.winter-excluded{padding-top:44px;padding-bottom:44px}.winter-program-steps li{gap:14px}}
-.winter-calendar{grid-column:1 / -1;min-width:0;padding-top:36px;border-top:1px solid #586762}
+.winter-calendar{grid-column:1 / -1;min-width:0;padding-top:36px;border-top:1px solid #586762;scroll-margin-top:110px}
 .winter-calendar-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:32px}
 .winter-calendar-heading h3{margin:12px 0 0;font-size:clamp(24px,3vw,36px);font-weight:400;letter-spacing:-.04em;line-height:1.15}
 .winter-season{flex-shrink:0;padding:9px 13px;border:1px solid #586762;border-radius:999px;font-size:10px;letter-spacing:.12em;color:#d5dfd9}
@@ -56,6 +56,7 @@
 button.winter-date-card{display:block;width:100%;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .18s,border-color .18s}
 button.winter-date-card:hover{background:#435b50;border-color:#c9bca3}
 button.winter-date-card:focus-visible{outline:2px solid #e8d9b9;outline-offset:4px}
+.winter-competition-card{position:relative;min-height:126px}.winter-competition-labels{display:flex;flex-wrap:wrap;gap:7px}.winter-competition-labels span{display:inline-flex;align-items:center;gap:5px;padding:5px 7px;border:1px solid #61716b;border-radius:999px;color:#d3ddd7;font-size:7px;font-weight:600;letter-spacing:.08em}.winter-competition-labels b{font-size:10px;font-weight:400;color:#c9bca3}.winter-competition-card p{margin:15px 0 9px;color:#c9d4ce;font-size:9px;letter-spacing:.1em;text-transform:uppercase}.winter-competition-card>time,.winter-competition-card>p~span{font-size:16px;font-weight:500;color:#fff}.winter-competition-card>p~span{padding:0 3px;color:#c9bca3}.winter-competition-card .winter-competition-book{position:absolute;right:12px;bottom:13px;padding:0;color:#c9d4ce;font-size:8px;font-weight:600;letter-spacing:.12em}
 .winter-booking-dialog{position:fixed;inset:0;margin:auto;width:min(560px,calc(100% - 32px));max-height:calc(100svh - 32px);overflow:auto;padding:40px 32px 28px;border:0;border-radius:16px;background:#f1eee6;color:#17201d;box-shadow:0 24px 80px #0006}
 .winter-booking-dialog::backdrop{background:#0a1210b3;backdrop-filter:blur(8px)}
 .winter-dialog-close{position:absolute;right:14px;top:12px;width:40px;height:40px;border:0;background:transparent;color:#17201d;font-size:30px;cursor:pointer}
