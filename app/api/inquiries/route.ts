@@ -31,13 +31,16 @@ export async function POST(request: Request) {
     ["Phone", typeof phone === "string" && phone ? phone : "Not provided"],
     ["WhatsApp", whatsapp],
     ...(typeof tour === "string" && tour ? [["Tour", tour]] : []),
-    ...(typeof preferredDates === "string" && preferredDates ? [["Preferred dates", preferredDates]] : []),
+    ...(typeof preferredDates === "string" && preferredDates ? [["Tour dates", preferredDates]] : []),
     ...(typeof riders === "string" && riders ? [["Riders", riders]] : []),
     ...(typeof ridingLevel === "string" && ridingLevel ? [["Freeride experience", ridingLevel]] : []),
     ...(typeof message === "string" && message ? [["Message", message]] : []),
   ];
 
-  const response = await fetch("https://api.resend.com/emails", {
+  let response: Response;
+  try {
+    response = await fetch("https://api.resend.com/emails", {
+    signal: AbortSignal.timeout(15000),
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -48,11 +51,16 @@ export async function POST(request: Request) {
       from,
       to: [recipient],
       reply_to: email,
-      subject: `New Kyrgyzstan360 inquiry from ${name}`,
+      subject: typeof preferredDates === "string" && preferredDates ? `Winter freeride booking request | ${preferredDates} | ${name}` : `New Kyrgyzstan360 inquiry from ${name}`,
       text: details.map(([label, value]) => `${label}: ${value}`).join("\n"),
       html: `<h1>New Kyrgyzstan360 inquiry</h1><table>${details.map(([label, value]) => `<tr><td><strong>${escapeHtml(label)}</strong></td><td>${escapeHtml(value)}</td></tr>`).join("")}</table>`,
     }),
   });
+
+  } catch {
+    console.error("Email service connection failed");
+    return Response.json({ error: "Email service is temporarily unavailable. Please try again or contact us on WhatsApp." }, { status: 503 });
+  }
 
   if (!response.ok) {
     console.error("Resend failed", response.status, await response.text());

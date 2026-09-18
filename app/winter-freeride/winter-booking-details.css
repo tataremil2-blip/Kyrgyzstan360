@@ -1,1 +1,69 @@
-.winter-booking{background:linear-gradient(135deg,#c9bca3,#b9ad96)}.winter-booking-inner{width:min(980px,calc(100% - 48px))}.winter-booking-inner>p:not(.winter-kicker){max-width:570px}.winter-booking-promises{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:46px 0 0;text-align:left}.winter-booking-promises article{min-height:165px;padding:18px;border:1px solid rgba(23,32,29,.22);background:rgba(255,255,255,.12)}.winter-booking-promises span{display:block;color:rgba(23,32,29,.52);font-size:9px;font-weight:800;letter-spacing:.16em}.winter-booking-promises strong{display:block;margin-top:41px;font-size:16px;line-height:1;letter-spacing:-.04em;text-transform:uppercase}.winter-booking-promises p{margin:8px 0 0;color:rgba(23,32,29,.68);font-size:12px;line-height:1.45}.winter-booking-form-heading{max-width:690px;margin:55px auto 0;padding-top:20px;border-top:1px solid rgba(23,32,29,.27);text-align:left}.winter-booking-form-heading span{display:block;color:rgba(23,32,29,.68);font-size:10px;font-weight:800;letter-spacing:.17em}.winter-booking-form-heading p{margin:9px 0 0;color:rgba(23,32,29,.67);font-size:14px;line-height:1.5}.winter-booking .inquiry-form{margin-top:28px}@media(max-width:700px){.winter-booking-inner{width:calc(100% - 34px)}.winter-booking-promises{grid-template-columns:1fr;margin-top:35px}.winter-booking-promises article{min-height:0;padding:17px}.winter-booking-promises strong{margin-top:22px}.winter-booking-form-heading{margin-top:38px}.winter-booking-form-heading p{font-size:13px}}
+.winter-booking{padding:60px 0;background:linear-gradient(135deg,#c9bca3,#b9ad96)}
+.winter-booking-inner{width:min(980px,calc(100% - 48px))}
+.winter-booking h2{font-size:clamp(42px,5vw,64px)}
+.winter-booking-inner>p:not(.winter-kicker){max-width:570px;margin-top:18px;font-size:14px}
+.winter-booking .inquiry-form{max-width:850px;margin-top:26px}
+.inquiry-form-winter .form-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.inquiry-form-winter .form-submit{margin-top:24px}
+.inquiry-form-winter .direct-contact{margin-top:20px;padding-top:14px}
+.inquiry-form-winter .direct-contact p{width:auto}
+.winter-program{width:min(1160px,calc(100% - 48px));margin:auto;padding:100px 0;display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.winter-program h2{margin-top:18px;font-size:clamp(48px,6.5vw,88px)}
+.winter-program-heading>p:not(.winter-kicker){max-width:440px;color:#53615d;font-size:16px;line-height:1.6}
+.winter-program-heading .winter-weekly{margin-top:28px;color:#14201f;font-weight:700}
+.winter-program-steps{list-style:none;margin:0;padding:0}
+.winter-program-steps li{display:flex;gap:22px;padding:24px 0;border-top:1px solid rgba(20,32,31,.19)}
+.winter-program-steps li>span{padding-top:4px;color:#75817b;font-size:10px;font-weight:800;letter-spacing:.14em}
+.winter-program-steps h3{margin:0;font-size:18px;line-height:1.3}
+.winter-program-steps p{margin:10px 0 0;color:#53615d;font-size:15px;line-height:1.6}
+@media(max-width:700px){.winter-booking{padding:44px 0}.winter-booking-inner{width:calc(100% - 34px)}.inquiry-form-winter .form-grid{grid-template-columns:1fr;gap:14px}.inquiry-form-winter .form-submit{gap:12px}.winter-program{width:calc(100% - 34px);padding:70px 0;grid-template-columns:1fr;gap:28px}}
+.winter-program-steps li>span{min-width:44px;white-space:nowrap}
+.winter-price{padding:64px max(24px,calc((100% - 1160px)/2));display:grid;grid-template-columns:1fr 1fr;gap:64px;background:#1a2a2a;color:#fff}
+.winter-price .winter-kicker{color:#b2c0b8}
+.winter-price h2{margin-top:18px;font-size:clamp(42px,5.5vw,72px)}
+.winter-price-amount{margin:0;font-size:clamp(52px,6vw,80px);font-weight:700;letter-spacing:-.06em;line-height:1.1}
+.winter-price-amount span{display:block;margin-top:10px;color:#c5cfc9;font-size:14px;font-weight:400;letter-spacing:0}
+.winter-price-duration{margin:22px 0;color:#c5cfc9;font-size:14px;line-height:1.6}
+.winter-departures{padding-top:22px;border-top:1px solid #586762}
+.winter-departures h3{margin:0;font-size:20px}
+.winter-departures p{max-width:440px;margin:12px 0 0;color:#c5cfc9;font-size:15px;line-height:1.6}
+.winter-price-link{display:inline-flex;gap:20px;align-items:center;margin-top:24px;padding:14px 20px;border:1px solid #aabbb1;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.08em}
+.winter-price-link:hover{background:#314441}
+.winter-price-link:focus-visible{outline:2px solid #fff;outline-offset:4px}
+.winter-excluded{padding-top:64px;padding-bottom:64px}
+@media(max-width:700px){.winter-price{padding:48px 17px;grid-template-columns:1fr;gap:32px}.winter-excluded{padding-top:44px;padding-bottom:44px}.winter-program-steps li{gap:14px}}
+.winter-calendar{grid-column:1 / -1;min-width:0;padding-top:36px;border-top:1px solid #586762}
+.winter-calendar-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:32px}
+.winter-calendar-heading h3{margin:12px 0 0;font-size:clamp(24px,3vw,36px);font-weight:400;letter-spacing:-.04em;line-height:1.15}
+.winter-season{flex-shrink:0;padding:9px 13px;border:1px solid #586762;border-radius:999px;font-size:10px;letter-spacing:.12em;color:#d5dfd9}
+.winter-months{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.winter-month{min-width:0}
+.winter-month h4{display:flex;justify-content:space-between;align-items:baseline;margin:0 0 15px;padding-bottom:14px;border-bottom:1px solid #586762;font-size:19px;font-weight:500}
+.winter-month h4>span{font-size:12px;color:#b2c0b8;font-weight:400}
+.winter-month ul{display:grid;gap:10px;list-style:none;padding:0;margin:0}
+.winter-date-card{padding:18px 18px 12px;border:1px solid #50605b;border-radius:12px;background:linear-gradient(135deg,#344741,#293b37)}
+.winter-date-range{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.winter-date-range time{display:flex;flex-direction:column;gap:4px;min-width:36px}
+.winter-date-range time:last-child{text-align:right}
+.winter-date-range strong{font-size:34px;font-weight:500;line-height:1;letter-spacing:-.06em;font-variant-numeric:tabular-nums}
+.winter-date-range time>span{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#c9d4ce}
+.winter-date-arrow{font-size:22px;color:#c9bca3}
+.winter-date-caption{display:flex;justify-content:space-between;gap:8px;margin-top:16px;padding-top:10px;border-top:1px solid #53645b;font-size:8px;font-weight:600;letter-spacing:.12em;color:#c9d4ce}
+.winter-calendar-note{margin:24px 0 0;max-width:650px;color:#b2c0b8;font-size:12px;line-height:1.6}
+@media(max-width:1000px){.winter-months{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 18px}}
+@media(max-width:700px){.winter-calendar{padding-top:28px}.winter-calendar-heading{align-items:start;flex-direction:column;gap:16px}.winter-months{gap:26px 12px}.winter-month h4{font-size:17px}.winter-date-card{padding:14px 12px 10px}.winter-date-range strong{font-size:30px}.winter-date-range{gap:6px}}
+@media(max-width:359px){.winter-months{grid-template-columns:1fr}}
+button.winter-date-card{display:block;width:100%;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .18s,border-color .18s}
+button.winter-date-card:hover{background:#435b50;border-color:#c9bca3}
+button.winter-date-card:focus-visible{outline:2px solid #e8d9b9;outline-offset:4px}
+.winter-booking-dialog{position:fixed;inset:0;margin:auto;width:min(560px,calc(100% - 32px));max-height:calc(100svh - 32px);overflow:auto;padding:40px 32px 28px;border:0;border-radius:16px;background:#f1eee6;color:#17201d;box-shadow:0 24px 80px #0006}
+.winter-booking-dialog::backdrop{background:#0a1210b3;backdrop-filter:blur(8px)}
+.winter-dialog-close{position:absolute;right:14px;top:12px;width:40px;height:40px;border:0;background:transparent;color:#17201d;font-size:30px;cursor:pointer}
+.winter-booking-dialog h2{font-size:clamp(36px,6vw,52px);margin-top:20px;line-height:1}
+.winter-selected-dates{margin:24px 0 8px;padding:14px 16px;background:#dce3db;border-radius:8px;font-size:18px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.winter-dialog-price{margin:0;color:#53615d;font-size:13px;text-align:center}
+.winter-booking-dialog .inquiry-form{margin-top:26px}
+.winter-booking-dialog .form-grid{grid-template-columns:1fr}
+.winter-booking-dialog .direct-contact{display:none}
+.winter-booking-dialog .form-submit{align-items:start;flex-direction:column;gap:12px}
+@media(max-width:420px){.winter-booking-dialog{padding:40px 20px 24px}.winter-selected-dates{font-size:16px;padding:12px 8px}}
