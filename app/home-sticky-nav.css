@@ -1,0 +1,2 @@
+.site-header{position:fixed}
+@media(max-width:700px){.site-header .nav-shell{width:calc(100% - 18px);padding-right:12px}.site-header .nav-shell nav{display:flex;max-width:calc(100vw - 152px);gap:14px;overflow-x:auto;scrollbar-width:none}.site-header .nav-shell nav::-webkit-scrollbar{display:none}.site-header .nav-shell nav a{flex:0 0 auto;font-size:8px}}
