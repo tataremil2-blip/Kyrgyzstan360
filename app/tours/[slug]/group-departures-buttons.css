@@ -1,0 +1,7 @@
+.departure-month button{position:relative;display:block;min-height:86px;padding:13px 12px;border:1px solid rgba(20,32,31,.18);background:rgba(255,255,255,.35);color:#172522;text-align:left;cursor:pointer;font:inherit;transition:transform .2s,background .2s}
+.departure-month button:hover,.departure-month button:focus-visible{transform:translateY(-3px);background:#172522;color:#fff;outline:0}
+.departure-month button span{display:block;font-size:16px;font-weight:700;letter-spacing:-.04em}
+.departure-month button small{display:block;margin-top:9px;color:#65736b;font-size:8px;font-weight:800;letter-spacing:.1em}
+.departure-month button:hover small,.departure-month button:focus-visible small{color:rgba(255,255,255,.65)}
+.departure-month button b{position:absolute;right:11px;bottom:8px;font-size:15px}
+@media(max-width:700px){.departure-month button{min-height:76px}.departure-month button span{font-size:15px}.departure-month button small{font-size:7px}}

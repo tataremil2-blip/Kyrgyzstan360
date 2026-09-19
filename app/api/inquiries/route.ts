@@ -17,9 +17,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  const { name, email, phone, whatsapp, tour, preferredDates, riders, ridingLevel, message } = input as Record<string, unknown>;
+  const { name, email, phone, whatsapp, tour, preferredDates, riders, ridingLevel, message, travelMode } = input as Record<string, unknown>;
   const fields = { name, email, phone, whatsapp };
-  const optionalFields = { tour, preferredDates, riders, ridingLevel, message };
+  const optionalFields = { tour, preferredDates, riders, ridingLevel, message, travelMode };
 
   if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || typeof name !== "string" || typeof email !== "string" || typeof whatsapp !== "string") {
     return Response.json({ error: "Please complete the required fields." }, { status: 400 });
@@ -32,6 +32,7 @@ export async function POST(request: Request) {
     ["WhatsApp", whatsapp],
     ...(typeof tour === "string" && tour ? [["Tour", tour]] : []),
     ...(typeof preferredDates === "string" && preferredDates ? [["Tour dates", preferredDates]] : []),
+    ...(typeof travelMode === "string" && travelMode ? [["Travel format", travelMode]] : []),
     ...(typeof riders === "string" && riders ? [["Riders", riders]] : []),
     ...(typeof ridingLevel === "string" && ridingLevel ? [["Freeride experience", ridingLevel]] : []),
     ...(typeof message === "string" && message ? [["Message", message]] : []),
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
       from,
       to: [recipient],
       reply_to: email,
-      subject: typeof preferredDates === "string" && preferredDates ? `Winter freeride booking request | ${preferredDates} | ${name}` : `New Kyrgyzstan360 inquiry from ${name}`,
+      subject: typeof preferredDates === "string" && preferredDates ? `${typeof tour === "string" && tour ? tour : "Tour"} booking request | ${preferredDates} | ${name}` : typeof tour === "string" && tour ? `New ${tour} inquiry from ${name}` : `New Kyrgyzstan360 inquiry from ${name}`,
       text: details.map(([label, value]) => `${label}: ${value}`).join("\n"),
       html: `<h1>New Kyrgyzstan360 inquiry</h1><table>${details.map(([label, value]) => `<tr><td><strong>${escapeHtml(label)}</strong></td><td>${escapeHtml(value)}</td></tr>`).join("")}</table>`,
     }),

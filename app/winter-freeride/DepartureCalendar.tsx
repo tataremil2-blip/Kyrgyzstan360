@@ -73,7 +73,7 @@ export default function DepartureCalendar() {
       <p className="winter-kicker">WINTER FREERIDE CAMP</p>
       <h2 id="departure-booking-title">Book your <em>week.</em></h2>
       <p id="departure-booking-dates" className="winter-selected-dates">{selected?.label}</p>
-      <p className="winter-dialog-price">7 days &middot; &euro;1,900 per person</p>
+      {selected?.start !== "2027-01-11" && <p className="winter-dialog-price">7 days &middot; &euro;1,900 per person</p>}
       {selected && <InquiryForm key={selected.start} winter preferredDates={selected.label} />}
     </dialog>
   </>;

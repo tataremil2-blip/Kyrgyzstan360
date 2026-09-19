@@ -1,0 +1,3 @@
+.group-pricing{padding-top:82px;padding-bottom:82px;grid-template-columns:.95fr 1.05fr;gap:60px}
+.group-price-options{align-self:start}
+@media(max-width:700px){.group-pricing{padding-top:64px;padding-bottom:64px}.group-price-options{margin-top:32px}}

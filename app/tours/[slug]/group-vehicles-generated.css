@@ -1,0 +1,10 @@
+.vehicle-gallery article{position:relative;display:block;min-height:390px;overflow:hidden;background:#64706a}
+.vehicle-gallery article:hover img{transform:scale(1.05)}
+.vehicle-gallery article::after{position:absolute;inset:0;content:"";background:linear-gradient(0deg,rgba(8,18,17,.85),rgba(8,18,17,.02) 65%)}
+.vehicle-gallery article:first-child{border-radius:4px 4px 4px 62px}
+.vehicle-gallery article:last-child{border-radius:4px 62px 4px 4px}
+.group-vehicles-heading{grid-template-columns:1fr .9fr;gap:22px 84px}
+.group-vehicles-heading>p{grid-column:1 / -1}
+.group-vehicles-heading h2{grid-column:1;margin:0}
+.group-vehicles-heading>span{grid-column:2;align-self:center}
+@media(max-width:700px){.vehicle-gallery article{min-height:275px}}
