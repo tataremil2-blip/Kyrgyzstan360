@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import QuickInquiryModal from "./QuickInquiryModal";
@@ -8,16 +7,16 @@ import "./book-trip-button.css";
 
 export default function BookTripButton() {
   const pathname = usePathname();
-  const [isWinterInquiryOpen, setIsWinterInquiryOpen] = useState(false);
+  const [isInquiryOpen, setIsInquiryOpen] = useState(false);
 
   if (pathname === "/guide-book") return null;
 
-  if (pathname === "/winter-freeride") {
-    return <>
-      <button className="book-trip-button" type="button" onClick={() => setIsWinterInquiryOpen(true)}>GET MORE INFO <span aria-hidden="true">↗</span></button>
-      {isWinterInquiryOpen && <QuickInquiryModal source="Winter Freeride" page="/winter-freeride" emailSubject="[Kyrgyzstan360] Winter Freeride — Get More Info" onClose={() => setIsWinterInquiryOpen(false)} />}
-    </>;
-  }
+  const isWinterPage = pathname === "/winter-freeride";
+  const source = isWinterPage ? "Winter Freeride" : "Website inquiry";
+  const emailSubject = isWinterPage ? "[Kyrgyzstan360] Winter Freeride — Get More Info" : "[Kyrgyzstan360] Website — Get More Info";
 
-  return <Link className="book-trip-button" href="/#contact">GET MORE INFO <span aria-hidden="true">↗</span></Link>;
+  return <>
+    <button className="book-trip-button" type="button" onClick={() => setIsInquiryOpen(true)}>GET MORE INFO <span aria-hidden="true">↗</span></button>
+    {isInquiryOpen && <QuickInquiryModal source={source} page={pathname} emailSubject={emailSubject} eyebrow={isWinterPage ? "WINTER FREERIDE · KYRGYZSTAN360" : "KYRGYZSTAN360"} description={isWinterPage ? "Leave your details and I&apos;ll send you more information about the Winter Freeride experience, available dates and booking options." : "Leave your details and I&apos;ll send you more information and available booking options."} successMessage={isWinterPage ? "I&apos;ll send you the Winter Freeride details shortly." : "I&apos;ll send you the details shortly."} onClose={() => setIsInquiryOpen(false)} />}
+  </>;
 }

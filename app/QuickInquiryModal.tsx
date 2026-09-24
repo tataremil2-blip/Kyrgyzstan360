@@ -9,9 +9,12 @@ type QuickInquiryModalProps = {
   page: string;
   emailSubject: string;
   onClose: () => void;
+  eyebrow?: string;
+  description?: string;
+  successMessage?: string;
 };
 
-export default function QuickInquiryModal({ source, page, emailSubject, onClose }: QuickInquiryModalProps) {
+export default function QuickInquiryModal({ source, page, emailSubject, onClose, eyebrow = "KYRGYZSTAN360", description = "Leave your details and I&apos;ll send you more information and available booking options.", successMessage = "I&apos;ll send you the details shortly." }: QuickInquiryModalProps) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("Something went wrong. Please try again.");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -57,10 +60,10 @@ export default function QuickInquiryModal({ source, page, emailSubject, onClose 
   return <div className="quick-inquiry-backdrop" role="presentation" onMouseDown={onClose}>
     <section className="quick-inquiry-modal" role="dialog" aria-modal="true" aria-labelledby="quick-inquiry-title" aria-describedby="quick-inquiry-description" onMouseDown={(event) => event.stopPropagation()}>
       <button className="quick-inquiry-close" type="button" onClick={onClose} aria-label="Close inquiry form" ref={closeButtonRef}>×</button>
-      {status === "sent" ? <div className="quick-inquiry-success"><p>WINTER FREERIDE · KYRGYZSTAN360</p><h2 id="quick-inquiry-title">Thank you.</h2><span>I&apos;ll send you the Winter Freeride details shortly.</span><button type="button" onClick={onClose}>CLOSE</button></div> : <>
-        <p>WINTER FREERIDE · KYRGYZSTAN360</p>
+      {status === "sent" ? <div className="quick-inquiry-success"><p>{eyebrow}</p><h2 id="quick-inquiry-title">Thank you.</h2><span>{successMessage}</span><button type="button" onClick={onClose}>CLOSE</button></div> : <>
+        <p>{eyebrow}</p>
         <h2 id="quick-inquiry-title">Get more info</h2>
-        <span id="quick-inquiry-description">Leave your details and I&apos;ll send you more information about the Winter Freeride experience, available dates and booking options.</span>
+        <span id="quick-inquiry-description">{description}</span>
         <form onSubmit={submit}>
           <div className="quick-inquiry-fields">
             <label>FIRST NAME *<input name="firstName" type="text" autoComplete="given-name" required /></label>

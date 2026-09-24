@@ -101,11 +101,13 @@ export default function WinterFreeridePage() {
           <figure className="winter-stay"><img src="/winter/snowcat-slope.webp" alt="Red snowcat climbing a powder-covered mountain slope in the Tian Shan" loading="lazy" /></figure>
           <figure className="winter-stay"><img src="/winter/skiers-descent.webp" alt="A group of four skiers descending together through fresh powder" loading="lazy" /></figure>
         </div>
-        <p className="winter-photo-credit">Room photos: Destination Jyrgalan. Mountain scenes are AI-generated illustrations. The exact guesthouse and room are confirmed with your booking.</p>
+        
       </article>
-      <div className="winter-culture-grid"><article><img src="/winter/horseback-winter.png" alt="Riders beside a river in a winter gorge with snow-covered spruce trees" loading="lazy" /><div><p className="winter-kicker">DAY 6</p><h3>On <em>horseback.</em></h3><p>Swap skis for a saddle. Discover Kyrgyz culture and enjoy a horseback ride as part of your day away from the slopes.</p><span className="winter-photo-credit">AI-generated winter illustration</span></div></article><article><img src="/winter/eagle-hunter-winter.png" alt="Golden eagle perched on the gloved hand of a mounted hunter in traditional Kyrgyz clothing against snowy mountains" loading="lazy" /><div><p className="winter-kicker">DAY 7</p><h3>The eagle <em>tradition.</em></h3><p>Watch a traditional eagle show before the journey back to Bishkek and your airport transfer. A final encounter with Kyrgyz heritage to round off the week.</p><span className="winter-photo-credit">AI-generated winter illustration</span></div></article></div>
+      <div className="winter-culture-grid"><article><img src="/winter/horseback-winter.png" alt="Riders beside a river in a winter gorge with snow-covered spruce trees" loading="lazy" /><div><p className="winter-kicker">DAY 6</p><h3>On <em>horseback.</em></h3><p>Swap skis for a saddle. Discover Kyrgyz culture and enjoy a horseback ride as part of your day away from the slopes.</p></div></article><article><img src="/winter/eagle-hunter-winter.png" alt="Golden eagle perched on the gloved hand of a mounted hunter in traditional Kyrgyz clothing against snowy mountains" loading="lazy" /><div><p className="winter-kicker">DAY 7</p><h3>The eagle <em>tradition.</em></h3><p>Watch a traditional eagle show before the journey back to Bishkek and your airport transfer. A final encounter with Kyrgyz heritage to round off the week.</p></div></article></div>
     </section>
-    <section className="winter-booking" id="book"><div className="winter-booking-inner"><p className="winter-kicker">YOUR NEXT WINTER STARTS HERE</p><h2>Join the <em>ride.</em></h2><p>Leave your details or contact us directly. We&apos;ll help you choose your week and plan your trip.</p><InquiryForm winter /></div></section>
+    <section className="winter-booking" id="book"><div className="winter-booking-inner"><p className="winter-kicker">Your winter starts here</p><h2>Join the <em>ride.</em></h2><p>Leave your details or contact us directly. We&apos;ll help you choose your week and plan your trip.</p><InquiryForm winter /></div></section>
   </main>;
 }
+
+
 
