@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import "./inquiry-form.css";
 
 export default function InquiryForm({ compact = false, winter = false, preferredDates, tour, groupBooking = false, submitLabel }: { compact?: boolean; winter?: boolean; preferredDates?: string; tour?: string; groupBooking?: boolean; submitLabel?: string }) {
@@ -44,6 +45,9 @@ export default function InquiryForm({ compact = false, winter = false, preferred
       {!compact && !winter && <label className="form-email">Your email<input name="email" type="email" autoComplete="email" placeholder="you@email.com" required /></label>}
     </div>
     <div className="form-submit"><button type="submit" disabled={status === "sending" || status === "sent"}>{status === "sending" ? "Sending..." : status === "sent" ? "Sent ✓" : status === "error" ? "Try again" : submitLabel ?? (preferredDates ? "Send booking request" : "Send inquiry")} <span aria-hidden="true">{status === "sent" ? "" : "\u2197"}</span></button><p role="status" aria-live="polite">{status === "sent" ? "Thank you — your inquiry has been sent." : status === "error" ? errorMessage : "We will contact you shortly."}</p></div>
+    <p className="form-privacy-notice">By submitting this form, you agree to our <Link href="/privacy">Privacy Policy</Link> and consent to the processing of your information for the purpose of responding to your inquiry.</p>
     <div className="direct-contact"><p>Or contact us directly</p><a href="https://wa.me/996557444225" target="_blank" rel="noreferrer">WhatsApp: +996 557 444 225</a><a href="mailto:tataremil2@gmail.com">tataremil2@gmail.com</a></div>
   </form>;
 }
+
+

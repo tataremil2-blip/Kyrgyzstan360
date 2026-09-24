@@ -4,7 +4,7 @@ import InquiryForm from "../../InquiryForm";
 import GroupDepartureCalendar from "../../GroupDepartureCalendar";
 import SectionPageNav from "../../SectionPageNav";
 import IndividualTourInquiry from "../../IndividualTourInquiry";
-import IndividualTourOptions from "../../IndividualTourOptions";
+
 import "./tour-detail.css";
 import "./recommended-route.css";
 import "./recommended-route-refinement.css";
@@ -24,7 +24,7 @@ import "./group-route-photos.css";
 import "./group-route-expandable-days.css";
 import "./group-vehicles.css";
 import "./group-vehicles-generated.css";
-import "./individual-options.css";
+
 
 const recommendedRoute = [
   { day: "01", title: "Bishkek → Kochkor → Song-Kul", stay: "Yurt camp at Song-Kul", text: "Drive through Kochkor to the highland lake of Song-Kul. Sleep in yurts and begin to feel the rhythm of Kyrgyz nomadic culture." },
@@ -43,7 +43,7 @@ const groupTourRoute = [
   { day: "04", route: "Kel-Suu → Naryn", text: "Reach the lake by special transport across fast rivers and wetlands, take a boat ride when conditions allow, then continue to Naryn for a comfortable hotel stay.", image: "https://static.tildacdn.one/tild6434-3662-4566-b762-386263636537/1200px-Kel-Suu_lake_.jpg", imageAlt: "Kel-Suu Lake in a mountain gorge" },
   { day: "05", route: "Naryn → Kadji-Sai", text: "Cross a 4,000-metre pass, with views of snowy summits and glaciers, before reaching the southern shore of Issyk-Kul.", image: "https://static.tildacdn.com/tild3939-3931-4866-b438-633435333933/2023-09-06_014611.jpg", imageAlt: "Mountain road in Kyrgyzstan" },
   { day: "06", route: "Kadji-Sai → Karakol", text: "Watch an eagle-hunting show, explore Skazka Nature Park and Barskoon Waterfall — where Yuri Gagarin once recovered — then settle into Karakol.", image: "https://triptokyrgyzstan.com/sites/default/files/media/image/19020235_waterfall0377_0.jpg", imageAlt: "Barskoon waterfall" },
-  { day: "07", route: "Karakol → Kyrchyn → Bishkek", text: "Return to Bishkek via Kyrchyn Gorge, home of the World Nomad Games. Celebrate the journey with a farewell dinner and a transfer to your hotel.", image: "https://static.tildacdn.com/tild6433-6464-4331-a663-626566666632/DJI_0355.jpg", imageAlt: "Mountain landscape on the road to Bishkek" },
+  { day: "07", route: "Karakol → Kyrchyn → Bishkek", text: "Return to Bishkek via Kyrchyn Gorge, home of the World Nomad Games. Celebrate the journey with a farewell dinner and a transfer to your hotel.", image: "/individual-tour.jpg", imageAlt: "Mountain landscape on the road to Bishkek" },
 ];
 
 const groupIncluded = ["4×4 group transport and fuel", "Experienced local driver-guide", "Accommodation according to the program", "Cultural stops and route coordination", "Kel-Suu border-zone permit support"];
@@ -84,7 +84,7 @@ const tours = {
     label: "PRIVATE TRAVEL · FROM 1 GUEST",
     title: "Your route.<br />Your <em>pace.</em>",
     copy: "We shape a private itinerary around your wishes: horse riding and hikes, serious off-road adventure, or an easy journey on comfortable roads with carefully chosen hotels. Your Kyrgyzstan, your way.",
-    image: "https://static.tildacdn.com/tild6433-6464-4331-a663-626566666632/DJI_0355.jpg",
+    image: "/individual-tour.jpg",
     details: ["Private driver and flexible route", "Start from 1 guest", "Local planning from first idea to final day"],
   },
   group: {
@@ -135,9 +135,12 @@ export default async function TourDetailPage({ params }: PageProps<"/tours/[slug
   return <main className="tour-detail">
     <header className="tour-detail-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link></header>
     <section className="tour-detail-hero" id="overview"><img src={tour.image} alt={slug === "individual" ? "Jeep on a mountain road in Kyrgyzstan" : slug === "group" ? "A convoy of jeeps in the mountains of Kyrgyzstan" : "Mountain landscape in Kyrgyzstan"} /><div className="tour-detail-shade" /><div className="tour-detail-copy"><p>{tour.label}</p><h1 dangerouslySetInnerHTML={{ __html: tour.title }} /><span>{tour.copy}</span>{slug === "individual" ? <IndividualTourInquiry /> : <Link className="tour-detail-cta" href="/#contact">PLAN THIS TOUR <b>↗</b></Link>}</div></section>
-    <SectionPageNav label="Tour sections" items={slug === "individual" ? [{ href: "#overview", label: "Overview" }, { href: "#route", label: "Route" }, { href: "#details", label: "Details" }, { href: "#itineraries", label: "Itineraries" }] : [{ href: "#overview", label: "Overview" }, { href: "#details", label: "Details" }]} />
+    <SectionPageNav label="Tour sections" items={slug === "individual" ? [{ href: "#overview", label: "Overview" }, { href: "#route", label: "Route" }, { href: "#details", label: "Details" }] : [{ href: "#overview", label: "Overview" }, { href: "#details", label: "Details" }]} />
     {slug === "individual" && <section className="recommended-route" id="route"><div className="recommended-route-heading"><p>OUR RECOMMENDED ROUTE · 6 DAYS</p><h2>Mountains.<br /><em>Nomadic spirit.</em></h2><span>This is our recommended first journey through Kyrgyzstan&apos;s wildest landscapes: high lakes, yurts, horses, mountain roads and the places where nomadic culture still feels close.</span><div className="route-price"><span>PROGRAM FROM</span><strong>$1,800</strong><em>6 days · private itinerary</em><p>Includes B&amp;B accommodation, comfortable Jeep transfer, delicious mountain picnics, a bar on wheels and a local guide who knows Kyrgyz culture and mountains inside out.</p></div><div className="route-inquiry"><p>YOUR JOURNEY, YOUR WAY</p><strong>Ready to make it yours?</strong><span>Leave an inquiry for an exact price and a route shaped around you. We&apos;ll create your personal program together.</span><IndividualTourInquiry className="recommended-route-cta" label="CREATE MY PROGRAM" /></div></div><ol>{recommendedRoute.map((stop) => <li key={stop.day}><span>DAY {stop.day}</span><div><h3>{stop.title}</h3><p>{stop.text}</p><small>{stop.stay}</small></div></li>)}</ol></section>}
     <section className="tour-detail-info" id="details"><p>KYRGYZSTAN, YOUR WAY</p><h2>The details<br /><em>matter.</em></h2><ul>{tour.details.map((detail, index) => <li key={detail}><span>0{index + 1}</span>{detail}</li>)}</ul></section>
-    {slug === "individual" && <IndividualTourOptions />}
+
   </main>;
 }
+
+
+

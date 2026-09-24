@@ -17,19 +17,33 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid request." }, { status: 400 });
   }
 
-  const { name, email, phone, whatsapp, tour, preferredDates, riders, ridingLevel, message, travelMode } = input as Record<string, unknown>;
+  const { name, email, phone, whatsapp, tour, preferredDates, riders, ridingLevel, message, travelMode, source, page, emailSubject, firstName, lastName } = input as Record<string, unknown>;
   const fields = { name, email, phone, whatsapp };
-  const optionalFields = { tour, preferredDates, riders, ridingLevel, message, travelMode };
+  const optionalFields = { tour, preferredDates, riders, ridingLevel, message, travelMode, source, page, emailSubject, firstName, lastName };
 
   const hasValidRequiredFields = typeof name === "string" && name.trim().length > 0
     && typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     && typeof whatsapp === "string" && whatsapp.trim().length > 0;
 
-  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || !hasValidRequiredFields) {
+  const isWinterFreerideInfo = source === "Winter Freeride" && page === "/winter-freeride" && emailSubject === "[Kyrgyzstan360] Winter Freeride — Get More Info";
+  const hasValidWinterNames = typeof firstName === "string" && firstName.trim().length > 0 && typeof lastName === "string" && lastName.trim().length > 0;
+
+  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || !hasValidRequiredFields || (isWinterFreerideInfo && !hasValidWinterNames)) {
     return Response.json({ error: "Please complete the required fields." }, { status: 400 });
   }
 
-  const details = [
+  const submittedAt = new Date().toISOString();
+  const winterDetails = [
+    ["Source", source],
+    ["Page", page],
+    ["Form", "Get More Info"],
+    ["First Name", firstName],
+    ["Last Name", lastName],
+    ["Email", email],
+    ["WhatsApp", whatsapp],
+    ["Submitted", submittedAt],
+  ];
+  const details = isWinterFreerideInfo ? winterDetails : [
     ["Name", name],
     ["Email", email],
     ["Phone", typeof phone === "string" && phone ? phone : "Not provided"],
@@ -56,9 +70,9 @@ export async function POST(request: Request) {
       from,
       to: [recipient],
       reply_to: email,
-      subject: typeof preferredDates === "string" && preferredDates ? `${typeof tour === "string" && tour ? tour : "Tour"} booking request | ${preferredDates} | ${name}` : typeof tour === "string" && tour ? `New ${tour} inquiry from ${name}` : `New Kyrgyzstan360 inquiry from ${name}`,
-      text: details.map(([label, value]) => `${label}: ${value}`).join("\n"),
-      html: `<h1>New Kyrgyzstan360 inquiry</h1><table>${details.map(([label, value]) => `<tr><td><strong>${escapeHtml(label)}</strong></td><td>${escapeHtml(value)}</td></tr>`).join("")}</table>`,
+      subject: isWinterFreerideInfo ? emailSubject : typeof preferredDates === "string" && preferredDates ? `${typeof tour === "string" && tour ? tour : "Tour"} booking request | ${preferredDates} | ${name}` : typeof tour === "string" && tour ? `New ${tour} inquiry from ${name}` : `New Kyrgyzstan360 inquiry from ${name}`,
+      text: `${isWinterFreerideInfo ? "NEW WINTER FREERIDE INQUIRY\n\n" : ""}${details.map(([label, value]) => `${label}: ${value}`).join("\n")}`,
+      html: `<h1>${isWinterFreerideInfo ? "NEW WINTER FREERIDE INQUIRY" : "New Kyrgyzstan360 inquiry"}</h1><table>${details.map(([label, value]) => `<tr><td><strong>${escapeHtml(String(label))}</strong></td><td>${escapeHtml(String(value))}</td></tr>`).join("")}</table>`,
     }),
   });
 

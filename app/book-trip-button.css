@@ -14,9 +14,11 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
   backdrop-filter: blur(10px);
   font-size: 9px;
+  font-family: inherit;
   font-weight: 800;
   letter-spacing: 0.15em;
   transition: transform 0.2s, background 0.2s;
+  cursor: pointer;
 }
 
 .book-trip-button:hover {

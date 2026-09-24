@@ -6,6 +6,7 @@ import "./winter-tour.css";
 import "./winter-places.css";
 import "./winter-videos.css";
 import "./winter-booking-details.css";
+import "./winter-typography.css";
 
 const itinerary = [
   { title: "Arrival in Bishkek & transfer to Karakol", description: "Meet us at Bishkek airport and travel to Karakol. Check in to your hotel and settle in before the riding begins." },
@@ -107,3 +108,4 @@ export default function WinterFreeridePage() {
     <section className="winter-booking" id="book"><div className="winter-booking-inner"><p className="winter-kicker">YOUR NEXT WINTER STARTS HERE</p><h2>Join the <em>ride.</em></h2><p>Leave your details or contact us directly. We&apos;ll help you choose your week and plan your trip.</p><InquiryForm winter /></div></section>
   </main>;
 }
+
