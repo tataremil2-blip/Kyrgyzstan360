@@ -21,7 +21,11 @@ export async function POST(request: Request) {
   const fields = { name, email, phone, whatsapp };
   const optionalFields = { tour, preferredDates, riders, ridingLevel, message, travelMode };
 
-  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || typeof name !== "string" || typeof email !== "string" || typeof whatsapp !== "string") {
+  const hasValidRequiredFields = typeof name === "string" && name.trim().length > 0
+    && typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    && typeof whatsapp === "string" && whatsapp.trim().length > 0;
+
+  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || !hasValidRequiredFields) {
     return Response.json({ error: "Please complete the required fields." }, { status: 400 });
   }
 

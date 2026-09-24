@@ -1,9 +1,9 @@
 .hero-tour-links {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   gap: 8px;
-  max-width: 760px;
+  max-width: none;
 }
 
 .hero-tour-links .button {
@@ -23,6 +23,28 @@
   stroke-width: 1.7;
 }
 
+.hero-tour-links .winter-season-cta {
+  border: 1px solid rgba(222, 239, 245, .88);
+  background: rgba(230, 243, 246, .96);
+  box-shadow: 0 0 18px rgba(189, 228, 239, .5), 0 12px 28px rgba(8, 31, 40, .3);
+  animation: winter-season-pulse 2.8s cubic-bezier(.45, 0, .55, 1) infinite;
+}
+
+.hero-tour-links .winter-season-cta:hover {
+  animation-play-state: paused;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 0 28px rgba(189, 228, 239, .72), 0 18px 38px rgba(8, 31, 40, .38);
+}
+
+@keyframes winter-season-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(189, 228, 239, .42), 0 12px 28px rgba(8, 31, 40, .28); transform: scale(1); }
+  50% { box-shadow: 0 0 0 10px rgba(189, 228, 239, 0), 0 0 28px rgba(189, 228, 239, .58), 0 17px 36px rgba(8, 31, 40, .34); transform: scale(1.04); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-tour-links .winter-season-cta { animation: none; }
+}
+
 .hero-bottom {
   align-items: flex-start;
   flex-direction: column;
@@ -31,18 +53,60 @@
 }
 
 .adventure-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin-top: 40px;
   gap: 12px;
 }
 
 .adventure-card {
-  min-height: 520px;
+  min-height: 480px;
+  border-radius: 3px 48px 3px 3px;
+}
+
+.adventure-card.card-01,
+.adventure-card.card-02,
+.adventure-card.card-03,
+.adventure-card.card-04 {
+  border-radius: 3px 48px 3px 3px;
+}
+
+.adventure-card .card-copy {
+  inset: auto 20px 20px;
+  grid-template-columns: 27px minmax(0, 1fr) 36px;
+  gap: 8px;
+}
+
+.adventure-card .card-copy h3 {
+  font-size: clamp(20px, 2vw, 25px);
+}
+
+.adventure-card .card-copy p {
+  margin-top: 7px;
+  font-size: 11px;
+}
+
+.adventure-card .circle-arrow {
+  width: 36px;
+  height: 36px;
 }
 
 #explore.section {
   padding-top: 96px;
   padding-bottom: 104px;
+}
+
+@media (max-width: 900px) {
+  .hero-tour-links {
+    flex-wrap: wrap;
+  }
+
+  .adventure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .adventure-card {
+    min-height: 440px;
+  }
 }
 
 @media (max-width: 700px) {
@@ -70,6 +134,10 @@
   .adventure-grid {
     grid-template-columns: 1fr;
     margin-top: 28px;
+  }
+
+  .adventure-card {
+    min-height: 360px;
   }
 
   #explore.section {

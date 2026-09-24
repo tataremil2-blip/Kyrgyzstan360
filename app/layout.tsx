@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./typography.css";
 import BookTripButton from "./BookTripButton";
 import BackButton from "./BackButton";
+import CookieConsent from "./CookieConsent";
 
 export const metadata: Metadata = {
   title: "Kyrgyzstan360 — Wild, your way",
@@ -15,6 +17,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <BackButton />
         <BookTripButton />
+        <CookieConsent />
       </body>
     </html>
   );

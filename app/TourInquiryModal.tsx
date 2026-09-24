@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import InquiryForm from "./InquiryForm";
 import "./tour-inquiry-modal.css";
@@ -12,11 +12,12 @@ import "./tour-inquiry-modal-subtle-blur.css";
 
 export default function TourInquiryModal() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(true);
 
-  useEffect(() => {
-    setOpen(true);
-  }, [pathname]);
+  return <TourInquiryModalContent key={pathname} />;
+}
+
+function TourInquiryModalContent() {
+  const [open, setOpen] = useState(true);
 
   if (!open) return null;
 

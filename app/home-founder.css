@@ -1,0 +1,129 @@
+.founder-section {
+  padding: 82px 0;
+  background: #172724;
+  color: #f1eee6;
+}
+
+.founder-inner {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+  gap: clamp(38px, 5vw, 72px);
+  align-items: center;
+}
+
+.founder-photo {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 4px 72px 4px 4px;
+  background: #243631;
+}
+
+.founder-photo img {
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.founder-story .eyebrow {
+  color: rgba(223, 235, 229, .62);
+}
+
+.founder-story h2 {
+  margin: 0;
+  font-family: var(--heading-font);
+  font-size: clamp(2.8rem, 4.9vw, 4rem);
+  font-weight: 700;
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+  text-transform: uppercase;
+}
+
+.founder-story h2 em {
+  font-family: var(--accent-font);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+}
+
+.founder-copy {
+  max-width: 510px;
+  margin-top: 24px;
+}
+
+.founder-copy p {
+  margin: 0 0 12px;
+  color: rgba(241, 238, 230, .78);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.58;
+}
+
+.founder-copy p:last-child {
+  margin-bottom: 0;
+  color: #f1eee6;
+}
+
+.founder-values {
+  display: flex;
+  margin-top: 24px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(241, 238, 230, .22);
+  border-bottom: 1px solid rgba(241, 238, 230, .22);
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.founder-values span {
+  color: rgba(241, 238, 230, .8);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+
+.founder-instagram {
+  display: inline-flex;
+  margin-top: 22px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(241, 238, 230, .6);
+  color: #f1eee6;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.founder-instagram:hover {
+  border-color: #f1eee6;
+}
+
+@media (max-width: 700px) {
+  .founder-section {
+    padding: 68px 0;
+  }
+
+  .founder-inner {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .founder-photo {
+    aspect-ratio: 3 / 4;
+    border-radius: 4px 48px 4px 4px;
+  }
+
+  .founder-copy {
+    margin-top: 22px;
+  }
+
+  .founder-copy p {
+    margin-bottom: 12px;
+  }
+
+  .founder-values {
+    margin-top: 22px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}

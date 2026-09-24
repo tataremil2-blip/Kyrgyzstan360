@@ -1,0 +1,64 @@
+:root {
+  --heading-font: Arial, Helvetica, sans-serif;
+  --accent-font: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  --heading-hero-size: clamp(3.5rem, 8vw, 7rem);
+  --heading-section-size: clamp(3rem, 6.4vw, 5.5rem);
+  --heading-line-height: .84;
+  --heading-letter-spacing: -.065em;
+}
+
+h1,
+h2,
+.group-extreme h3,
+.rent-categories h3,
+.vehicle-options h3,
+.individual-options-grid h3,
+.card-copy h3,
+.tour-copy h3 {
+  font-family: var(--heading-font);
+}
+
+.section-heading h2,
+.winter-copy h2,
+.home-rent-copy h2,
+.reviews-heading,
+.contact-inner h2,
+.tour-detail-info h2,
+.rent-intro h2,
+.rent-request h2,
+.individual-options h2,
+.group-why h2,
+.group-route h2,
+.group-inclusions h2,
+.group-booking h2,
+.group-highlights-heading h2,
+.group-vehicles-heading h2,
+.recommended-route h2 {
+  font-size: var(--heading-section-size) !important;
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+}
+
+.hero h1,
+.tour-detail h1,
+.rent-hero h1 {
+  font-size: var(--heading-hero-size) !important;
+  line-height: var(--heading-line-height);
+  letter-spacing: var(--heading-letter-spacing);
+}
+
+h1 em,
+h2 em,
+.group-extreme h3 em {
+  font-family: var(--accent-font);
+  font-style: normal;
+  font-weight: 400;
+  text-transform: none;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --heading-hero-size: clamp(3rem, 14vw, 4.5rem);
+    --heading-section-size: clamp(2.8rem, 12vw, 4.5rem);
+  }
+}
