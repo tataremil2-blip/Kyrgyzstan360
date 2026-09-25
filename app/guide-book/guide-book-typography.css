@@ -1,0 +1,12 @@
+/* Guide Book consumes the homepage typography tokens from app/typography.css. */
+.guide-page{font-family:Arial,Helvetica,sans-serif}
+.guide-page :is(h1,h2,h3,strong,b,button,.eyebrow,.guide-status span,.guide-status small,.guide-product>span,.guide-product small,.guide-product em,.guide-pages span,.guide-pages i,.guide-edition li span,.guide-delivery span){font-family:var(--heading-font)}
+.guide-page :is(h1,h2){font-weight:700;line-height:var(--heading-line-height);letter-spacing:var(--heading-letter-spacing)}
+.guide-page :is(h1,h2) em{font-family:var(--accent-font);font-style:normal;font-weight:400;letter-spacing:var(--heading-letter-spacing);text-transform:none}
+.guide-page h1{font-size:var(--heading-hero-size)}
+.guide-page .guide-title h2{font-size:var(--heading-section-size)}
+.guide-page :is(.guide-highlights h3,.guide-grid h3){font-family:var(--heading-font);font-weight:600;line-height:1;letter-spacing:-.05em}
+.guide-page :is(.guide-copy p,.guide-route-intro p,.guide-highlights p,.guide-grid p,.guide-preview>div>p,.guide-purchase>div>p,.guide-faq details p){font-family:Arial,Helvetica,sans-serif;font-weight:400;line-height:1.55}
+.guide-page :is(.guide-hero-copy>p,.guide-title>.eyebrow,.guide-highlights b,.guide-grid article>span,.guide-edition li span,.guide-delivery span,.guide-status span,.guide-status small,.guide-product>span,.guide-product small,.guide-product em,.guide-pages span,.guide-pages i){font-size:10px;font-weight:800;letter-spacing:.16em;line-height:1.2;text-transform:uppercase}
+.guide-page :is(.guide-hero-copy>a,.guide-button,.guide-product button){font-family:var(--heading-font);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:700px){.guide-page h1{font-size:var(--heading-hero-size)}.guide-page .guide-title h2{font-size:var(--heading-section-size)}}
