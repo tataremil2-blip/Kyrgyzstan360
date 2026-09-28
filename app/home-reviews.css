@@ -68,6 +68,23 @@
   text-transform: uppercase;
 }
 
+.guest-review-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.guest-review-meta a {
+  color: #56625d;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-transform: uppercase;
+}
+
 .leave-review {
   text-align: left;
 }
