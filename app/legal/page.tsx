@@ -2,7 +2,7 @@ import LegalLayout from "./LegalLayout";
 import Link from "next/link";
 
 export default function LegalPage() {
-  return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Legal" accent="information." intro="Everything you need to know about using Kyrgyzstan360, booking our adventures and how we handle your information.">
+  return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Legal" accent="information" intro="Everything you need to know about using Kyrgyzstan360, booking our adventures and how we handle your information.">
     <section className="legal-content" id="operator">
       <article><span>01</span><div><h2>Kyrgyzstan360</h2><dl><dt>Operator / Owner</dt><dd>Emil Zakirov</dd><dt>Tax Number</dt><dd>20706199300911</dd><dt>Address</dt><dd>147 Imanaly Aidarbekov str.<br />Bishkek, Kyrgyzstan<br />720014</dd><dt>Email</dt><dd><a href="mailto:tataremil2@gmail.com">tataremil2@gmail.com</a></dd><dt>WhatsApp</dt><dd><a href="https://wa.me/996557444225" target="_blank" rel="noreferrer">+996 557 444 225</a></dd><dt>Website</dt><dd>kyrgyzstan360.com</dd><dt>Last updated</dt><dd>September 2026</dd></dl></div></article>
       <article><span>02</span><div><h2>Booking and payment</h2><p>You may pay 30% of the total tour price at booking, with the remaining 70% payable upon arrival in Kyrgyzstan before the booked tour or services begin. Alternatively, you may pay 100% of the total tour price at booking. After the required booking payment is received, Kyrgyzstan360 provides payment confirmation and a Tour Agreement or contract.</p></div></article>

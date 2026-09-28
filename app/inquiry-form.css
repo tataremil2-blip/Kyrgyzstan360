@@ -16,3 +16,6 @@
 
 .form-privacy-notice { max-width:520px; margin:17px auto 0; color:rgba(23,32,29,.57); font-size:10px; line-height:1.55; text-align:center; }.form-privacy-notice a { color:inherit; text-decoration:underline; text-underline-offset:3px; }
 
+
+.direct-contact .whatsapp-link{display:inline-flex;align-items:center;gap:5px}.direct-contact .whatsapp-link svg{width:14px;height:14px;flex:0 0 auto}
+

@@ -108,6 +108,30 @@
   text-align: center;
 }
 
+.external-review-links .tripadvisor-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tripadvisor-icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
+.external-review-links .google-maps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.google-maps-icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+}
+
 .external-review-links a {
   color: #17201d;
   font-weight: 700;

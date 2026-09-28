@@ -12,7 +12,7 @@ const sections = [
 ] as const;
 
 export default function CookiePolicyPage() {
-  return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Cookie" accent="policy." intro="A clear explanation of the cookies and local browser storage currently used by this website.">
+  return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Cookie" accent="policy" intro="A clear explanation of the cookies and local browser storage currently used by this website.">
     <section className="legal-content legal-document">
       {sections.map(([title, content], index) => <article key={title}><span>0{index + 1}</span><div><h2>{title}</h2><p>{content}</p></div></article>)}
       <CookieSettings />

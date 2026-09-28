@@ -16,4 +16,4 @@ const sections = [
   ["Contact", "Contact Emil Zakirov / Kyrgyzstan360 at tataremil2@gmail.com for privacy questions."],
 ] as const;
 
-export default function PrivacyPage() { return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Privacy" accent="policy." intro="How Kyrgyzstan360 handles the information you provide when contacting us."><section className="legal-content legal-document">{sections.map(([title, body], index) => <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h2>{title}</h2><p>{body}</p></div></article>)}</section></LegalLayout>; }
+export default function PrivacyPage() { return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Privacy" accent="policy" intro="How Kyrgyzstan360 handles the information you provide when contacting us."><section className="legal-content legal-document">{sections.map(([title, body], index) => <article key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h2>{title}</h2><p>{body}</p></div></article>)}</section></LegalLayout>; }

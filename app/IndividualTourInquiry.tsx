@@ -10,7 +10,7 @@ export default function IndividualTourInquiry({ className = "tour-detail-cta", l
   const [open, setOpen] = useState(false);
 
   return <>
-    <button className={className} type="button" onClick={() => setOpen(true)}>{label} <b>↗</b></button>
+    <button className={className} type="button" onClick={() => setOpen(true)}>{label}</button>
     {open && <div className="tour-modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
       <section className="tour-modal" role="dialog" aria-modal="true" aria-labelledby="individual-tour-inquiry-title" onMouseDown={(event) => event.stopPropagation()}>
         <button className="tour-modal-close" type="button" onClick={() => setOpen(false)} aria-label="Close inquiry form">×</button>

@@ -75,7 +75,7 @@ export default function WinterPromoModal() {
       <div className="winter-promo-image"><Image src="/winter-promo-freeride.png" alt="Freeride skiers near a snowcat in the Kyrgyz mountains" fill sizes="(max-width: 700px) calc(100vw - 28px), 43vw" priority /></div>
       <div className="winter-promo-content">
         <p>WINTER 2026/27 · LIMITED OFFER</p>
-        <h2 id="winter-promo-title">Discover Kyrgyzstan<br /><em>This Winter.</em></h2>
+        <h2 id="winter-promo-title">Discover Kyrgyzstan<br />This Winter</h2>
         <span className="winter-promo-offer">FIRST 20 SPOTS · SAVE 5%</span>
         <span id="winter-promo-description" className="winter-promo-description">Private freeride adventures in the Tien Shan with local guides and snowcat access.</span>
         <div className="winter-promo-pricing" aria-label="Winter tour price"><del>€1,900</del><strong>€1,805</strong></div>

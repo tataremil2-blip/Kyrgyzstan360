@@ -23,7 +23,7 @@ const sections = [
 ] as const;
 
 export default function TermsPage() {
-  return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Terms &" accent="conditions." intro="Clear booking, payment and cancellation information for travelling with Kyrgyzstan360.">
+  return <LegalLayout eyebrow="KYRGYZSTAN360 · LEGAL" title="Terms &" accent="conditions" intro="Clear booking, payment and cancellation information for travelling with Kyrgyzstan360.">
     <section className="policy-summary" aria-labelledby="booking-summary-title">
       <div><p>BOOKING YOUR TRIP</p><h2 id="booking-summary-title">Simple payment<br /><em>options.</em></h2></div>
       <div className="policy-summary-items"><article><strong>30%</strong><span>Deposit at booking</span><small>70% payable upon arrival in Kyrgyzstan before the tour begins.</small></article><b>OR</b><article><strong>100%</strong><span>Pay the full tour price at booking</span><small>Choose full payment when booking your tour.</small></article></div>

@@ -1,0 +1,37 @@
+:root{
+  --content-max-width:1160px;
+  --content-reading-width:980px;
+  --page-gutter:24px;
+  --page-gutter-mobile:17px;
+  --page-inline:max(var(--page-gutter),calc((100vw - var(--content-max-width))/2));
+  --section-space:72px;
+  --section-space-compact:56px;
+  --body-line-height:1.55;
+  --eyebrow-size:10px;
+  --eyebrow-tracking:.16em;
+  --button-size:10px;
+  --button-tracking:.16em;
+}
+/* Shared grid: full-bleed backgrounds keep their visual treatment; their content uses this alignment. */
+.container,.nav-shell,.legal-header,.legal-nav,.guide-header,.rent-header,.tour-detail-header,.winter-tour-header{width:min(var(--content-max-width),calc(100% - (var(--page-gutter) * 2)))}
+.nav-shell{padding-inline:22px}
+:where(.guide-story,.guide-updated,.guide-edition,.guide-preview,.guide-purchase,.guide-inside,.guide-practical,.guide-faq,.guide-route-intro,.rent-intro,.rent-categories,.rent-request,.group-why,.group-route,.group-inclusions,.group-vehicles,.individual-options,.recommended-route,.legal-intro){padding-left:var(--page-inline)!important;padding-right:var(--page-inline)!important}
+:where(.tour-detail-info,.winter-intro,.winter-checklist,.winter-ready,.winter-details-section,.winter-places){width:min(var(--content-max-width),calc(100% - (var(--page-gutter) * 2)))}
+/* One heading family and scale. Editorial serif is reserved for standalone copy, not mixed heading halves. */
+:where(h1,h2,h3){font-family:var(--heading-font);font-weight:700!important;text-transform:uppercase!important}
+:where(.hero h1,.tour-detail h1,.rent-hero h1,.winter-tour h1,.guide-hero h1,.legal-intro h1){font-size:var(--heading-hero-size)!important;line-height:var(--heading-line-height);letter-spacing:var(--heading-letter-spacing)}
+:where(h1,h2,h3) em{font-family:inherit!important;font-style:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit}
+:where(.eyebrow,.tour-detail-copy>p,.tour-detail-info>p,.winter-kicker,.guide-status span,.guide-status small,.guide-product>span,.guide-product small,.guide-product em,.legal-intro>p,.legal-content article>span){font-family:var(--heading-font);font-size:var(--eyebrow-size);font-weight:800;letter-spacing:var(--eyebrow-tracking);line-height:1.2;text-transform:uppercase}
+:where(body,p,li,input,textarea,select){font-family:Arial,Helvetica,sans-serif;line-height:var(--body-line-height)}
+:where(.button,.book-trip-button,.back-button,.tour-detail-cta,.guide-button,.guide-product button,.form-submit button){font-family:var(--heading-font);font-size:var(--button-size);font-weight:800;letter-spacing:var(--button-tracking);line-height:1;text-transform:uppercase}
+:where(.book-trip-button){right:var(--page-inline)}
+:where(.back-button){left:var(--page-inline)}
+:where(.button,.tour-detail-cta,.guide-button,.guide-product button,.form-submit button){min-height:48px;padding:0 22px;border-radius:999px}
+:where(.inquiry-form label,.inquiry-form legend){font-family:var(--heading-font);font-size:var(--eyebrow-size);font-weight:800;letter-spacing:var(--eyebrow-tracking)}
+@media(max-width:700px){
+  :root{--page-gutter:var(--page-gutter-mobile);--page-inline:var(--page-gutter-mobile);--section-space:56px;--section-space-compact:48px}
+  .container,.nav-shell,.legal-header,.legal-nav,.guide-header,.rent-header,.tour-detail-header,.winter-tour-header{width:calc(100% - (var(--page-gutter-mobile) * 2))}
+  .nav-shell{padding-inline:17px}
+  :where(.guide-story,.guide-updated,.guide-edition,.guide-preview,.guide-purchase,.guide-inside,.guide-practical,.guide-faq,.guide-route-intro,.rent-intro,.rent-categories,.rent-request,.group-why,.group-route,.group-inclusions,.group-vehicles,.individual-options,.recommended-route,.legal-intro){padding-left:var(--page-gutter-mobile)!important;padding-right:var(--page-gutter-mobile)!important}
+  :where(.tour-detail-info,.winter-intro,.winter-checklist,.winter-ready,.winter-details-section,.winter-places){width:calc(100% - (var(--page-gutter-mobile) * 2))}
+}

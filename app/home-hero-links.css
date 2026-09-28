@@ -85,10 +85,6 @@
   font-size: 11px;
 }
 
-.adventure-card .circle-arrow {
-  width: 36px;
-  height: 36px;
-}
 
 #explore.section {
   padding-top: 96px;
@@ -143,5 +139,17 @@
   #explore.section {
     padding-top: 66px;
     padding-bottom: 70px;
+  }
+}
+
+@media (min-width: 701px) {
+  .adventure-card .card-copy > div {
+    display: flex;
+    min-height: 125px;
+    flex-direction: column;
+  }
+
+  .adventure-card .card-copy h3 {
+    min-height: 72px;
   }
 }

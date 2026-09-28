@@ -9,14 +9,16 @@ export default function BookTripButton() {
   const pathname = usePathname();
   const [isInquiryOpen, setIsInquiryOpen] = useState(false);
 
-  if (pathname === "/guide-book") return null;
+  if (pathname === "/guide-book") {
+    return <a className="book-trip-button book-trip-guide-button" href="#purchase">GET YOUR GUIDE</a>;
+  }
 
   const isWinterPage = pathname === "/winter-freeride";
   const source = isWinterPage ? "Winter Freeride" : "Website inquiry";
   const emailSubject = isWinterPage ? "[Kyrgyzstan360] Winter Freeride — Get More Info" : "[Kyrgyzstan360] Website — Get More Info";
 
   return <>
-    <button className="book-trip-button" type="button" onClick={() => setIsInquiryOpen(true)}>GET MORE INFO <span aria-hidden="true">↗</span></button>
+    <button className="book-trip-button" type="button" onClick={() => setIsInquiryOpen(true)}>GET MORE INFO</button>
     {isInquiryOpen && <QuickInquiryModal source={source} page={pathname} emailSubject={emailSubject} eyebrow={isWinterPage ? "WINTER FREERIDE · KYRGYZSTAN360" : "KYRGYZSTAN360"} description={isWinterPage ? "Leave your details and I&apos;ll send you more information about the Winter Freeride experience, available dates and booking options." : "Leave your details and I&apos;ll send you more information and available booking options."} successMessage={isWinterPage ? "I&apos;ll send you the Winter Freeride details shortly." : "I&apos;ll send you the details shortly."} onClose={() => setIsInquiryOpen(false)} />}
   </>;
 }
