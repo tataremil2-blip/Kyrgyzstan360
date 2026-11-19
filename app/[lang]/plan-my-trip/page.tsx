@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
-import TripPlanner from "./TripPlanner";
+import SimpleTripPlanner from "./SimpleTripPlanner";
 import "./planner.css";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/plan-my-trip">): Promise<Metadata> {
@@ -11,5 +11,5 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/plan-my-tr
 }
 
 export default function PlanMyTripPage() {
-  return <TripPlanner firstMonth={new Date().toISOString().slice(0, 7)} />;
+  return <SimpleTripPlanner />;
 }
