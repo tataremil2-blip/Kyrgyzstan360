@@ -5,6 +5,8 @@ import Link from "@/app/LocalizedLink";
 import { useLocale } from "@/app/LocaleProvider";
 import { defaultTripDraft, airports, countries, destinations, experiences, travelStyles, suggestedDays, parseTripDraft, plannerCopy, plannerStorageKey, type TripDraft } from "@/lib/planner";
 import InquiryForm from "../InquiryForm";
+import AdventureMap from "./AdventureMap";
+import { adviseRoute } from "@/lib/route-advisor";
 
 const initialSnapshot = JSON.stringify(defaultTripDraft);
 let memorySnapshot = initialSnapshot;
@@ -30,6 +32,8 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
   const draft = useMemo(() => parseTripDraft(raw), [raw]);
   const [placeSearch, setPlaceSearch] = useState<Record<string, string>>({});
   const [error, setError] = useState("");
+  const [parserStatus, setParserStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [parserMessage, setParserMessage] = useState("");
   const [inquiryOpen, setInquiryOpen] = useState(false);
   const result = useRef<HTMLElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -44,6 +48,8 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
     return rank(a.id) - rank(b.id);
   });
   const incompleteEstimate = chosen.some((place) => place.days === null) || selectedCountries.some((country) => !chosen.some((place) => place.country === country.id));
+  const routeAdvice = adviseRoute({ selectedPlaceCount: chosen.length, knownPlaceDays: duration, unknownPlaceCount: chosen.filter((place) => place.days === null).length, selectedCountryCount: selectedCountries.length, tripDays: draft.days, hasArrival: Boolean(arrival), hasDeparture: Boolean(departure) });
+  const mapDestinationIds = draft.aiItinerary.length ? draft.aiItinerary.map((day) => day.placeId as TripDraft["destinations"][number]) : draft.destinations;
   const matchesSearch = (place: typeof destinations[number]) => `${place.ru} ${place.en}`.toLocaleLowerCase().includes((placeSearch[place.country] ?? "").trim().toLocaleLowerCase());
   const outline = [
     { label: arrival?.[locale] ?? (ru ? "Выберите аэропорт прилёта" : "Choose your arrival airport"), kind: ru ? "Прилёт" : "Arrival" },
@@ -62,6 +68,26 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
   });
   function update(values: Partial<TripDraft>) {
     saveDraft({ ...draft, ...values, showResult: false }); setError("");
+  }
+  async function analyzeFreeText() {
+    if (!draft.freeText.trim()) return;
+    setParserStatus("loading"); setParserMessage("");
+    try {
+      const response = await fetch("/api/planner", { method: "POST", headers: { "Content-Type": "application/json", "Accept-Language": locale }, body: JSON.stringify({ text: draft.freeText }) });
+      const result = await response.json() as { parsed?: { days: number | null; arrivalAirport: TripDraft["arrivalAirport"]; departureAirport: TripDraft["departureAirport"]; destinations: TripDraft["destinations"]; experiences?: TripDraft["experiences"]; itinerary?: TripDraft["aiItinerary"] }; message?: string; error?: string };
+      if (!response.ok || !result.parsed) throw new Error(result.error ?? "Parser error");
+      const parsed = result.parsed;
+      update({ ...(parsed.days && [6, 8, 12].includes(parsed.days) ? { days: parsed.days as TripDraft["days"] } : {}), ...(parsed.arrivalAirport ? { arrivalAirport: parsed.arrivalAirport } : {}), ...(parsed.departureAirport ? { departureAirport: parsed.departureAirport } : {}), ...(parsed.destinations.length ? { destinations: parsed.destinations } : {}), ...(parsed.experiences?.length ? { experiences: parsed.experiences } : {}), ...(parsed.itinerary?.length ? { aiItinerary: parsed.itinerary } : {}) });
+      setParserStatus("done"); setParserMessage(ru ? "Пожелания разобраны. Проверьте выбор ниже." : "Your wishes were extracted. Review the choices below.");
+    } catch { setParserStatus("error"); setParserMessage(ru ? "Не удалось разобрать текст. Проверьте соединение и попробуйте снова." : "We could not extract the text. Check the connection and try again."); }
+  }
+  function moveDestination(id: TripDraft["destinations"][number], direction: -1 | 1) {
+    const index = draft.destinations.indexOf(id);
+    const nextIndex = index + direction;
+    if (index < 0 || nextIndex < 0 || nextIndex >= draft.destinations.length) return;
+    const next = [...draft.destinations];
+    [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+    update({ destinations: next });
   }
   function preview(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -92,8 +118,12 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
     <header className="planner-header"><Link className="brand" href="/">KYRGYZSTAN<span>360</span></Link><Link href="/#explore">{copy.back}</Link></header>
     <div className="adventure-shell">
       <div className="adventure-hero" role="img" aria-label={ru ? "Горы Кыргызстана" : "Mountains of Kyrgyzstan"}><span>{ru ? "КЫРГЫЗСТАН · ВАШЕ НОВОЕ ПРИКЛЮЧЕНИЕ" : "KYRGYZSTAN · YOUR NEXT ADVENTURE"}</span></div>
-      <div className="adventure-intro"><p className="planner-eyebrow">{ru ? "СОБЕРИТЕ СВОЁ ПУТЕШЕСТВИЕ" : "BUILD YOUR OWN ADVENTURE"}</p><h1>{ru ? "Создайте путешествие по Центральной Азии" : "Build Your Dream Trip to Central Asia"}</h1><p>{ru ? "Начните с аэропортов прилёта и вылета. Выберите страны и места — мы соберём их в ваше путешествие." : "Start with your arrival and departure airports. Choose countries and places — we’ll connect them into your journey."}</p><label className="ai-trip-prompt"><span>{ru ? "Расскажите о путешествии своими словами" : "Describe your dream trip in your own words"}</span><textarea value={draft.freeText} maxLength={4000} onChange={(event) => update({ freeText: event.target.value })} placeholder={ru ? "Например: маршрут по Кыргызстану на 8 дней, прилетаю в Бишкек, улетаю из Алматы, хочу шоу орлов, Кель-Суу и пожить в юрте…" : "For example: 8 days in Kyrgyzstan, arrive in Bishkek, fly home from Almaty, eagle show, Kel-Suu and a night in a yurt…"} /><small>{draft.freeText.length}/4000 · {ru ? "На следующем шаге ИИ превратит текст в маршрут." : "In the next step, AI will turn this into a route."}</small></label></div>
+      <div className="adventure-intro"><p className="planner-eyebrow">{ru ? "СОБЕРИТЕ СВОЁ ПУТЕШЕСТВИЕ" : "BUILD YOUR OWN ADVENTURE"}</p><h1>{ru ? "Создайте путешествие по Центральной Азии" : "Build Your Dream Trip to Central Asia"}</h1><p>{ru ? "Начните с аэропортов прилёта и вылета. Выберите страны и места — мы соберём их в ваше путешествие." : "Start with your arrival and departure airports. Choose countries and places — we’ll connect them into your journey."}</p><label className="ai-trip-prompt"><span>{ru ? "Расскажите о путешествии своими словами" : "Describe your dream trip in your own words"}</span><textarea value={draft.freeText} maxLength={4000} onChange={(event) => { update({ freeText: event.target.value }); setParserStatus("idle"); }} placeholder={ru ? "Например: маршрут по Кыргызстану на 8 дней, прилетаю в Бишкек, улетаю из Алматы, хочу шоу орлов, Кель-Суу и пожить в юрте…" : "For example: 8 days in Kyrgyzstan, arrive in Bishkek, fly home from Almaty, eagle show, Kel-Suu and a night in a yurt…"} /><div className="ai-prompt-actions"><small>{draft.freeText.length}/4000</small><button type="button" onClick={analyzeFreeText} disabled={!draft.freeText.trim() || parserStatus === "loading"}>{parserStatus === "loading" ? (ru ? "Разбираем…" : "Reading…") : (ru ? "Разобрать пожелания" : "Extract my wishes")}</button></div><small>{parserMessage || (ru ? "Пока без построения маршрута: сначала проверим, что удалось понять." : "No route is generated yet: first we’ll review what was understood.")}</small></label></div>
       <form onSubmit={preview} className="adventure-builder">
+        <AdventureMap locale={locale} arrivalAirport={draft.arrivalAirport} departureAirport={draft.departureAirport} destinationIds={mapDestinationIds} isAiDraft={draft.aiItinerary.length > 0} />
+        <div className="route-advice" aria-live="polite">{routeAdvice.map((message) => <p className={message.level} key={message.key}>{message.key === "airports" ? (ru ? "Выберите аэропорты прилёта и вылета — тогда набросок будет полнее." : "Choose arrival and departure airports to complete the outline.") : message.key === "unknownDuration" ? (ru ? "Для некоторых мест длительность ещё не подтверждена; итоговые дни уточним." : "Some destinations have no confirmed duration yet; we’ll refine the days.") : message.key === "borders" ? (ru ? "В маршруте несколько стран: пересечения границ и документы нужно проверить отдельно." : "This route crosses countries; border crossings and documents need a separate check.") : message.key === "tooDense" ? (ru ? "Выбранные места могут не поместиться в заданный срок без плотного графика." : "The selected places may not fit the trip length without a tight schedule.") : (ru ? "Добавьте места, чтобы получить набросок маршрута." : "Add destinations to see a route outline.")}</p>)}</div>
+        {draft.aiItinerary.length > 0 && <section className="ai-itinerary" aria-labelledby="ai-itinerary-title"><p className="planner-eyebrow">{ru ? "ЧЕРНОВИК ИИ" : "AI DRAFT"}</p><h3 id="ai-itinerary-title">{ru ? "Предварительная программа по дням" : "Preliminary day-by-day programme"}</h3><p className="planner-hint">{ru ? "Проверьте программу: это предложение ИИ, а не подтверждённый маршрут." : "Review this programme: it is an AI suggestion, not a confirmed route."}</p><ol>{draft.aiItinerary.map((day) => <li key={day.day}><strong>{ru ? `День ${day.day}` : `Day ${day.day}`}: {day.title}</strong><span>{day.activities.join(" · ")}</span>{day.overnightPlaceId && <small>{ru ? `Ночёвка: ${day.overnightPlaceId}` : `Overnight: ${day.overnightPlaceId}`}</small>}</li>)}</ol></section>}
+        <div className="route-order-editor"><h3>{ru ? "Порядок мест" : "Order of places"}</h3><p className="planner-hint">{ru ? "Измените порядок — линия на карте обновится." : "Change the order and the map line will update."}</p><ol>{chosen.map((place, index) => <li key={place.id}><span>{index + 1}. {place[locale]}</span><span className="route-reorder"><button type="button" aria-label={ru ? `Поднять ${place[locale]}` : `Move ${place[locale]} up`} disabled={index === 0} onClick={() => moveDestination(place.id, -1)}>↑</button><button type="button" aria-label={ru ? `Опустить ${place[locale]}` : `Move ${place[locale]} down`} disabled={index === chosen.length - 1} onClick={() => moveDestination(place.id, 1)}>↓</button></span></li>)}</ol></div>
         <div className="adventure-choices">
           <fieldset><legend>{ru ? "1. Прилёт и вылет" : "1. Arrival and departure"}</legend><div className="flight-fields">{(["arrivalAirport", "departureAirport"] as const).map((field) => <label key={field}>{field === "arrivalAirport" ? (ru ? "Куда прилетаете?" : "Where do you arrive?") : (ru ? "Откуда улетаете?" : "Where do you depart?")}<select value={draft[field]} onChange={(event) => update({ [field]: event.target.value as TripDraft[typeof field] })}><option value="">{ru ? "Выберите аэропорт" : "Choose an airport"}</option>{airports.map((airport) => <option key={airport.id} value={airport.id}>{airport[locale]}</option>)}</select></label>)}</div><p className="planner-hint">{ru ? "Можно прилететь в одну страну, а улететь из другой." : "You can arrive in one country and fly home from another."}</p></fieldset>
           <fieldset><legend>{ru ? "2. Выберите страны и места" : "2. Choose countries and places"}</legend><div className="country-choices">{countries.map((country) => <button type="button" key={country.id} aria-pressed={draft.countries.includes(country.id)} aria-controls={`places-${country.id}`} onClick={() => {

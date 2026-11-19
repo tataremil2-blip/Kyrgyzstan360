@@ -15,6 +15,8 @@ function loadTypeScript(relative, runtime = {}) {
 const { createTranslator } = loadTypeScript('../lib/translate.ts');
 const { formatDepartureLabel } = loadTypeScript('../lib/formatting.ts');
 const { parseTripDraft, exampleItinerary, defaultTripDraft, suggestedDays } = loadTypeScript('../lib/planner.ts');
+const { adviseRoute } = loadTypeScript('../lib/route-advisor.ts');
+const { validateItinerary } = loadTypeScript('../lib/itinerary-validator.ts');
 
 test('adventure choices migrate old drafts and reject unknown destinations', () => {
   const old = parseTripDraft(JSON.stringify({ version: 1, guests: 4, month: '2027-06' }));
@@ -51,6 +53,20 @@ test('free-form trip description is preserved and bounded', () => {
   const bounded = parseTripDraft(JSON.stringify({ ...defaultTripDraft, freeText: 'x'.repeat(5000) }));
   assert.equal(bounded.freeText.length, 4000);
 });
+
+test('route advisor flags incomplete and dense drafts', () => {
+  const messages = adviseRoute({ selectedPlaceCount: 4, knownPlaceDays: 8, unknownPlaceCount: 1, selectedCountryCount: 2, tripDays: 6, hasArrival: false, hasDeparture: true });
+  assert.equal(Array.from(messages, (item) => item.key).join(','), 'airports,unknownDuration,borders,tooDense');
+  assert.equal(adviseRoute({ selectedPlaceCount: 0, knownPlaceDays: 0, unknownPlaceCount: 0, selectedCountryCount: 1, tripDays: 8, hasArrival: true, hasDeparture: true })[0].key, 'empty');
+});
+
+test('itinerary validator rejects unsafe draft structure', () => {
+  const valid = [{ day: 1, title: 'Bishkek', placeId: 'bishkek', activities: ['walk'], overnightPlaceId: 'bishkek' }, { day: 2, title: 'Karakol', placeId: 'karakol', activities: ['lake'], overnightPlaceId: null }];
+  assert.equal(validateItinerary(valid, 2).length, 0);
+  assert.equal(validateItinerary([{ ...valid[0], day: 2 }], 2).includes('day-1-sequence'), true);
+  assert.equal(validateItinerary(valid, 1).includes('too-many-days'), true);
+});
+
 
 test('Russian messages support interpolation and preserve monetary amounts', () => {
   const ru = createTranslator('ru');

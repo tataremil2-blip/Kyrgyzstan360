@@ -85,6 +85,7 @@ export type Interest = (typeof interests)[number];
 export type TripDraft = {
   version: 1;
   freeText: string;
+  aiItinerary: Array<{ day: number; title: string; placeId: string; activities: string[]; overnightPlaceId: string | null }>;
   arrivalAirport: AirportId | "";
   departureAirport: AirportId | "";
   countries: CountryId[];
@@ -101,7 +102,7 @@ export type TripDraft = {
   experiences: ExperienceId[];
   travelStyle: TravelStyle;
 };
-export const defaultTripDraft: TripDraft = { version: 1, freeText: "", arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", days: 8, guests: 2, budget: "undecided", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "karakol", "song-kul"], experiences: ["jeep", "hiking"], travelStyle: "comfort" };
+export const defaultTripDraft: TripDraft = { version: 1, freeText: "", aiItinerary: [], arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", days: 8, guests: 2, budget: "undecided", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "karakol", "song-kul"], experiences: ["jeep", "hiking"], travelStyle: "comfort" };
 export function parseTripDraft(raw: string | null): TripDraft {
   try {
     const value = JSON.parse(raw ?? "null");
@@ -109,6 +110,7 @@ export function parseTripDraft(raw: string | null): TripDraft {
     return {
       version: 1,
       freeText: typeof value.freeText === "string" ? value.freeText.slice(0, 4000) : "",
+      aiItinerary: Array.isArray(value.aiItinerary) ? value.aiItinerary.filter((item: unknown) => Boolean(item && typeof item === "object" && typeof (item as { day?: unknown }).day === "number" && typeof (item as { title?: unknown }).title === "string" && typeof (item as { placeId?: unknown }).placeId === "string" && Array.isArray((item as { activities?: unknown }).activities))).slice(0, 31) : [],
       arrivalAirport: airports.some((item) => item.id === value.arrivalAirport) ? value.arrivalAirport : "",
       departureAirport: airports.some((item) => item.id === value.departureAirport) ? value.departureAirport : "",
       countries: Array.isArray(value.countries) ? countries.filter((item) => value.countries.includes(item.id)).map((item) => item.id) : ["kg"],
