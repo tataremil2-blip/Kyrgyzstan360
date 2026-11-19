@@ -21,12 +21,12 @@ const { validateItinerary } = loadTypeScript('../lib/itinerary-validator.ts');
 test('adventure choices migrate old drafts and reject unknown destinations', () => {
   const old = parseTripDraft(JSON.stringify({ version: 1, guests: 4, month: '2027-06' }));
   assert.equal(old.guests, 4);
-  assert.equal(old.destinations.join(','), 'issyk-kul,karakol,song-kul');
-  assert.equal(suggestedDays(old.destinations), 6);
+  assert.equal(old.destinations.join(','), 'issyk-kul,kel-suu,altyn-arashan');
+  assert.equal(suggestedDays(old.destinations), 5);
   const saved = parseTripDraft(JSON.stringify({ ...old, destinations: ['osh', 'osh', 'unknown'], experiences: ['springs', 'bad'], travelStyle: 'premium' }));
   assert.equal(saved.destinations.join(','), 'osh');
   assert.equal(saved.experiences.join(','), 'springs');
-  assert.equal(saved.travelStyle, 'premium');
+  assert.equal(Object.hasOwn(saved, 'travelStyle'), false);
   assert.equal(suggestedDays(saved.destinations), 2);
   assert.equal(suggestedDays([]), 0);
   assert.equal(parseTripDraft(JSON.stringify({ ...old, destinations: [] })).destinations.length, 0);

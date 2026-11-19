@@ -17,5 +17,10 @@ const sections = [
   ["Contact", "Contact Emil Zakirov / Kyrgyzstan360 at tataremil2@gmail.com for privacy questions."],
 ] as const;
 
-export default async function PrivacyPage() {
-  const translate = await getTranslator(); return <LegalLayout eyebrow={translate("KYRGYZSTAN360 · LEGAL")} title={translate("Privacy")} accent={translate("")} intro={translate("How Kyrgyzstan360 handles the information you provide when contacting us.")}><section className="legal-content legal-document">{translate(sections.map(([title, body], index) => <article key={title}><span>{translate(String(index + 1).padStart(2, "0"))}</span><div><h2>{translate(title)}</h2><p>{translate(body)}</p></div></article>))}</section></LegalLayout>; }
+const requestPolicy = {
+  en: ["Travel requests", "We store trip requests and internal follow-up notes in Supabase. We use Resend for email confirmations and may notify our operator through a private Telegram chat with the request number, name and trip summary. Cloudflare Turnstile helps prevent abuse of the request form."],
+  ru: ["Заявки на путешествия", "Мы храним заявки и внутренние заметки сотрудников в Supabase. Resend отправляет подтверждения по электронной почте. Оператор может получить в закрытом чате Telegram номер заявки, имя и краткие параметры поездки. Cloudflare Turnstile защищает форму от автоматических отправок."],
+} as const;
+
+export default async function PrivacyPage({ params }: PageProps<"/[lang]/privacy">) {
+  const translate = await getTranslator(); const [requestTitle, requestBody] = requestPolicy[(await params).lang === "ru" ? "ru" : "en"]; return <LegalLayout eyebrow={translate("KYRGYZSTAN360 · LEGAL")} title={translate("Privacy")} accent={translate("")} intro={translate("How Kyrgyzstan360 handles the information you provide when contacting us.")}><section className="legal-content legal-document">{translate(sections.map(([title, body], index) => <article key={title}><span>{translate(String(index + 1).padStart(2, "0"))}</span><div><h2>{translate(title)}</h2><p>{translate(body)}</p></div></article>))}<article><div><h2>{requestTitle}</h2><p>{requestBody}</p></div></article></section></LegalLayout>; }

@@ -3,6 +3,7 @@ import { isLocale } from "./lib/i18n";
 
 export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
+  if (path === "/admin" || path.startsWith("/admin/")) return NextResponse.next();
   const first = path.split("/")[1];
   if (isLocale(first)) return NextResponse.next();
   // Unknown language prefixes reach the locale layout and return 404.

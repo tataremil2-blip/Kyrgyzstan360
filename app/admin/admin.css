@@ -1,0 +1,27 @@
+.crm { margin:0; background:#f3f5f0; color:#1b2c23; font:16px/1.5 system-ui,sans-serif; }
+.crm main { width:min(1280px,calc(100% - 32px)); margin:24px auto 50px; }
+.crm a { color:#23523d; text-underline-offset:3px; }
+.crm h1 { margin:24px 0; line-height:1.12; }
+.crm h2 { line-height:1.2; }
+.crm-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-bottom:1px solid #cdd8cd; padding-bottom:14px; }
+.crm-header form,.crm-pages { display:flex; align-items:center; gap:12px; }
+.crm-login { max-width:420px; margin:10vh auto; background:white; padding:24px; border-radius:14px; }
+.crm-login form,.crm-panel form { display:grid; gap:12px; }
+.crm button { background:#234737; color:#fff; border:0; border-radius:8px; padding:9px 14px; font:inherit; cursor:pointer; justify-self:start; }
+.crm label { display:grid; gap:4px; font-weight:600; }
+.crm :is(input,select,textarea) { border:1px solid #a4b6a8; border-radius:8px; padding:8px; box-sizing:border-box; width:100%; font:inherit; }
+.crm-metrics,.crm-columns { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(min(100%,175px),1fr)); }
+.crm-columns { grid-template-columns:repeat(auto-fit,minmax(min(100%,370px),1fr)); }
+.crm-metrics div,.crm-panel { background:white; border-radius:12px; padding:15px; min-width:0; }
+.crm-metrics strong { display:block; font-size:1.8rem; }
+.crm-filters { display:flex; align-items:end; flex-wrap:wrap; gap:12px; margin:24px 0 16px; }
+.crm-table { overflow:auto; background:white; border-radius:10px; }
+.crm table { border-collapse:collapse; width:100%; white-space:nowrap; text-align:left; }
+.crm th,.crm td { padding:10px 12px; border-bottom:1px solid #dce5dc; }
+.crm-status,.crm option { text-transform:capitalize; }
+.crm-pages { margin-top:16px; }
+.crm-panel dl div { display:grid; grid-template-columns:minmax(110px, .65fr) 1fr; gap:10px; margin:8px 0; }
+.crm-panel :is(dd,li p) { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; }
+.crm-panel dt { font-weight:700; }
+.crm-panel li + li { margin-top:9px; }
+.crm :focus-visible { outline:3px solid #a85c14; outline-offset:3px; }
