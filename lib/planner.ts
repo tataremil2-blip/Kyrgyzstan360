@@ -14,6 +14,8 @@ export type AirportId = typeof airports[number]["id"];
 // Concept estimates from the approved prototype, not verified travel times.
 export const destinations = [
   { id: "issyk-kul", en: "Issyk-Kul", ru: "Иссык-Куль", days: 2, country: "kg" },
+  { id: "karakol", en: "Karakol", ru: "Каракол", days: 2, country: "kg" },
+  { id: "song-kul", en: "Song-Kul", ru: "Сон-Куль", days: 2, country: "kg" },
   { id: "engilchek", en: "Engilchek Glacier", ru: "Ледник Энилчек", days: 3, country: "kg" },
   { id: "kel-suu", en: "Kel-Suu", ru: "Кель-Суу", days: 2, country: "kg" },
   { id: "tash-rabat", en: "Tash-Rabat", ru: "Таш-Рабат", days: 1, country: "kg" },
@@ -63,14 +65,8 @@ export const experiences = [
   { id: "winter", en: "Freeride & Skiing", ru: "Фрирайд и лыжи" },
   { id: "culture", en: "Cultural Tours", ru: "Культура и традиции" },
 ] as const;
-export const travelStyles = [
-  { id: "budget", en: "Budget", ru: "Бюджетный", detail: { en: "Guesthouses and shared experiences", ru: "Гостевые дома и групповые активности" } },
-  { id: "comfort", en: "Comfort", ru: "Комфорт", detail: { en: "Private 4×4 and comfortable stays", ru: "Личный внедорожник и комфортное проживание" } },
-  { id: "premium", en: "Premium", ru: "Премиум", detail: { en: "Upgraded hotels and exclusive services", ru: "Отели высокого уровня и индивидуальный сервис" } },
-] as const;
 export type DestinationId = typeof destinations[number]["id"];
 export type ExperienceId = typeof experiences[number]["id"];
-export type TravelStyle = typeof travelStyles[number]["id"];
 export function suggestedDays(ids: readonly string[]) {
   return destinations.filter((place) => ids.includes(place.id)).reduce((sum, place) => sum + (place.days ?? 0), 0);
 }
@@ -89,6 +85,8 @@ export type TripDraft = {
   departureAirport: AirportId | "";
   countries: CountryId[];
   month: string;
+  startDate: string;
+  endDate: string;
   days: 6 | 8 | 12;
   guests: number;
   budget: string;
@@ -99,9 +97,8 @@ export type TripDraft = {
   showResult: boolean;
   destinations: DestinationId[];
   experiences: ExperienceId[];
-  travelStyle: TravelStyle;
 };
-export const defaultTripDraft: TripDraft = { version: 1, freeText: "", aiItinerary: [], arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", days: 8, guests: 2, budget: "", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "kel-suu", "altyn-arashan"], experiences: ["jeep", "hiking"], travelStyle: "comfort" };
+export const defaultTripDraft: TripDraft = { version: 1, freeText: "", aiItinerary: [], arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", startDate: "", endDate: "", days: 8, guests: 2, budget: "", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "kel-suu", "altyn-arashan"], experiences: ["jeep", "hiking"] };
 export function parseTripDraft(raw: string | null): TripDraft {
   try {
     const value = JSON.parse(raw ?? "null");
@@ -115,8 +112,9 @@ export function parseTripDraft(raw: string | null): TripDraft {
       countries: Array.isArray(value.countries) ? countries.filter((item) => value.countries.includes(item.id)).map((item) => item.id) : ["kg"],
       destinations: Array.isArray(value.destinations) ? destinations.filter((item) => value.destinations.includes(item.id) && (!Array.isArray(value.countries) || value.countries.includes(item.country))).map((item) => item.id) : (!Array.isArray(value.countries) || value.countries.includes("kg") ? [...defaultTripDraft.destinations] : []),
       experiences: Array.isArray(value.experiences) ? experiences.filter((item) => value.experiences.includes(item.id)).map((item) => item.id) : [...defaultTripDraft.experiences],
-      travelStyle: ["budget", "comfort", "premium"].includes(value.travelStyle) ? value.travelStyle : "comfort",
       month: typeof value.month === "string" && /^20\d{2}-(0[1-9]|1[0-2])$/.test(value.month) ? value.month : "",
+      startDate: typeof value.startDate === "string" && /^20\d{2}-\d{2}-\d{2}$/.test(value.startDate) ? value.startDate : "",
+      endDate: typeof value.endDate === "string" && /^20\d{2}-\d{2}-\d{2}$/.test(value.endDate) ? value.endDate : "",
       days: [6, 8, 12].includes(value.days) ? value.days : 8,
       guests: Number.isInteger(value.guests) && value.guests >= 1 && value.guests <= 16 ? value.guests : 2,
       budget: ["undecided", "under1500", "1500to2500", "over2500"].includes(value.budget) ? value.budget : "undecided",

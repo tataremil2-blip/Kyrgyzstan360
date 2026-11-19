@@ -12,5 +12,5 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/plan-my-tr
 }
 
 export default function PlanMyTripPage() {
-  return <TripPlanner firstMonth={new Date().toISOString().slice(0, 7)} />;
+  return <TripPlanner />;
 }

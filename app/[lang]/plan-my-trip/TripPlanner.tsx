@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import Link from "@/app/LocalizedLink";
 import { useLocale } from "@/app/LocaleProvider";
-import { defaultTripDraft, airports, countries, destinations, experiences, travelStyles, suggestedDays, parseTripDraft, plannerCopy, plannerStorageKey, type TripDraft } from "@/lib/planner";
+import { defaultTripDraft, airports, countries, destinations, experiences, suggestedDays, parseTripDraft, plannerCopy, plannerStorageKey, type TripDraft } from "@/lib/planner";
 import InquiryForm from "../InquiryForm";
 import PlannerAuthGate from "./PlannerAuthGate";
 import { adviseRoute } from "@/lib/route-advisor";
@@ -25,9 +25,9 @@ function saveDraft(value: TripDraft) {
   window.dispatchEvent(new Event("trip-draft-updated"));
 }
 
-export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
+export default function TripPlanner() {
   const { locale } = useLocale();
-  const copy = plannerCopy[locale];
+  const copy = plannerCopy[locale] as typeof plannerCopy[typeof locale] & Record<string, string>;
   const ru = locale === "ru";
   const raw = useSyncExternalStore(subscribe, getSnapshot, () => initialSnapshot);
   const draft = useMemo(() => parseTripDraft(raw), [raw]);
@@ -44,7 +44,7 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
   const authDialog = useRef<HTMLDialogElement>(null);
   const chosen = destinations.filter((place) => draft.destinations.includes(place.id));
   const activities = experiences.filter((item) => draft.experiences.includes(item.id));
-  const style = travelStyles.find((item) => item.id === draft.travelStyle)!;
+  const style = { en: "", ru: "" };
   const duration = suggestedDays(draft.destinations);
   const arrival = airports.find((airport) => airport.id === draft.arrivalAirport);
   const departure = airports.find((airport) => airport.id === draft.departureAirport);
@@ -65,11 +65,6 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
   ];
   const selectedMonth = draft.month ? `${copy.months[Number(draft.month.slice(5)) - 1]} ${draft.month.slice(0, 4)}` : copy.flexible;
   const winter = draft.experiences.includes("winter") || ["11", "12", "01", "02", "03"].includes(draft.month.slice(5));
-  const months = Array.from({ length: 24 }, (_, index) => {
-    const date = new Date(`${firstMonth}-01T12:00:00Z`);
-    date.setUTCMonth(date.getUTCMonth() + index);
-    return { value: date.toISOString().slice(0, 7), label: `${copy.months[date.getUTCMonth()]} ${date.getUTCFullYear()}` };
-  });
   function update(values: Partial<TripDraft>) {
     saveDraft({ ...draft, ...values, showResult: false }); setError("");
   }
@@ -113,8 +108,10 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
     selectedCountries.map((country) => country[locale]).join(", "),
     chosen.map((place) => place[locale]).join(", "),
     `${ru ? "Оценка длительности" : "Initial duration estimate"}: ${incompleteEstimate ? (ru ? "уточняется" : "to discuss") : duration}; ${copy.guests}: ${draft.guests}; ${selectedMonth}`,
-    activities.map((item) => item[locale]).join(", "), style[locale],
-    `${copy.budget}: ${copy[draft.budget]}`,
+    activities.map((item) => item[locale]).join(", "),
+    `${ru ? "Даты поездки" : "Travel dates"}: ${draft.startDate || "—"} → ${draft.endDate || "—"}`,
+    `${ru ? "Бюджет на человека" : "Budget per person"}: ${draft.budget || "—"}`,
+    `${copy.budget}: ${copy[draft.budget as keyof typeof copy] ?? draft.budget}`,
   ].join("\n");
 
   return <main className="planner-page adventure-page">
@@ -135,8 +132,7 @@ export default function TripPlanner({ firstMonth }: { firstMonth: string }) {
             return <button type="button" className={`destination-card ${selected ? "is-selected" : ""}`} key={place.id} aria-pressed={selected} onClick={() => update({ destinations: selected ? draft.destinations.filter((id) => id !== place.id) : [...draft.destinations, place.id] })}><span className="destination-name">{place[locale]}<span aria-hidden="true">{selected ? "✓" : "+"}</span></span><span className="destination-duration">{place.days === null ? (ru ? "Длительность уточним" : "Duration to discuss") : ru ? `Ориентир: ${place.days} ${place.days === 1 ? "день" : "дня"}` : `Suggested ${place.days} ${place.days === 1 ? "day" : "days"}`}</span></button>;
           })}</div> : <p className="country-empty">{ru ? "Можно включить эту страну в поездку. Места для посещения подберём вместе при обсуждении маршрута." : "Include this country in your trip. We’ll choose its destinations together when discussing your route."}</p>}</div>)}</fieldset>
           <fieldset><legend>{ru ? "3. Выберите впечатления" : "3. Choose your experiences"}</legend><div className="experience-grid">{experiences.map((item) => <label key={item.id}><input type="checkbox" checked={draft.experiences.includes(item.id)} onChange={(event) => update({ experiences: event.target.checked ? [...draft.experiences, item.id] : draft.experiences.filter((id) => id !== item.id) })} /><span>{item[locale]}</span></label>)}</div></fieldset>
-          <fieldset><legend>{ru ? "4. Выберите стиль путешествия" : "4. Select your travel style"}</legend><div className="travel-styles">{travelStyles.map((item) => <label className={draft.travelStyle === item.id ? "is-selected" : ""} key={item.id}><input type="radio" name="travel-style" value={item.id} checked={draft.travelStyle === item.id} onChange={() => update({ travelStyle: item.id })} /><span><strong>{item[locale]}</strong><small>{item.detail[locale]}</small></span></label>)}</div></fieldset>
-          <details className="adventure-details"><summary>{ru ? "Даты, гости и бюджет" : "Dates, guests and budget"}</summary><div className="planner-fields"><label>{copy.month}<select value={draft.month} onChange={(e) => update({ month: e.target.value })}><option value="">{copy.flexible}</option>{draft.month && !months.some((item) => item.value === draft.month) && <option value={draft.month}>{selectedMonth}</option>}{months.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></label><label>{copy.guests}<select value={draft.guests} onChange={(e) => update({ guests: Number(e.target.value) })}>{Array.from({ length: 16 }, (_, i) => <option key={i + 1}>{i + 1}</option>)}</select></label></div><label>{ru ? "Бюджет на человека" : "Budget per person"}<input className="planner-budget-input" value={draft.budget === "undecided" ? "" : draft.budget} onChange={(e) => update({ budget: e.target.value as TripDraft["budget"] })} placeholder={ru ? "Например: 1200 USD" : "For example: 1200 USD"} /></label><p className="planner-hint">{ru ? "Укажите ориентир, например 1200 USD. Это пожелание, а не окончательная цена." : "Add a rough figure, for example 1200 USD. This is a preference, not a final quote."}</p></details>
+          <section className="adventure-details"><h3>{ru ? "Даты, гости и бюджет" : "Dates, guests and budget"}</h3><div className="planner-fields date-range-fields"><label>{ru ? "Дата начала" : "Start date"}<input type="date" value={draft.startDate} onChange={(e) => update({ startDate: e.target.value, month: e.target.value.slice(0, 7) })} /></label><label>{ru ? "Дата окончания" : "End date"}<input type="date" min={draft.startDate || undefined} value={draft.endDate} onChange={(e) => update({ endDate: e.target.value })} /></label></div><div className="planner-fields"><label>{copy.guests}<select value={draft.guests} onChange={(e) => update({ guests: Number(e.target.value) })}>{Array.from({ length: 16 }, (_, i) => <option key={i + 1}>{i + 1}</option>)}</select></label><label>{ru ? "Бюджет на человека, USD" : "Budget per person, USD"}<input className="planner-budget-input" inputMode="decimal" value={draft.budget} onChange={(e) => update({ budget: e.target.value })} placeholder={ru ? "Например: 1200" : "For example: 1200"} /></label></div><p className="planner-hint">{ru ? "Укажите бюджет на одного человека без международных перелётов." : "Enter the budget per person, excluding international flights."}</p></section>
         </div>
         <aside className="adventure-summary"><p className="planner-eyebrow">{ru ? "ВАШ ВЫБОР" : "YOUR SELECTION"}</p><h2>{ru ? "Ваше приключение" : "Your adventure"}</h2><p aria-live="polite">{ru ? `Направлений: ${chosen.length}` : `${chosen.length} destinations`}</p><div className="adventure-duration"><strong>{incompleteEstimate ? "—" : duration || "—"}</strong><span>{incompleteEstimate ? (ru ? "длительность уточним" : "duration to discuss") : (ru ? "дней в выбранных местах" : "days at selected destinations")}</span></div><h3 className="route-outline-title">{ru ? "Набросок маршрута" : "Route outline"}</h3><ol className="airport-route" aria-live="polite">{outline.map((stop, index) => <li key={`${index}-${stop.label}`}><small>{stop.kind}</small><span>{stop.label}</span></li>)}</ol><p className="planner-hint">{ru ? "Предварительная последовательность. Дни перелётов, трансферы и границы ещё не учтены. Порядок мест и стран уточним с учётом дорог и сезона." : "A preliminary sequence. Flight days, transfers and border crossings are not included yet. We’ll refine the order of places and countries for roads and season."}</p>{winter && <p className="planner-season-note">{ru ? "Зимнюю доступность горных направлений и подходящий транспорт согласуем отдельно." : "We’ll confirm winter access to mountain destinations and suitable transport separately."}</p>}{error && <p className="planner-error" role="alert">{error}</p>}<button className="planner-primary" type="submit">{ru ? "Посмотреть моё путешествие" : "Preview My Adventure"}</button><p className="planner-hint">{ru ? "Ваш выбор сохраняется, если доступно локальное хранилище браузера." : "Your choices are saved when browser storage is available."}</p><button className="planner-text-button" type="button" onClick={() => { saveDraft({ ...defaultTripDraft }); setPlaceSearch({}); setError(""); }}>{copy.reset}</button></aside>
       </form>

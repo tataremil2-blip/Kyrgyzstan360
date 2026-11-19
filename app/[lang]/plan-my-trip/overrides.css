@@ -6,4 +6,5 @@
 .adventure-choices fieldset:has(.travel-styles),.adventure-choices fieldset:nth-of-type(4){display:none}
 .planner-auth-divider{display:none}
 .adventure-details{display:block}.adventure-details>summary{display:none}
+.adventure-preview .planner-summary>span:nth-child(3){display:none}
 .planner-dialog{position:fixed;left:50%;bottom:110px;top:auto;transform:translateX(-50%);margin:0;z-index:1000;max-height:78vh}.planner-dialog::backdrop{background:rgba(16,39,31,.35);backdrop-filter:blur(2px)}
