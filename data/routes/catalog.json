@@ -1,0 +1,1808 @@
+{
+  "schemaVersion": 1,
+  "authorization": {
+    "date": "2026-11-19",
+    "scope": "Current repository programmes and tariffs may be used as drafts; no operational or price verification implied."
+  },
+  "sources": [
+    {
+      "id": "private-page",
+      "file": "app/[lang]/tours/[slug]/page.tsx",
+      "locator": "recommendedRoute and recommended-route price",
+      "capturedAt": "2026-11-19",
+      "sha256": "5c8d2366f9926c247446f6f5842a745e434d6bbc8a979ee609fd75b2fe28da0d",
+      "kind": "repository-content"
+    },
+    {
+      "id": "group-page",
+      "file": "app/[lang]/tours/[slug]/page.tsx",
+      "locator": "groupTourRoute, groupIncluded, groupNotIncluded, group-pricing",
+      "capturedAt": "2026-11-19",
+      "sha256": "5c8d2366f9926c247446f6f5842a745e434d6bbc8a979ee609fd75b2fe28da0d",
+      "kind": "repository-content"
+    },
+    {
+      "id": "winter-page",
+      "file": "app/[lang]/winter-freeride/page.tsx",
+      "locator": "itinerary, included, excluded, need, price",
+      "capturedAt": "2026-11-19",
+      "sha256": "47fa337db5299f16304f33ae07f49ae8e681f039d39b0e469c76baa3ecbc252e",
+      "kind": "repository-content"
+    },
+    {
+      "id": "winter-calendar",
+      "file": "app/[lang]/winter-freeride/DepartureCalendar.tsx",
+      "locator": "departures",
+      "capturedAt": "2026-11-19",
+      "sha256": "723e6135a07f02e6de9921f01e2bf1cbaf1079c2fe69c5fec9f439199c132521",
+      "kind": "repository-content"
+    },
+    {
+      "id": "winter-promo",
+      "file": "app/[lang]/WinterPromoModal.tsx",
+      "locator": "winter-promo-pricing",
+      "capturedAt": "2026-11-19",
+      "sha256": "6620c68911f2feca7c34bafa2e1abfe91cf078f687f45edf8e416fd0847379ed",
+      "kind": "repository-content"
+    }
+  ],
+  "places": [
+    {
+      "id": "bishkek",
+      "name": {
+        "en": "Bishkek",
+        "ru": "Бишкек"
+      },
+      "kind": "city",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page",
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kochkor",
+      "name": {
+        "en": "Kochkor",
+        "ru": "Кочкор"
+      },
+      "kind": "village",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "song-kul",
+      "name": {
+        "en": "Song-Kul",
+        "ru": "Сон-Куль"
+      },
+      "kind": "lake",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "naryn",
+      "name": {
+        "en": "Naryn",
+        "ru": "Нарын"
+      },
+      "kind": "city",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kel-suu",
+      "name": {
+        "en": "Kel-Suu",
+        "ru": "Кель-Суу"
+      },
+      "kind": "lake",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "reported-required",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "issyk-kul-south",
+      "name": {
+        "en": "Southern Issyk-Kul",
+        "ru": "Южный Иссык-Куль"
+      },
+      "kind": "region",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "barskoon",
+      "name": {
+        "en": "Barskoon waterfalls",
+        "ru": "Водопады Барскоон"
+      },
+      "kind": "waterfalls",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "skazka",
+      "name": {
+        "en": "Skazka Canyon",
+        "ru": "Каньон Сказка"
+      },
+      "kind": "canyon",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "karakol",
+      "name": {
+        "en": "Karakol",
+        "ru": "Каракол"
+      },
+      "kind": "city",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page",
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kyrchyn",
+      "name": {
+        "en": "Kyrchyn Gorge",
+        "ru": "Ущелье Кырчын"
+      },
+      "kind": "gorge",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "tash-rabat",
+      "name": {
+        "en": "Tash-Rabat",
+        "ru": "Таш-Рабат"
+      },
+      "kind": "landmark",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kadji-sai",
+      "name": {
+        "en": "Kadji-Sai",
+        "ru": "Каджи-Сай"
+      },
+      "kind": "village",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "karakol-resort",
+      "name": {
+        "en": "Karakol ski resort",
+        "ru": "Горнолыжная база Каракол"
+      },
+      "kind": "ski-resort",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "jyrgalan",
+      "name": {
+        "en": "Jyrgalan",
+        "ru": "Жыргалан"
+      },
+      "kind": "village",
+      "coordinates": null,
+      "visitMinutes": null,
+      "openMonths": null,
+      "permit": {
+        "requirement": "unknown",
+        "leadDays": null
+      },
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    }
+  ],
+  "segments": [
+    {
+      "id": "bishkek--kochkor",
+      "from": "bishkek",
+      "to": "kochkor",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kochkor--song-kul",
+      "from": "kochkor",
+      "to": "song-kul",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "song-kul--naryn",
+      "from": "song-kul",
+      "to": "naryn",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "naryn--kel-suu",
+      "from": "naryn",
+      "to": "kel-suu",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kel-suu--naryn",
+      "from": "kel-suu",
+      "to": "naryn",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "naryn--issyk-kul-south",
+      "from": "naryn",
+      "to": "issyk-kul-south",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "issyk-kul-south--barskoon",
+      "from": "issyk-kul-south",
+      "to": "barskoon",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "barskoon--skazka",
+      "from": "barskoon",
+      "to": "skazka",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "skazka--karakol",
+      "from": "skazka",
+      "to": "karakol",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "karakol--kyrchyn",
+      "from": "karakol",
+      "to": "kyrchyn",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kyrchyn--bishkek",
+      "from": "kyrchyn",
+      "to": "bishkek",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "private-page",
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "song-kul--tash-rabat",
+      "from": "song-kul",
+      "to": "tash-rabat",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "tash-rabat--kel-suu",
+      "from": "tash-rabat",
+      "to": "kel-suu",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "naryn--kadji-sai",
+      "from": "naryn",
+      "to": "kadji-sai",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "kadji-sai--skazka",
+      "from": "kadji-sai",
+      "to": "skazka",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "skazka--barskoon",
+      "from": "skazka",
+      "to": "barskoon",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "barskoon--karakol",
+      "from": "barskoon",
+      "to": "karakol",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "bishkek--karakol",
+      "from": "bishkek",
+      "to": "karakol",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "karakol--karakol-resort",
+      "from": "karakol",
+      "to": "karakol-resort",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "karakol-resort--karakol",
+      "from": "karakol-resort",
+      "to": "karakol",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "karakol--jyrgalan",
+      "from": "karakol",
+      "to": "jyrgalan",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "jyrgalan--karakol",
+      "from": "jyrgalan",
+      "to": "karakol",
+      "driveMinutes": null,
+      "distanceKm": null,
+      "bufferMinutes": null,
+      "openMonths": null,
+      "vehicleRequirements": [],
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    }
+  ],
+  "routes": [
+    {
+      "id": "private-6",
+      "name": {
+        "en": "Private high-lakes route",
+        "ru": "Индивидуальный маршрут к горным озёрам"
+      },
+      "durationDays": 6,
+      "sourceIds": [
+        "private-page"
+      ],
+      "advertisedMonths": null,
+      "confirmedMonths": null,
+      "days": [
+        {
+          "day": 1,
+          "sourceDay": "01",
+          "title": {
+            "en": "Bishkek → Kochkor → Song-Kul",
+            "ru": "Бишкек → Кочкор → Сон-Куль"
+          },
+          "description": {
+            "en": "Drive through Kochkor to the highland lake of Song-Kul. Sleep in yurts and begin to feel the rhythm of Kyrgyz nomadic culture.",
+            "ru": "Через Кочкор едем к высокогорному озеру Сон-Куль. Ночуем в юртах и знакомимся с ритмом кочевой жизни."
+          },
+          "stopIds": [
+            "bishkek",
+            "kochkor",
+            "song-kul"
+          ],
+          "overnightPlaceId": "song-kul",
+          "overnightLabel": {
+            "en": "Yurt camp at Song-Kul",
+            "ru": "Юрточный лагерь на Сон-Куле"
+          },
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 2,
+          "sourceDay": "02",
+          "title": {
+            "en": "Song-Kul → Naryn → Kel-Suu",
+            "ru": "Сон-Куль → Нарын → Кель-Суу"
+          },
+          "description": {
+            "en": "Travel through Naryn towards Kel-Suu, a dramatic alpine lake beneath the high peaks of the Tien Shan.",
+            "ru": "Через Нарын направляемся к Кель-Суу — впечатляющему горному озеру под высокими вершинами Тянь-Шаня."
+          },
+          "stopIds": [
+            "song-kul",
+            "naryn",
+            "kel-suu"
+          ],
+          "overnightPlaceId": "kel-suu",
+          "overnightLabel": {
+            "en": "Mountain-view camp at Kel-Suu",
+            "ru": "Лагерь с видом на горы у Кель-Суу"
+          },
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 3,
+          "sourceDay": "03",
+          "title": {
+            "en": "Kel-Suu → Naryn",
+            "ru": "Кель-Суу → Нарын"
+          },
+          "description": {
+            "en": "Choose your way to the lake: hike, ride horses or take a special off-road transfer. Spend time on the water by boat, then return to camp before driving to Naryn.",
+            "ru": "Выберите путь к озеру: пешком, верхом или на специальном внедорожном транспорте. Прогуляйтесь на лодке, затем вернитесь в лагерь перед переездом в Нарын."
+          },
+          "stopIds": [
+            "kel-suu",
+            "naryn"
+          ],
+          "overnightPlaceId": "naryn",
+          "overnightLabel": {
+            "en": "Hotel in Naryn",
+            "ru": "Отель в Нарыне"
+          },
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 4,
+          "sourceDay": "04",
+          "title": {
+            "en": "Naryn → South Issyk-Kul",
+            "ru": "Нарын → Южный Иссык-Куль"
+          },
+          "description": {
+            "en": "Cross a mountain pass towards the southern shore of Issyk-Kul and settle into a comfortable yurt camp by the lake.",
+            "ru": "Через перевал едем к южному берегу Иссык-Куля и размещаемся в комфортабельном юрточном лагере у озера."
+          },
+          "stopIds": [
+            "naryn",
+            "issyk-kul-south"
+          ],
+          "overnightPlaceId": "issyk-kul-south",
+          "overnightLabel": {
+            "en": "Comfortable yurts on Issyk-Kul",
+            "ru": "Комфортабельные юрты на Иссык-Куле"
+          },
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 5,
+          "sourceDay": "05",
+          "title": {
+            "en": "Barskoon → Skazka → Karakol",
+            "ru": "Барскоон → Сказка → Каракол"
+          },
+          "description": {
+            "en": "See the Barskoon waterfalls, explore Fairy Tale Canyon, watch an eagle-hunting show and continue to Karakol.",
+            "ru": "Посетим водопады Барскоон и каньон Сказка, посмотрим шоу с беркутом и продолжим путь в Каракол."
+          },
+          "stopIds": [
+            "issyk-kul-south",
+            "barskoon",
+            "skazka",
+            "karakol"
+          ],
+          "overnightPlaceId": "karakol",
+          "overnightLabel": {
+            "en": "Hotel in Karakol",
+            "ru": "Отель в Караколе"
+          },
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 6,
+          "sourceDay": "06",
+          "title": {
+            "en": "Kyrchyn Gorge → Bishkek",
+            "ru": "Ущелье Кырчын → Бишкек"
+          },
+          "description": {
+            "en": "Travel back via Kyrchyn Gorge, the setting of the World Nomad Games, then arrive in Bishkek in the evening.",
+            "ru": "Возвращаемся через ущелье Кырчын, где проходили Всемирные игры кочевников, и вечером прибываем в Бишкек."
+          },
+          "stopIds": [
+            "karakol",
+            "kyrchyn",
+            "bishkek"
+          ],
+          "overnightPlaceId": null,
+          "overnightLabel": {
+            "en": "Evening arrival in Bishkek",
+            "ru": "Прибытие в Бишкек вечером"
+          },
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        }
+      ],
+      "included": [
+        {
+          "en": "Includes B&B accommodation, comfortable Jeep transfer, delicious mountain picnics, a bar on wheels and a local guide who knows Kyrgyz culture and mountains inside out.",
+          "ru": "Включены проживание с завтраками, комфортные переезды на внедорожнике, вкусные горные пикники, бар на колёсах и местный гид, отлично знающий кыргызскую культуру и горы."
+        }
+      ],
+      "excluded": [],
+      "requirements": [],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      },
+      "notes": [
+        "Price unit is not stated: do not multiply by guests.",
+        "Includes are described in prose on the page; confirm detailed scope before quoting."
+      ]
+    },
+    {
+      "id": "group-8",
+      "name": {
+        "en": "Group expedition",
+        "ru": "Групповая экспедиция"
+      },
+      "durationDays": 8,
+      "sourceIds": [
+        "group-page"
+      ],
+      "advertisedMonths": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "confirmedMonths": null,
+      "days": [
+        {
+          "day": 1,
+          "sourceDay": "PREP",
+          "title": {
+            "en": "Arrival in Bishkek",
+            "ru": "Прибытие в Бишкек"
+          },
+          "description": {
+            "en": "Meet your hosts at the airport, settle into a comfortable Bishkek hotel and ease into the adventure.",
+            "ru": "Встреча в аэропорту, размещение в комфортабельном отеле Бишкека и спокойное начало приключения."
+          },
+          "stopIds": [
+            "bishkek"
+          ],
+          "overnightPlaceId": "bishkek",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 2,
+          "sourceDay": "01",
+          "title": {
+            "en": "Bishkek → Kochkor → Song-Kul",
+            "ru": "Бишкек → Кочкор → Сон-Куль"
+          },
+          "description": {
+            "en": "Cross beautiful mountain passes, stop for picnic lunches with big views and sleep in yurts on the shore of the high-altitude lake.",
+            "ru": "Красивые перевалы, пикники с панорамными видами и ночёвка в юртах на берегу высокогорного озера."
+          },
+          "stopIds": [
+            "bishkek",
+            "kochkor",
+            "song-kul"
+          ],
+          "overnightPlaceId": "song-kul",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 3,
+          "sourceDay": "02",
+          "title": {
+            "en": "Song-Kul → Tash-Rabat",
+            "ru": "Сон-Куль → Таш-Рабат"
+          },
+          "description": {
+            "en": "Travel through dramatic gorges to Tash-Rabat, the Silk Road caravanserai and one of Kyrgyzstan’s most important landmarks. Overnight in comfortable rooms.",
+            "ru": "Через живописные ущелья едем к Таш-Рабату — караван-сараю Шёлкового пути и одной из главных достопримечательностей Кыргызстана. Ночуем в уютных комнатах."
+          },
+          "stopIds": [
+            "song-kul",
+            "tash-rabat"
+          ],
+          "overnightPlaceId": "tash-rabat",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 4,
+          "sourceDay": "03",
+          "title": {
+            "en": "Tash-Rabat → Kel-Suu",
+            "ru": "Таш-Рабат → Кель-Суу"
+          },
+          "description": {
+            "en": "Enter the border zone and follow the Chinese frontier to Kel-Suu, one of the country’s most beautiful and remote lakes.",
+            "ru": "Въезжаем в пограничную зону и вдоль границы с Китаем направляемся к Кель-Суу — одному из самых красивых и отдалённых озёр страны."
+          },
+          "stopIds": [
+            "tash-rabat",
+            "kel-suu"
+          ],
+          "overnightPlaceId": "kel-suu",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 5,
+          "sourceDay": "04",
+          "title": {
+            "en": "Kel-Suu → Naryn",
+            "ru": "Кель-Суу → Нарын"
+          },
+          "description": {
+            "en": "Reach the lake by special transport across fast rivers and wetlands, take a boat ride when conditions allow, then continue to Naryn for a comfortable hotel stay.",
+            "ru": "На специальном транспорте пересекаем быстрые реки и заболоченные участки к озеру. Если позволяют условия, катаемся на лодке, затем едем в Нарын и размещаемся в отеле."
+          },
+          "stopIds": [
+            "kel-suu",
+            "naryn"
+          ],
+          "overnightPlaceId": "naryn",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 6,
+          "sourceDay": "05",
+          "title": {
+            "en": "Naryn → Kadji-Sai",
+            "ru": "Нарын → Каджи-Сай"
+          },
+          "description": {
+            "en": "Cross a 4,000-metre pass, with views of snowy summits and glaciers, before reaching the southern shore of Issyk-Kul.",
+            "ru": "Пересекаем перевал высотой 4 000 метров с видами на снежные вершины и ледники, затем спускаемся к южному берегу Иссык-Куля."
+          },
+          "stopIds": [
+            "naryn",
+            "kadji-sai"
+          ],
+          "overnightPlaceId": "kadji-sai",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 7,
+          "sourceDay": "06",
+          "title": {
+            "en": "Kadji-Sai → Karakol",
+            "ru": "Каджи-Сай → Каракол"
+          },
+          "description": {
+            "en": "Watch an eagle-hunting show, explore Skazka Nature Park and Barskoon Waterfall — where Yuri Gagarin once recovered — then settle into Karakol.",
+            "ru": "Посмотрим шоу с беркутом, посетим природный парк Сказка и водопад Барскоон, где когда-то отдыхал Юрий Гагарин, затем разместимся в Караколе."
+          },
+          "stopIds": [
+            "kadji-sai",
+            "skazka",
+            "barskoon",
+            "karakol"
+          ],
+          "overnightPlaceId": "karakol",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 8,
+          "sourceDay": "07",
+          "title": {
+            "en": "Karakol → Kyrchyn → Bishkek",
+            "ru": "Каракол → Кырчын → Бишкек"
+          },
+          "description": {
+            "en": "Return to Bishkek via Kyrchyn Gorge, home of the World Nomad Games. Celebrate the journey with a farewell dinner and a transfer to your hotel.",
+            "ru": "Возвращаемся в Бишкек через ущелье Кырчын, место проведения Всемирных игр кочевников. Завершаем поездку прощальным ужином и трансфером в отель."
+          },
+          "stopIds": [
+            "karakol",
+            "kyrchyn",
+            "bishkek"
+          ],
+          "overnightPlaceId": null,
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        }
+      ],
+      "included": [
+        {
+          "en": "4×4 group transport and fuel",
+          "ru": "Групповой транспорт 4×4 и топливо"
+        },
+        {
+          "en": "Experienced local driver-guide",
+          "ru": "Опытный местный водитель-гид"
+        },
+        {
+          "en": "Accommodation according to the program",
+          "ru": "Проживание по программе"
+        },
+        {
+          "en": "Cultural stops and route coordination",
+          "ru": "Культурные остановки и организация маршрута"
+        },
+        {
+          "en": "Kel-Suu border-zone permit support",
+          "ru": "Помощь с пропуском в пограничную зону Кель-Суу"
+        }
+      ],
+      "excluded": [
+        {
+          "en": "International flights",
+          "ru": "Международные авиабилеты"
+        },
+        {
+          "en": "Travel & medical insurance",
+          "ru": "Туристическая и медицинская страховка"
+        },
+        {
+          "en": "Meals at city cafés",
+          "ru": "Питание в городских кафе"
+        },
+        {
+          "en": "Optional horse and boat activities",
+          "ru": "Дополнительные конные и лодочные прогулки"
+        }
+      ],
+      "requirements": [],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      },
+      "notes": [
+        "Eight days includes the arrival day named PREP on the page.",
+        "Page says groups from 3; the price table also offers 1 and 2 places. Booking-seat versus departure-group minimum needs confirmation.",
+        "Advertised season is not confirmation of road access at individual places."
+      ]
+    },
+    {
+      "id": "winter-7",
+      "name": {
+        "en": "Winter freeride camp",
+        "ru": "Зимний фрирайд-кэмп"
+      },
+      "durationDays": 7,
+      "sourceIds": [
+        "winter-page"
+      ],
+      "advertisedMonths": [
+        12,
+        1,
+        2,
+        3
+      ],
+      "confirmedMonths": null,
+      "days": [
+        {
+          "day": 1,
+          "sourceDay": "1",
+          "title": {
+            "en": "Arrival in Bishkek & transfer to Karakol",
+            "ru": "Прибытие в Бишкек и переезд в Каракол"
+          },
+          "description": {
+            "en": "Meet us at Bishkek airport and travel to Karakol. Check in to your hotel and settle in before the riding begins.",
+            "ru": "Встреча в аэропорту Бишкека и переезд в Каракол. Заселение в отель и отдых перед началом катания."
+          },
+          "stopIds": [
+            "bishkek",
+            "karakol"
+          ],
+          "overnightPlaceId": "karakol",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 2,
+          "sourceDay": "2",
+          "title": {
+            "en": "Karakol ski resort",
+            "ru": "Горнолыжная база Каракол"
+          },
+          "description": {
+            "en": "Spend the day skiing or snowboarding at Karakol ski resort. Get used to the altitude, find your rhythm and get to know your guide and fellow riders. Overnight at your hotel in Karakol.",
+            "ru": "День на лыжах или сноуборде на базе Каракол. Привыкните к высоте, найдите свой ритм и познакомьтесь с гидом и группой. Ночь в отеле в Караколе."
+          },
+          "stopIds": [
+            "karakol",
+            "karakol-resort",
+            "karakol"
+          ],
+          "overnightPlaceId": "karakol",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 3,
+          "sourceDay": "3",
+          "title": {
+            "en": "Jyrgalan & the first snowcat day",
+            "ru": "Жыргалан и первый день с ратраком"
+          },
+          "description": {
+            "en": "Head to the village of Jyrgalan, board the snowcat and ride until the evening. After your first day of freeriding, check in to your hotel in Jyrgalan.",
+            "ru": "Переезд в село Жыргалан, подъём на ратраке и катание до вечера. После первого дня фрирайда — заселение в отель в Жыргалане."
+          },
+          "stopIds": [
+            "karakol",
+            "jyrgalan"
+          ],
+          "overnightPlaceId": "jyrgalan",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "snowcat-and-road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 4,
+          "sourceDay": "4",
+          "title": {
+            "en": "A full day of snowcat freeriding",
+            "ru": "Полный день фрирайда с ратраком"
+          },
+          "description": {
+            "en": "Board the snowcat in the morning for a full day in the mountains. Return to your hotel afterwards, with an optional banya session to unwind.",
+            "ru": "Утром отправляемся на ратраке в горы на целый день. Затем возвращаемся в отель; по желанию — баня."
+          },
+          "stopIds": [
+            "jyrgalan"
+          ],
+          "overnightPlaceId": "jyrgalan",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "snowcat-and-road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 5,
+          "sourceDay": "5",
+          "title": {
+            "en": "More fresh tracks & back to Karakol",
+            "ru": "Ещё больше свежего снега и возвращение в Каракол"
+          },
+          "description": {
+            "en": "Enjoy another full day of snowcat freeriding. In the evening, leave Jyrgalan and transfer back to Karakol.",
+            "ru": "Ещё один полный день фрирайда с ратраком. Вечером — выезд из Жыргалана и возвращение в Каракол."
+          },
+          "stopIds": [
+            "jyrgalan",
+            "karakol"
+          ],
+          "overnightPlaceId": "karakol",
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "snowcat-and-road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 6,
+          "sourceDay": "6",
+          "title": {
+            "en": "Kyrgyz culture & horseback riding",
+            "ru": "Культура Кыргызстана и конная прогулка"
+          },
+          "description": {
+            "en": "Take a break from the slopes to get to know the culture of Kyrgyzstan and explore on horseback.",
+            "ru": "Отдохните от склонов, познакомьтесь с культурой Кыргызстана и отправьтесь на конную прогулку."
+          },
+          "stopIds": [],
+          "overnightPlaceId": null,
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        },
+        {
+          "day": 7,
+          "sourceDay": "7",
+          "title": {
+            "en": "Eagle show & departure",
+            "ru": "Шоу с беркутом и отъезд"
+          },
+          "description": {
+            "en": "Watch a traditional eagle show, then travel to Bishkek and transfer to the airport for your departure.",
+            "ru": "Традиционное шоу с беркутом, затем переезд в Бишкек и трансфер в аэропорт к вылету."
+          },
+          "stopIds": [
+            "bishkek"
+          ],
+          "overnightPlaceId": null,
+          "overnightLabel": null,
+          "activityMinutes": null,
+          "bufferMinutes": null,
+          "transportMode": "road",
+          "review": {
+            "status": "draft",
+            "verifiedAt": null,
+            "validUntil": null,
+            "verifiedBy": null
+          }
+        }
+      ],
+      "included": [
+        {
+          "en": "All program transfers, including airport transfers",
+          "ru": "Все трансферы по программе, включая аэропорт"
+        },
+        {
+          "en": "English-speaking guide",
+          "ru": "Англоговорящий гид"
+        },
+        {
+          "en": "Accommodation",
+          "ru": "Проживание"
+        },
+        {
+          "en": "Meals",
+          "ru": "Питание"
+        },
+        {
+          "en": "Lift pass for Karakol ski resort",
+          "ru": "Ски-пасс на горнолыжную базу Каракол"
+        },
+        {
+          "en": "Snowcat rides on days 3, 4 and 5",
+          "ru": "Заброски на ратраке в дни 3, 4 и 5"
+        },
+        {
+          "en": "Horseback riding",
+          "ru": "Конная прогулка"
+        },
+        {
+          "en": "Eagle show",
+          "ru": "Шоу с беркутом"
+        }
+      ],
+      "excluded": [
+        {
+          "en": "Ski and snowboard equipment rental",
+          "ru": "Прокат лыж и сноуборда"
+        },
+        {
+          "en": "Freeride equipment rental",
+          "ru": "Прокат фрирайд-снаряжения"
+        },
+        {
+          "en": "Travel insurance",
+          "ru": "Туристическая страховка"
+        },
+        {
+          "en": "Additional and personal expenses",
+          "ru": "Дополнительные и личные расходы"
+        }
+      ],
+      "requirements": [
+        {
+          "en": "Confident off-piste skiing or snowboarding skills",
+          "ru": "Уверенное катание вне трасс на лыжах или сноуборде"
+        },
+        {
+          "en": "Freeride equipment and avalanche safety kit",
+          "ru": "Фрирайд-снаряжение и лавинный комплект"
+        },
+        {
+          "en": "A good mood and appetite for the wild",
+          "ru": "Хорошее настроение и жажда приключений"
+        }
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      },
+      "notes": [
+        "Owner mentioned an upcoming programme change; current copy is authorized as a draft only.",
+        "Day 6 activity location and night are unspecified. Day 7 eagle-show venue and departure connection are unspecified.",
+        "Jan 14–17 competition transfer is a separate product, not the seven-day package."
+      ]
+    }
+  ],
+  "tariffs": [
+    {
+      "id": "private-6-from",
+      "routeId": "private-6",
+      "amount": 1800,
+      "currency": "USD",
+      "unit": "unknown",
+      "kind": "from",
+      "travelMode": "private",
+      "seats": null,
+      "sourceIds": [
+        "private-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "group-8-passenger-1",
+      "routeId": "group-8",
+      "amount": 2180,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "passenger",
+      "seats": 1,
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "group-8-passenger-2",
+      "routeId": "group-8",
+      "amount": 1920,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "passenger",
+      "seats": 2,
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "group-8-passenger-3",
+      "routeId": "group-8",
+      "amount": 1750,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "passenger",
+      "seats": 3,
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "group-8-selfdrive-2",
+      "routeId": "group-8",
+      "amount": 1920,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "selfdrive",
+      "seats": 2,
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "group-8-selfdrive-3",
+      "routeId": "group-8",
+      "amount": 1750,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "selfdrive",
+      "seats": 3,
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "group-8-selfdrive-4",
+      "routeId": "group-8",
+      "amount": 1750,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "selfdrive",
+      "seats": 4,
+      "sourceIds": [
+        "group-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    },
+    {
+      "id": "winter-7-standard",
+      "routeId": "winter-7",
+      "amount": 1900,
+      "currency": "EUR",
+      "unit": "person",
+      "kind": "published",
+      "travelMode": "guided",
+      "seats": null,
+      "sourceIds": [
+        "winter-page"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    }
+  ],
+  "promotions": [
+    {
+      "id": "winter-first20",
+      "routeId": "winter-7",
+      "percent": 5,
+      "publishedAmount": 1805,
+      "currency": "EUR",
+      "bookingLimit": 20,
+      "remainingBookings": null,
+      "sourceIds": [
+        "winter-promo"
+      ],
+      "review": {
+        "status": "draft",
+        "verifiedAt": null,
+        "validUntil": null,
+        "verifiedBy": null
+      }
+    }
+  ],
+  "issues": [
+    {
+      "id": "winter-calendar-mismatch",
+      "sourceIds": [
+        "winter-calendar"
+      ],
+      "detail": "Competition entry start/end is Jan 11–17, while its label and transfer are Jan 14–17. Confirm separate event dates before importing availability."
+    },
+    {
+      "id": "map-coordinates-unverified",
+      "sourceIds": [
+        "group-page"
+      ],
+      "detail": "Existing SVG map uses drawing coordinates, not a verified geographic dataset. No latitude/longitude imported."
+    }
+  ]
+}

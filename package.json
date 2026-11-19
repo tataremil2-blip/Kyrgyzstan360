@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "check:catalog": "node scripts/check-route-catalog.mjs"
   },
   "dependencies": {
     "next": "16.3.4",

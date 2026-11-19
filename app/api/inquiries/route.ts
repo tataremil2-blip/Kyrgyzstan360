@@ -1,3 +1,4 @@
+import { createTranslator } from "@/lib/translate";
 const recipient = "tataremil2@gmail.com";
 
 function escapeHtml(value: string) {
@@ -5,16 +6,18 @@ function escapeHtml(value: string) {
 }
 
 export async function POST(request: Request) {
+  const locale = request.headers.get("Accept-Language")?.split(/[,;-]/)[0] === "ru" ? "ru" : "en";
+  const translate = createTranslator(locale);
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM_EMAIL;
 
   if (!apiKey || !from) {
-    return Response.json({ error: "Email delivery is not configured yet." }, { status: 503 });
+    return Response.json({ error: translate("Email delivery is not configured yet.") }, { status: 503 });
   }
 
   const input: unknown = await request.json().catch(() => null);
   if (!input || typeof input !== "object") {
-    return Response.json({ error: "Invalid request." }, { status: 400 });
+    return Response.json({ error: translate("Invalid request.") }, { status: 400 });
   }
 
   const { name, email, phone, whatsapp, tour, preferredDates, riders, ridingLevel, message, travelMode, source, page, emailSubject, firstName, lastName } = input as Record<string, unknown>;
@@ -29,11 +32,12 @@ export async function POST(request: Request) {
   const hasValidWinterNames = typeof firstName === "string" && firstName.trim().length > 0 && typeof lastName === "string" && lastName.trim().length > 0;
 
   if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" ? 1500 : 200))) || !hasValidRequiredFields || (isWinterFreerideInfo && !hasValidWinterNames)) {
-    return Response.json({ error: "Please complete the required fields." }, { status: 400 });
+    return Response.json({ error: translate("Please complete the required fields.") }, { status: 400 });
   }
 
   const submittedAt = new Date().toISOString();
   const winterDetails = [
+    ["Language", locale],
     ["Source", source],
     ["Page", page],
     ["Form", "Get More Info"],
@@ -44,6 +48,7 @@ export async function POST(request: Request) {
     ["Submitted", submittedAt],
   ];
   const details = isWinterFreerideInfo ? winterDetails : [
+    ["Language", locale],
     ["Name", name],
     ["Email", email],
     ["Phone", typeof phone === "string" && phone ? phone : "Not provided"],
@@ -78,12 +83,12 @@ export async function POST(request: Request) {
 
   } catch {
     console.error("Email service connection failed");
-    return Response.json({ error: "Email service is temporarily unavailable. Please try again or contact us on WhatsApp." }, { status: 503 });
+    return Response.json({ error: translate("Email service is temporarily unavailable. Please try again or contact us on WhatsApp.") }, { status: 503 });
   }
 
   if (!response.ok) {
     console.error("Resend failed", response.status, await response.text());
-    return Response.json({ error: "We could not send your request. Please try again." }, { status: 502 });
+    return Response.json({ error: translate("We could not send your request. Please try again.") }, { status: 502 });
   }
 
   return Response.json({ ok: true });
