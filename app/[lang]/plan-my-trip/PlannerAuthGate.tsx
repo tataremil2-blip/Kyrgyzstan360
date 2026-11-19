@@ -7,7 +7,6 @@ export default function PlannerAuthGate({ locale, onReady }: { locale: "ru" | "e
   const ru = locale === "ru";
   const [userEmail, setUserEmail] = useState("");
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -28,12 +27,14 @@ export default function PlannerAuthGate({ locale, onReady }: { locale: "ru" | "e
 
   function submit(event: FormEvent) {
     event.preventDefault();
-    if (!userEmail) return;
-    onReady({ email: userEmail, firstName: firstName.trim(), lastName: lastName.trim(), whatsapp: whatsapp.trim() });
+    const email = userEmail.trim();
+    if (!email) return;
+    onReady({ email, firstName: firstName.trim(), lastName: "", whatsapp: whatsapp.trim() });
   }
 
   return <div className="planner-auth-gate">
-    {!userEmail ? <><h3>{ru ? "Войдите, чтобы получить PDF" : "Sign in to receive your PDF"}</h3><p>{ru ? "Маршрут уже собран. Войдите через Google — затем мы попросим имя, фамилию и WhatsApp." : "Your route is ready. Sign in with Google, then add your name and WhatsApp number."}</p><button className="planner-primary" type="button" onClick={signIn} disabled={loading}>{loading ? (ru ? "Открываем Google…" : "Opening Google…") : (ru ? "Войти через Google" : "Continue with Google")}</button></> : <form onSubmit={submit}><h3>{ru ? "Данные для PDF" : "Details for your PDF"}</h3><p>{userEmail}</p><div className="planner-auth-fields"><label>{ru ? "Имя" : "First name"}<input value={firstName} onChange={(event) => setFirstName(event.target.value)} required /></label><label>{ru ? "Фамилия" : "Last name"}<input value={lastName} onChange={(event) => setLastName(event.target.value)} required /></label><label>{ru ? "WhatsApp" : "WhatsApp"}<input type="tel" value={whatsapp} onChange={(event) => setWhatsapp(event.target.value)} placeholder="+996 …" required /></label></div><button className="planner-primary" type="submit">{ru ? "Продолжить к PDF" : "Continue to PDF"}</button></form>}
+    <form onSubmit={submit}><h3>{ru ? "Зарегистрируйтесь для получения маршрута" : "Register to receive your route"}</h3><p>{ru ? "Оставьте имя, email и WhatsApp — мы отправим PDF и передадим ваш запрос местным гидам." : "Leave your name, email and WhatsApp — we’ll send the PDF and share your request with local guides."}</p><div className="planner-auth-fields"><label>{ru ? "Имя" : "First name"}<input value={firstName} onChange={(event) => setFirstName(event.target.value)} autoComplete="given-name" required /></label><label>{ru ? "Email" : "Email"}<input type="email" value={userEmail} onChange={(event) => setUserEmail(event.target.value)} autoComplete="email" required /></label><label>{ru ? "WhatsApp номер" : "WhatsApp number"}<input type="tel" value={whatsapp} onChange={(event) => setWhatsapp(event.target.value)} placeholder="+996 …" autoComplete="tel" required /></label></div><button className="planner-primary" type="submit">{ru ? "Получить маршрут и предложения" : "Get my route and offers"}</button></form>
+    <div className="planner-auth-divider"><span>{ru ? "или" : "or"}</span></div><button className="planner-primary" type="button" onClick={signIn} disabled={loading}>{loading ? (ru ? "Открываем Google…" : "Opening Google…") : (ru ? "Зарегистрироваться через Google" : "Sign up with Google")}</button>
     {error && <p className="planner-error" role="alert">{error}</p>}
   </div>;
 }
