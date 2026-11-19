@@ -1,7 +1,7 @@
 .adventure-map-final{display:none}
-.place-search{display:none}
-.country-places .destination-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:300px;overflow:hidden}
-.country-places .destination-card{min-height:0;padding:8px 4px;border:0;border-radius:0;background:transparent;display:flex;align-items:center;gap:7px;font-size:14px}.country-places .destination-card::before{content:"□";color:#317552;font-size:18px}.country-places .destination-card.is-selected::before{content:"✓"}.country-places .destination-name{font-size:14px}.country-places .destination-name>span{display:none}
+.place-search{display:block}
+.country-places .destination-grid{grid-template-columns:1fr;gap:0;max-height:520px;overflow:auto;padding:4px;margin:-4px}
+.country-places .destination-card{min-height:0;padding:8px 4px;border:0;border-radius:0;background:transparent;display:flex;align-items:center;gap:7px;font-size:14px;box-shadow:none}.country-places .destination-card:hover,.country-places .destination-card.is-selected{background:#f1f7f3;box-shadow:none}.country-places .destination-card::before{content:"□";color:#317552;font-size:18px;line-height:1}.country-places .destination-card.is-selected::before{content:"✓"}.country-places .destination-name{font-size:14px;font-weight:500;justify-content:flex-start}.country-places .destination-name>span{display:none}
 .country-places .destination-duration{display:none}
 .adventure-choices fieldset:has(.travel-styles),.adventure-choices fieldset:nth-of-type(4){display:none}
 .planner-auth-divider{display:none}
