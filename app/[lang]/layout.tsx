@@ -10,6 +10,7 @@ import "./design-system.css";
 import BookTripButton from "./BookTripButton";
 import BackButton from "./BackButton";
 import CookieConsent from "./CookieConsent";
+import { Analytics } from "@vercel/analytics/next";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -34,6 +35,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           <BookTripButton />
           <CookieConsent />
         </LocaleProvider>
+        <Analytics />
       </body>
     </html>
   );
