@@ -5,6 +5,6 @@ import { createTranslator } from "./translate";
 
 export async function getTranslator() {
   const locale = await lang();
-  if (!isLocale(locale)) notFound();
+  if (!locale || !isLocale(locale)) notFound();
   return createTranslator(locale);
 }
