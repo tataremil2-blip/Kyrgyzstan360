@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
 import TripPlanner from "./TripPlanner";
 import "./planner.css";
+import "./overrides.css";
 
 export async function generateMetadata({ params }: PageProps<"/[lang]/plan-my-trip">): Promise<Metadata> {
   const { lang } = await params;

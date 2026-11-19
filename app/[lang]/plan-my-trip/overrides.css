@@ -1,0 +1,7 @@
+.adventure-map-final{display:none}
+.place-search{display:none}
+.country-places .destination-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:300px;overflow:hidden}
+.country-places .destination-card{min-height:0;padding:12px 14px}
+.country-places .destination-duration{display:none}
+.adventure-choices fieldset:has(.travel-styles){display:none}
+.planner-auth-divider{display:none}

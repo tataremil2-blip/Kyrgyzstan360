@@ -92,7 +92,7 @@ export type TripDraft = {
   month: string;
   days: 6 | 8 | 12;
   guests: number;
-  budget: "undecided" | "under1500" | "1500to2500" | "over2500";
+  budget: string;
   interests: Interest[];
   pace: "relaxed" | "balanced" | "active";
   transport: "driver" | "selfdrive" | "discuss";
