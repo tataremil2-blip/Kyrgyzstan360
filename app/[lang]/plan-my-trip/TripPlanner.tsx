@@ -136,6 +136,10 @@ export default function TripPlanner() {
     `${copy.budget}: ${copy[draft.budget as keyof typeof copy] ?? draft.budget}`,
   ].join("\n");
   const pdfSummary = [
+    "TRAVELLER MESSAGE",
+    draft.freeText.trim() || "No additional message provided.",
+    "",
+    "TRIP DETAILS",
     `Travel dates: ${draft.startDate || "To be confirmed"} to ${draft.endDate || "To be confirmed"}`,
     `Travellers: ${draft.guests}`,
     `Budget per person (USD): ${draft.budget || "To be discussed"}`,

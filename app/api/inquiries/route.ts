@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   const isTripPlannerRequest = tour === "Custom trip planner" && plannerPdfSummary.length > 0;
   const hasValidWinterNames = typeof firstName === "string" && firstName.trim().length > 0 && typeof lastName === "string" && lastName.trim().length > 0;
 
-  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" || key === "pdfSummary" ? 1500 : 200))) || !hasValidRequiredFields || (isWinterFreerideInfo && !hasValidWinterNames)) {
+  if (Object.values(fields).some((value) => value !== undefined && value !== null && (typeof value !== "string" || value.length > 200)) || Object.entries(optionalFields).some(([key, value]) => value !== undefined && value !== null && (typeof value !== "string" || value.length > (key === "message" || key === "pdfSummary" ? 5000 : 200))) || !hasValidRequiredFields || (isWinterFreerideInfo && !hasValidWinterNames)) {
     return Response.json({ error: translate("Please complete the required fields.") }, { status: 400 });
   }
 
@@ -64,6 +64,7 @@ export async function POST(request: Request) {
     ...(typeof message === "string" && message ? [["Message", message]] : []),
   ];
 
+  const plannerPdfAttachment = isTripPlannerRequest ? { filename: "Kyrgyzstan360-trip-request.pdf", content: buildTripRequestPdf(plannerPdfSummary).toString("base64") } : null;
   const adminEmail = {
     from,
     to: [recipient],
@@ -71,6 +72,7 @@ export async function POST(request: Request) {
     subject: isWinterFreerideInfo ? emailSubject : typeof preferredDates === "string" && preferredDates ? `${typeof tour === "string" && tour ? tour : "Tour"} booking request | ${preferredDates} | ${name}` : typeof tour === "string" && tour ? `New ${tour} inquiry from ${name}` : `New Kyrgyzstan360 inquiry from ${name}`,
     text: `${isWinterFreerideInfo ? "NEW WINTER FREERIDE INQUIRY\n\n" : ""}${details.map(([label, value]) => `${label}: ${value}`).join("\n")}`,
     html: `<h1>${isWinterFreerideInfo ? "NEW WINTER FREERIDE INQUIRY" : "New Kyrgyzstan360 inquiry"}</h1><table>${details.map(([label, value]) => `<tr><td><strong>${escapeHtml(String(label))}</strong></td><td>${escapeHtml(String(value))}</td></tr>`).join("")}</table>`,
+    ...(plannerPdfAttachment ? { attachments: [plannerPdfAttachment] } : {}),
   };
   const travellerEmail = isTripPlannerRequest ? {
     from,
@@ -78,7 +80,7 @@ export async function POST(request: Request) {
     subject: locale === "ru" ? "Ваш запрос на путешествие — Kyrgyzstan360" : "Your trip request — Kyrgyzstan360",
     text: locale === "ru" ? "Спасибо за запрос. Во вложении — PDF с вашими пожеланиями к поездке. Местный гид свяжется с вами в WhatsApp." : "Thank you for your request. Your trip preferences are attached as a PDF. A local guide will contact you on WhatsApp.",
     html: locale === "ru" ? "<p>Спасибо за запрос. Во вложении — PDF с вашими пожеланиями к поездке. Местный гид свяжется с вами в WhatsApp.</p>" : "<p>Thank you for your request. Your trip preferences are attached as a PDF. A local guide will contact you on WhatsApp.</p>",
-    attachments: [{ filename: "Kyrgyzstan360-trip-request.pdf", content: buildTripRequestPdf(plannerPdfSummary).toString("base64") }],
+    attachments: [plannerPdfAttachment],
   } : null;
 
   let responses: Response[];
