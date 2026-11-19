@@ -14,8 +14,7 @@ export type AirportId = typeof airports[number]["id"];
 // Concept estimates from the approved prototype, not verified travel times.
 export const destinations = [
   { id: "issyk-kul", en: "Issyk-Kul", ru: "Иссык-Куль", days: 2, country: "kg" },
-  { id: "karakol", en: "Karakol", ru: "Каракол", days: 2, country: "kg" },
-  { id: "song-kul", en: "Song-Kul", ru: "Сон-Куль", days: 2, country: "kg" },
+  { id: "engilchek", en: "Engilchek Glacier", ru: "Ледник Энилчек", days: 3, country: "kg" },
   { id: "kel-suu", en: "Kel-Suu", ru: "Кель-Суу", days: 2, country: "kg" },
   { id: "tash-rabat", en: "Tash-Rabat", ru: "Таш-Рабат", days: 1, country: "kg" },
   { id: "chon-kemin", en: "Chon-Kemin", ru: "Чон-Кемин", days: 1, country: "kg" },
@@ -102,7 +101,7 @@ export type TripDraft = {
   experiences: ExperienceId[];
   travelStyle: TravelStyle;
 };
-export const defaultTripDraft: TripDraft = { version: 1, freeText: "", aiItinerary: [], arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", days: 8, guests: 2, budget: "undecided", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "karakol", "song-kul"], experiences: ["jeep", "hiking"], travelStyle: "comfort" };
+export const defaultTripDraft: TripDraft = { version: 1, freeText: "", aiItinerary: [], arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", days: 8, guests: 2, budget: "", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "kel-suu", "altyn-arashan"], experiences: ["jeep", "hiking"], travelStyle: "comfort" };
 export function parseTripDraft(raw: string | null): TripDraft {
   try {
     const value = JSON.parse(raw ?? "null");

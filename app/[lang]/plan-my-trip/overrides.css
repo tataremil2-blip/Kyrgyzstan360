@@ -1,7 +1,8 @@
 .adventure-map-final{display:none}
 .place-search{display:none}
 .country-places .destination-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:300px;overflow:hidden}
-.country-places .destination-card{min-height:0;padding:12px 14px}
+.country-places .destination-card{min-height:0;padding:8px 4px;border:0;border-radius:0;background:transparent;display:flex;align-items:center;gap:7px;font-size:14px}.country-places .destination-card::before{content:"□";color:#317552;font-size:18px}.country-places .destination-card.is-selected::before{content:"✓"}.country-places .destination-name{font-size:14px}.country-places .destination-name>span{display:none}
 .country-places .destination-duration{display:none}
-.adventure-choices fieldset:has(.travel-styles){display:none}
+.adventure-choices fieldset:has(.travel-styles),.adventure-choices fieldset:nth-of-type(4){display:none}
 .planner-auth-divider{display:none}
+.adventure-details{display:block}.adventure-details>summary{display:none}
