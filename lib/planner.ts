@@ -99,6 +99,7 @@ export type TripDraft = {
   experiences: ExperienceId[];
 };
 export const defaultTripDraft: TripDraft = { version: 1, freeText: "", aiItinerary: [], arrivalAirport: "", departureAirport: "", countries: ["kg"], month: "", startDate: "", endDate: "", days: 8, guests: 2, budget: "", interests: ["mountains", "lakes"], pace: "balanced", transport: "driver", comfort: "mixed", showResult: false, destinations: ["issyk-kul", "kel-suu", "altyn-arashan"], experiences: ["jeep", "hiking"] };
+const legacyBudgetValues: Record<string, string> = { undecided: "", under1500: "1500", "1500to2500": "2000", over2500: "2500" };
 export function parseTripDraft(raw: string | null): TripDraft {
   try {
     const value = JSON.parse(raw ?? "null");
@@ -117,7 +118,7 @@ export function parseTripDraft(raw: string | null): TripDraft {
       endDate: typeof value.endDate === "string" && /^20\d{2}-\d{2}-\d{2}$/.test(value.endDate) ? value.endDate : "",
       days: [6, 8, 12].includes(value.days) ? value.days : 8,
       guests: Number.isInteger(value.guests) && value.guests >= 1 && value.guests <= 16 ? value.guests : 2,
-      budget: typeof value.budget === "string" ? ({ undecided: "", under1500: "1500", "1500to2500": "2000", over2500: "2500" }[value.budget] ?? value.budget.slice(0, 24)) : "",
+      budget: typeof value.budget === "string" ? (legacyBudgetValues[value.budget] ?? value.budget.slice(0, 24)) : "",
       interests: Array.isArray(value.interests) ? interests.filter((item) => value.interests.includes(item)) : [...defaultTripDraft.interests],
       pace: ["relaxed", "balanced", "active"].includes(value.pace) ? value.pace : "balanced",
       transport: ["driver", "selfdrive", "discuss"].includes(value.transport) ? value.transport : "driver",
