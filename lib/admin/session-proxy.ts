@@ -21,18 +21,9 @@ export async function updateAuthSession(request: NextRequest) {
       },
     },
   });
-  const { data, error } = await supabase.auth.getUser();
-  if (!error && data.user && request.nextUrl.pathname.startsWith("/admin/") &&
-      !request.nextUrl.pathname.startsWith("/admin/login")) {
-    const result = await supabase.from("staff_members").select("user_id")
-      .eq("user_id", data.user.id).eq("active", true).maybeSingle();
-    if (result.error || !result.data) {
-      const destination = new URL("/admin/login", request.url);
-      const denied = NextResponse.redirect(destination);
-      response.cookies.getAll().forEach((cookie) => denied.cookies.set(cookie));
-      return denied;
-    }
-  }
+  // Proxy refreshes the Auth session only. Membership is checked by requireStaff()
+  // with the server-only database client because client roles have no RLS access.
+  await supabase.auth.getUser();
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }

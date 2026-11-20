@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test",
+    "typecheck": "tsc --noEmit",
+    "build:webpack": "next build --webpack",
+    "test:full": "node scripts/full-quality-check.mjs",
     "lint": "eslint",
     "check:catalog": "node scripts/check-route-catalog.mjs"
   },
