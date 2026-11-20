@@ -5,6 +5,30 @@ function required(value: string | undefined) {
   return value;
 }
 
+const previewTelegramBot = "Kyrgyzstan_360_leads_bot";
+
+function shouldVerifyPreviewTelegramIdentity() {
+  return process.env.VERCEL_ENV === "preview"
+    && process.env.VERCEL_GIT_COMMIT_REF === "feature/travel-requests-mvp";
+}
+
+async function verifyPreviewTelegramIdentity(token: string) {
+  const response = await fetch("https://api.telegram.org/bot" + token + "/getMe", {
+    method: "GET",
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) return "provider_http_" + response.status;
+
+  const result = await response.json() as {
+    ok?: boolean;
+    result?: { username?: string };
+  };
+  return result.ok && result.result?.username === previewTelegramBot
+    ? null
+    : "provider_identity_mismatch";
+}
+
 export async function deliverTripNotifications(reference?: string) {
   const db = database();
   const jobs = await db.rpc("claim_trip_notifications", { p_reference: reference ?? null });
@@ -33,29 +57,35 @@ export async function deliverTripNotifications(reference?: string) {
       const body = operator ? operatorText : ru
         ? "Спасибо за заявку! Наши специалисты изучат ваши пожелания и свяжутся с вами. Номер заявки: " + trip.reference_number
         : "Thank you for your request! Our local travel experts will review your preferences and contact you. Reference: " + trip.reference_number;
-      const url = telegram
-        ? "https://api.telegram.org/bot" + required(process.env.TELEGRAM_BOT_TOKEN) + "/sendMessage"
-        : "https://api.resend.com/emails";
-      const response = await fetch(url, {
-        method: "POST", signal: AbortSignal.timeout(10000),
-        headers: telegram ? { "Content-Type": "application/json" } : {
-          "Content-Type": "application/json", Authorization: "Bearer " + required(process.env.RESEND_API_KEY),
-          "Idempotency-Key": "trip-notification/" + job.id,
-        },
-        body: JSON.stringify(telegram ? {
-          chat_id: required(process.env.TELEGRAM_CHAT_ID), text: operatorText, link_preview_options: { is_disabled: true },
-        } : {
-          from: required(process.env.RESEND_FROM_EMAIL),
-          to: [operator ? required(process.env.TRIP_REQUEST_OPERATOR_EMAIL) : trip.customer_email],
-          subject: title + " · " + trip.reference_number, text: body,
-        }),
-      });
-      if (!response.ok) {
-        errorCode = "provider_http_" + response.status;
-      } else {
-        const result = await response.json();
-        if (telegram && !result.ok) errorCode = "provider_rejected";
-        else providerId = String(telegram ? result.result.message_id : result.id);
+      const telegramToken = telegram ? required(process.env.TELEGRAM_BOT_TOKEN) : null;
+      if (telegram && shouldVerifyPreviewTelegramIdentity()) {
+        errorCode = await verifyPreviewTelegramIdentity(telegramToken!);
+      }
+      if (!errorCode) {
+        const url = telegram
+          ? "https://api.telegram.org/bot" + telegramToken + "/sendMessage"
+          : "https://api.resend.com/emails";
+        const response = await fetch(url, {
+          method: "POST", signal: AbortSignal.timeout(10000),
+          headers: telegram ? { "Content-Type": "application/json" } : {
+            "Content-Type": "application/json", Authorization: "Bearer " + required(process.env.RESEND_API_KEY),
+            "Idempotency-Key": "trip-notification/" + job.id,
+          },
+          body: JSON.stringify(telegram ? {
+            chat_id: required(process.env.TELEGRAM_CHAT_ID), text: operatorText, link_preview_options: { is_disabled: true },
+          } : {
+            from: required(process.env.RESEND_FROM_EMAIL),
+            to: [operator ? required(process.env.TRIP_REQUEST_OPERATOR_EMAIL) : trip.customer_email],
+            subject: title + " · " + trip.reference_number, text: body,
+          }),
+        });
+        if (!response.ok) {
+          errorCode = "provider_http_" + response.status;
+        } else {
+          const result = await response.json();
+          if (telegram && !result.ok) errorCode = "provider_rejected";
+          else providerId = String(telegram ? result.result.message_id : result.id);
+        }
       }
     } catch {
       errorCode = "delivery_unavailable";
