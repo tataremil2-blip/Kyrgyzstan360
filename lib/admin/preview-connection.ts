@@ -38,7 +38,7 @@ export async function diagnosePreviewConnection() {
       .abortSignal(controller.signal).eq("user_id", id).eq("active", true).maybeSingle();
     await Promise.all([
       probe("auth_api", async () => { const r = await fetch(url + "/auth/v1/health", { signal: controller.signal, cache: "no-store" }); await r.body?.cancel(); return r; }),
-      probe("standard_fetch", async () => { const r = await fetch(url + "/rest/v1/staff_members?select=user_id&user_id=eq." + id + "&active=eq.true&limit=1", { signal: controller.signal, cache: "no-store", headers: { apikey: key, Authorization: "Bearer " + key } }); await r.body?.cancel(); return r; }),
+      probe("standard_fetch", async () => { const r = await fetch(url + "/rest/v1/staff_members?select=user_id&user_id=eq." + id + "&active=eq.true&limit=1", { signal: controller.signal, cache: "no-store", headers: key.startsWith("sb_secret_") ? { apikey: key } : { apikey: key, Authorization: "Bearer " + key } }); await r.body?.cancel(); return r; }),
       probe("standard_sdk", () => query(client)),
       probe("current_database", () => query(database())),
     ]);
