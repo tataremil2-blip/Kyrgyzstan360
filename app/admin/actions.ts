@@ -12,18 +12,47 @@ export async function login(form: FormData) {
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
   let authorized = false;
+  let stage = "input_validation";
   if (email && email.length <= 254 && password && password.length <= 1024) {
     try {
+      stage = "create_auth_client";
       const supabase = await authClient();
+      stage = "password_authentication";
       const result = await supabase.auth.signInWithPassword({ email, password });
       if (!result.error && result.data.user) {
+        stage = "active_staff_lookup";
         const staff = await database().from("staff_members").select("user_id")
           .eq("user_id", result.data.user.id).eq("active", true).maybeSingle();
         authorized = !staff.error && !!staff.data;
-        if (!authorized) await supabase.auth.signOut({ scope: "local" });
+        if (staff.error) {
+          console.error("CRM login staff lookup failed", {
+            stage,
+            code: staff.error.code || "unknown",
+            status: staff.status,
+          });
+        } else if (!staff.data) {
+          console.error("CRM login denied", { stage, reason: "active_staff_record_not_found" });
+        }
+        if (!authorized) {
+          stage = "local_signout";
+          const signedOut = await supabase.auth.signOut({ scope: "local" });
+          if (signedOut.error) {
+            console.error("CRM login local signout failed", {
+              stage,
+              code: signedOut.error.code || "unknown",
+              status: signedOut.error.status,
+            });
+          }
+        }
+      } else if (result.error) {
+        console.error("CRM login rejected by Supabase Auth", {
+          stage,
+          code: result.error.code || "unknown",
+          status: result.error.status,
+        });
       }
     } catch {
-      console.error("Staff login unavailable");
+      console.error("CRM login check failed", { stage, error: "unexpected_server_error" });
     }
   }
   redirect(authorized ? "/admin" : "/admin/login?error=1");
