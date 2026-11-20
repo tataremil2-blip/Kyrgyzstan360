@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { authClient, requireStaff, sessionCookie } from "@/lib/admin/auth";
+import { authClient, requireStaff, safeAdminPath } from "@/lib/admin/auth";
 import { database } from "@/lib/travel-requests/database";
 import { deliverTripNotifications } from "@/lib/travel-requests/notifications";
 import { statuses, uuidPattern } from "@/lib/travel-requests/validation";
@@ -14,18 +14,13 @@ export async function login(form: FormData) {
   let authorized = false;
   if (email && email.length <= 254 && password && password.length <= 1024) {
     try {
-      const result = await authClient().auth.signInWithPassword({ email, password });
-      const session = result.data.session;
-      if (!result.error && session) {
+      const supabase = await authClient();
+      const result = await supabase.auth.signInWithPassword({ email, password });
+      if (!result.error && result.data.user) {
         const staff = await database().from("staff_members").select("user_id")
-          .eq("user_id", session.user.id).eq("active", true).maybeSingle();
-        if (!staff.error && staff.data) {
-          (await cookies()).set(sessionCookie, session.access_token, {
-            httpOnly: true, secure: process.env.NODE_ENV === "production",
-            sameSite: "lax", path: "/", maxAge: session.expires_in,
-          });
-          authorized = true;
-        }
+          .eq("user_id", result.data.user.id).eq("active", true).maybeSingle();
+        authorized = !staff.error && !!staff.data;
+        if (!authorized) await supabase.auth.signOut({ scope: "local" });
       }
     } catch {
       console.error("Staff login unavailable");
@@ -35,15 +30,32 @@ export async function login(form: FormData) {
 }
 
 export async function logout() {
-  await requireStaff();
+  const supabase = await authClient();
+  await supabase.auth.signOut({ scope: "local" });
   const jar = await cookies();
-  const token = jar.get(sessionCookie)?.value;
-  jar.delete(sessionCookie);
-  if (token) {
-    try { await authClient().auth.admin.signOut(token, "local"); }
-    catch { /* Browser session was cleared. */ }
+  for (const cookie of jar.getAll()) {
+    if (cookie.name.startsWith("sb-") && cookie.name.endsWith("-auth-token")) jar.delete(cookie.name);
   }
   redirect("/admin/login");
+}
+
+export async function setPassword(form: FormData) {
+  const password = String(form.get("password") ?? "");
+  const confirm = String(form.get("confirm") ?? "");
+  const next = safeAdminPath(String(form.get("next") ?? null));
+  if (password.length < 12 || password.length > 128 || password !== confirm) redirect("/admin/auth/complete?error=password");
+  const supabase = await authClient();
+  const current = await supabase.auth.getUser();
+  if (current.error || !current.data.user) redirect("/admin/login?authError=expired");
+  const updated = await supabase.auth.updateUser({ password });
+  if (updated.error || !updated.data.user) redirect("/admin/auth/complete?error=password");
+  const staff = await database().from("staff_members").select("user_id")
+    .eq("user_id", updated.data.user.id).eq("active", true).maybeSingle();
+  if (staff.error || !staff.data) {
+    await supabase.auth.signOut({ scope: "local" });
+    redirect("/admin/login?authError=unauthorized");
+  }
+  redirect(next);
 }
 
 export async function updateRequest(id: string, form: FormData) {
@@ -53,9 +65,7 @@ export async function updateRequest(id: string, form: FormData) {
   const manager = String(form.get("manager") ?? "");
   const note = String(form.get("note") ?? "").trim();
   const path = "/admin/requests/" + id;
-  if (!statuses.some((value) => value === status) || (manager && !uuidPattern.test(manager)) || note.length > 3000) {
-    redirect(path + "?result=error");
-  }
+  if (!statuses.some((value) => value === status) || (manager && !uuidPattern.test(manager)) || note.length > 3000) redirect(path + "?result=error");
   const result = await database().rpc("update_travel_request", {
     p_actor: staff.user_id, p_id: id, p_status: status, p_manager: manager || null, p_note: note,
   });

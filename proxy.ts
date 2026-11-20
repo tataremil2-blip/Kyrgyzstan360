@@ -1,12 +1,12 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isLocale } from "./lib/i18n";
+import { updateAuthSession } from "./lib/admin/session-proxy";
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  if (path === "/admin" || path.startsWith("/admin/")) return NextResponse.next();
+  if (path === "/admin" || path.startsWith("/admin/")) return updateAuthSession(request);
   const first = path.split("/")[1];
   if (isLocale(first)) return NextResponse.next();
-  // Unknown language prefixes reach the locale layout and return 404.
   if (/^[a-z]{2}(?:-[A-Za-z]{2})?$/.test(first)) return NextResponse.next();
   const url = request.nextUrl.clone();
   const saved = request.cookies.get("k360-language")?.value;
@@ -17,4 +17,6 @@ export function proxy(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ["/((?!api(?:/|$)|_next(?:/|$)|.*\\..*).*)"] };
+export const config = {
+  matcher: ["/admin/:path*", "/((?!api(?:/|$)|_next(?:/|$)|.*\\..*).*)"],
+};
