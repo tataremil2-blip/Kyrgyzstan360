@@ -8,6 +8,14 @@ import { database } from "@/lib/travel-requests/database";
 import { deliverTripNotifications } from "@/lib/travel-requests/notifications";
 import { statuses, uuidPattern } from "@/lib/travel-requests/validation";
 
+function safeExceptionName(message: string) {
+  return message.match(/^([A-Za-z][A-Za-z0-9]{0,31}):/)?.[1] ?? "unknown";
+}
+
+function safeErrorCode(code: string | undefined) {
+  return code && /^[A-Z0-9_]{1,24}$/.test(code) ? code : "unknown";
+}
+
 export async function login(form: FormData) {
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
@@ -21,14 +29,16 @@ export async function login(form: FormData) {
       const result = await supabase.auth.signInWithPassword({ email, password });
       if (!result.error && result.data.user) {
         stage = "active_staff_lookup";
+        const lookupStartedAt = Date.now();
         const staff = await database().from("staff_members").select("user_id")
           .eq("user_id", result.data.user.id).eq("active", true).maybeSingle();
         authorized = !staff.error && !!staff.data;
         if (staff.error) {
           console.error("CRM login staff lookup failed", {
             stage,
-            code: staff.error.code || "unknown",
-            status: staff.status,
+            code: safeErrorCode(staff.error.code),
+            durationMs: Date.now() - lookupStartedAt,
+            ...(staff.status === 0 ? { exceptionName: safeExceptionName(staff.error.message) } : {}),
           });
         } else if (!staff.data) {
           console.error("CRM login denied", { stage, reason: "active_staff_record_not_found" });
