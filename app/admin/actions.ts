@@ -44,6 +44,7 @@ export async function login(form: FormData) {
           console.error("CRM login denied", { stage, reason: "active_staff_record_not_found" });
         }
         if (!authorized) {
+          try { const { diagnosePreviewConnection } = await import("@/lib/admin/preview-connection"); await diagnosePreviewConnection(); } catch { /* Keep failed authorization unchanged. */ }
           stage = "local_signout";
           const signedOut = await supabase.auth.signOut({ scope: "local" });
           if (signedOut.error) {
