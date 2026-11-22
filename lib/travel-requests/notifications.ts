@@ -5,6 +5,20 @@ function required(value: string | undefined) {
   return value;
 }
 
+function text(value: unknown) {
+  return typeof value === "string" && value.trim() ? value.trim() : "—";
+}
+
+function escapeHtml(value: unknown) {
+  return text(value).replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[character] ?? character));
+}
+
+function emailShell(title: string, content: string) {
+  return `<!doctype html><html><body style="margin:0;background:#f5f2eb;color:#1e293b;font-family:Arial,sans-serif"><main style="max-width:600px;margin:0 auto;padding:28px 16px"><section style="background:#fff;border:1px solid #e7e0d4;border-radius:16px;overflow:hidden"><header style="background:#12372a;color:#fff;padding:28px"><div style="font-size:12px;letter-spacing:2px;font-weight:700">KYRGYZSTAN360</div><h1 style="font-size:26px;line-height:1.2;margin:14px 0 0">${title}</h1></header><div style="padding:28px">${content}</div></section></main></body></html>`;
+}
+
 const previewTelegramBot = "Kyrgyzstan_360_leads_bot";
 
 function shouldVerifyPreviewTelegramIdentity() {
@@ -40,23 +54,42 @@ export async function deliverTripNotifications(reference?: string) {
     let errorCode: string | null = null;
     try {
       const { data: trip, error } = await db.from("travel_requests")
-        .select("id,reference_number,customer_name,customer_email,locale,countries,start_date,end_date,adults,children,budget")
+        .select("id,reference_number,customer_name,customer_email,locale,countries,start_date,end_date,adults,children,budget,details")
         .eq("id", job.request_id).single();
       if (error || !trip) throw new Error("Request unavailable");
       const card = new URL("/admin/requests/" + trip.id, required(process.env.APP_BASE_URL)).href;
+      const details = trip.details && typeof trip.details === "object" ? trip.details as Record<string, unknown> : {};
+      const dates = trip.start_date ? trip.start_date + " – " + trip.end_date : "Flexible dates";
+      const travelers = trip.adults + " adults, " + trip.children + " children";
+      const interests = Array.isArray(details.interests) ? details.interests.filter((interest): interest is string => typeof interest === "string").join(", ") : "";
       const operatorText = [
-        trip.reference_number, trip.customer_name, trip.countries.join(", "),
-        trip.start_date ? trip.start_date + " – " + trip.end_date : "Flexible dates",
-        "Travelers: " + trip.adults + " adults, " + trip.children + " children",
-        "Budget per person: USD " + trip.budget, card,
+        "KYRGYZSTAN360", "New Travel Request", "",
+        "Request: " + trip.reference_number, "Name: " + trip.customer_name,
+        "Email: " + trip.customer_email, "Phone / WhatsApp: " + text(details.phone),
+        "Countries: " + trip.countries.join(", "), "Dates: " + dates,
+        "Travelers: " + travelers, "Budget: USD " + trip.budget,
+        "Interests: " + (interests || "—"), "", "Special requests:", text(details.preferences), "", "Open in CRM: " + card,
       ].join("\n");
       const telegram = job.kind === "telegram";
       const operator = job.kind === "operator_email";
-      const ru = trip.locale === "ru";
-      const title = operator ? "New trip request" : ru ? "Ваша заявка на путешествие" : "Your trip request";
-      const body = operator ? operatorText : ru
-        ? "Спасибо за заявку! Наши специалисты изучат ваши пожелания и свяжутся с вами. Номер заявки: " + trip.reference_number
-        : "Thank you for your request! Our local travel experts will review your preferences and contact you. Reference: " + trip.reference_number;
+      const title = operator ? "New travel request · " + trip.reference_number : "Your Kyrgyzstan360 adventure starts here";
+      const body = operator ? operatorText : [
+        "Your Kyrgyzstan360 adventure starts here", "",
+        "We've received your travel request. Our team will review your preferences and contact you shortly to start building your personalized Central Asia itinerary.", "",
+        "Request number: " + trip.reference_number,
+        "Destinations: " + trip.countries.join(", "),
+        "Dates: " + dates,
+        "Travelers: " + travelers, "",
+        "You don't need to submit another request — your request is already in our system.", "",
+        "Kyrgyzstan360", "Adventure starts where the road ends.",
+      ].join("\n");
+      const html = operator
+        ? emailShell("New Travel Request", `<p style="margin:0 0 20px">A new website request is ready for review.</p><table style="width:100%;border-collapse:collapse;font-size:14px">${[
+          ["Request", trip.reference_number], ["Name", trip.customer_name], ["Email", trip.customer_email],
+          ["Phone / WhatsApp", text(details.phone)], ["Countries", trip.countries.join(", ")], ["Dates", dates],
+          ["Travelers", travelers], ["Budget", "USD " + trip.budget], ["Interests", interests || "—"],
+        ].map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #eee;color:#64748b;width:38%">${escapeHtml(label)}</td><td style="padding:9px 0;border-bottom:1px solid #eee">${escapeHtml(value)}</td></tr>`).join("")}</table><h2 style="font-size:16px;margin:24px 0 8px">Special requests</h2><p style="white-space:pre-wrap;margin:0 0 26px">${escapeHtml(details.preferences)}</p><a href="${escapeHtml(card)}" style="display:inline-block;background:#d97706;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Open in CRM</a>`)
+        : emailShell("Your Kyrgyzstan360 adventure starts here", `<p style="font-size:16px;line-height:1.6;margin-top:0">Thank you for your request. We&rsquo;ve received your travel request. Our team will review your preferences and contact you shortly to start building your personalized Central Asia itinerary.</p><div style="background:#f8f6f1;border-radius:10px;padding:16px;margin:22px 0"><p style="margin:0 0 8px"><strong>Request number:</strong> ${escapeHtml(trip.reference_number)}</p><p style="margin:0 0 8px"><strong>Destinations:</strong> ${escapeHtml(trip.countries.join(", "))}</p><p style="margin:0 0 8px"><strong>Dates:</strong> ${escapeHtml(dates)}</p><p style="margin:0"><strong>Travelers:</strong> ${escapeHtml(travelers)}</p></div><p style="line-height:1.6">You don&rsquo;t need to submit another request &mdash; your request is already in our system.</p><p style="margin:28px 0 0"><strong>Kyrgyzstan360</strong><br><span style="color:#64748b">Adventure starts where the road ends.</span></p>`);
       const telegramToken = telegram ? required(process.env.TELEGRAM_BOT_TOKEN) : null;
       if (telegram && shouldVerifyPreviewTelegramIdentity()) {
         errorCode = await verifyPreviewTelegramIdentity(telegramToken!);
@@ -76,7 +109,7 @@ export async function deliverTripNotifications(reference?: string) {
           } : {
             from: required(process.env.RESEND_FROM_EMAIL),
             to: [operator ? required(process.env.TRIP_REQUEST_OPERATOR_EMAIL) : trip.customer_email],
-            subject: title + " · " + trip.reference_number, text: body,
+            subject: title, text: body, html,
           }),
         });
         if (!response.ok) {
