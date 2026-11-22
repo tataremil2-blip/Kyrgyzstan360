@@ -4,7 +4,7 @@ import { updateAuthSession } from "./lib/admin/session-proxy";
 
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  if (path === "/admin" || path.startsWith("/admin/")) return updateAuthSession(request);
+  if (path === "/admin" || path.startsWith("/admin/") || path === "/account" || path.startsWith("/account/")) return updateAuthSession(request);
   const first = path.split("/")[1];
   if (isLocale(first)) return NextResponse.next();
   if (/^[a-z]{2}(?:-[A-Za-z]{2})?$/.test(first)) return NextResponse.next();
@@ -18,5 +18,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/((?!api(?:/|$)|_next(?:/|$)|.*\\..*).*)"],
+  matcher: ["/admin/:path*", "/account/:path*", "/((?!api(?:/|$)|_next(?:/|$)|.*\\..*).*)"],
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { countries, interests, utmKeys, validate } from "@/lib/travel-requests/validation";
 import Turnstile from "./Turnstile";
 import { track, useTripPageAnalytics } from "./analytics";
@@ -23,8 +24,9 @@ const labels = {
     telegram: "Telegram username", residence: "Country of residence", consent: "I agree to the", policy: "Privacy Policy",
     next: "Continue", back: "Back", send: "Send My Trip Request", sending: "Sending…",
     free: "Free request. No payment required. No booking commitment.",
-    success: "Your Adventure Starts Here!", thanks: "Thank you for your request! Our local travel experts will review your preferences and contact you to help create your perfect Central Asia journey.",
+    success: "Your request has been received", thanks: "Thank you for your request! Our local travel experts will review your preferences and contact you to help create your perfect Central Asia journey.",
     reference: "Request number", optional: "optional",
+    createAccount: "Create your free account", accountHint: "Create an account to track your request, manage your trip details and keep everything in one place.",
     errors: {
       countries: "Your trip must include Kyrgyzstan.", dates: "Enter a valid date range starting today or later, or select flexible dates and leave both dates blank.",
       travelers: "Enter 1–100 adults and 0–100 children.", budget: "Enter a positive USD budget with up to two decimal places.",
@@ -48,8 +50,9 @@ const labels = {
     telegram: "Имя пользователя Telegram", residence: "Страна проживания", consent: "Я принимаю", policy: "Политику конфиденциальности",
     next: "Продолжить", back: "Назад", send: "Отправить заявку", sending: "Отправляем…",
     free: "Заявка бесплатна и не обязывает к оплате или бронированию.",
-    success: "Ваше приключение начинается здесь!", thanks: "Спасибо за заявку! Наши местные эксперты изучат ваши пожелания и свяжутся с вами, чтобы составить маршрут по Центральной Азии.",
+    success: "Ваша заявка получена", thanks: "Спасибо за заявку! Наши местные эксперты изучат ваши пожелания и свяжутся с вами, чтобы составить маршрут по Центральной Азии.",
     reference: "Номер заявки", optional: "необязательно",
+    createAccount: "Создать бесплатный аккаунт", accountHint: "Создайте аккаунт, чтобы отслеживать заявку, хранить детали поездки и держать всё в одном месте.",
     errors: {
       countries: "Маршрут должен включать Кыргызстан.", dates: "Укажите корректные даты, начиная с сегодняшнего дня, или выберите гибкие даты и оставьте оба поля пустыми.",
       travelers: "Укажите от 1 до 100 взрослых и от 0 до 100 детей.", budget: "Введите положительную сумму в USD с точностью до двух знаков после запятой.",
@@ -164,7 +167,7 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
   return <section className="trip-form-shell" id="trip-form" aria-labelledby="trip-form-heading">
     {reference ? <div className="trip-success">
       <h2 ref={heading} tabIndex={-1} id="trip-form-heading">{copy.success}</h2>
-      <p>{copy.thanks}</p><p>{copy.reference} <strong>{reference}</strong></p>
+      <p>{copy.thanks}</p><p>{copy.reference} <strong>{reference}</strong></p><p>{copy.accountHint}</p><Link href="/account/register">{copy.createAccount}</Link>
     </div> : <>
       <div className="trip-progress"><span>{copy.steps[step - 1]}</span><span>{step} / 5</span></div>
       <progress value={step} max={5} aria-label={locale === "ru" ? "Прогресс заполнения" : "Form progress"} />
