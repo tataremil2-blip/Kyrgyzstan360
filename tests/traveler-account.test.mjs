@@ -3,8 +3,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const migration = readFileSync(new URL("../supabase/migrations/20261123000100_traveler_accounts.sql", import.meta.url), "utf8");
+const updatesMigration = readFileSync(new URL("../supabase/migrations/20261123000200_traveler_request_updates.sql", import.meta.url), "utf8");
 const accountAuth = readFileSync(new URL("../lib/account/auth.ts", import.meta.url), "utf8");
 const requestPage = readFileSync(new URL("../app/account/requests/[id]/page.tsx", import.meta.url), "utf8");
+const editPage = readFileSync(new URL("../app/account/requests/[id]/edit/page.tsx", import.meta.url), "utf8");
+const accountActions = readFileSync(new URL("../app/account/actions.ts", import.meta.url), "utf8");
+const adminRequestPage = readFileSync(new URL("../app/admin/(protected)/requests/[id]/page.tsx", import.meta.url), "utf8");
 const requestForm = readFileSync(new URL("../app/[lang]/plan-your-trip/TripRequestForm.tsx", import.meta.url), "utf8");
 
 test("traveler linking is nullable, indexed, and callable only by the server role", () => {
@@ -26,4 +30,28 @@ test("anonymous request success keeps submission open and offers account creatio
   assert.match(requestForm, /Your request has been received/);
   assert.match(requestForm, /Create your free account/);
   assert.match(requestForm, /href="\/account\/register"/);
+});
+
+test("traveler request updates use an owner-checked service-role allowlist", () => {
+  assert.match(updatesMigration, /where id = p_id and traveler_user_id = p_actor for update/);
+  assert.match(updatesMigration, /countries = next_countries/);
+  assert.match(updatesMigration, /details = previous\.details \|\| jsonb_build_object\('interests', next_interests, 'preferences', next_preferences\)/);
+  assert.match(updatesMigration, /'event', 'traveler_updated_request'/);
+  assert.match(updatesMigration, /revoke all on function public\.update_traveler_request/);
+  assert.match(updatesMigration, /grant execute on function public\.update_traveler_request\(uuid, uuid, jsonb\) to service_role/);
+  assert.doesNotMatch(updatesMigration, /grant execute on function public\.update_traveler_request[^\n]*authenticated/);
+  const updateStatement = updatesMigration.match(/update public\.travel_requests set([\s\S]*?)where id = p_id/);
+  assert.ok(updateStatement);
+  assert.doesNotMatch(updateStatement[1], /status|traveler_user_id/i);
+});
+
+test("edit action validates a whitelist and the account UI never exposes internal fields", () => {
+  assert.match(accountActions, /const user = await requireTraveler\(\)/);
+  assert.match(accountActions, /validateTravelerUpdate/);
+  assert.match(accountActions, /update_traveler_request/);
+  assert.match(editPage, /name="countries"/);
+  assert.match(editPage, /name="interests"/);
+  assert.match(editPage, /name="preferences"/);
+  assert.doesNotMatch(editPage, /name="status"|name="manager"|name="traveler_user_id"|name="reference_number"/);
+  assert.match(adminRequestPage, /Traveler updated request/);
 });

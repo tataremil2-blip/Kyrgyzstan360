@@ -65,3 +65,44 @@ export function validate(input: Record<string, unknown>, step = 5) {
     locale: input.locale === "ru" ? "ru" : "en", consent: input.consent === true, utm,
   } };
 }
+
+export function validateTravelerUpdate(input: Record<string, unknown>) {
+  const selected = input.countries;
+  const selectedInterests = input.interests;
+  const startDate = date(input.startDate);
+  const endDate = date(input.endDate);
+  const flexible = input.flexible === true;
+  const adults = typeof input.adults === "number" ? input.adults : NaN;
+  const children = typeof input.children === "number" ? input.children : NaN;
+  const budget = typeof input.budget === "number" ? input.budget : NaN;
+  const preferences = text(input.preferences);
+  const errors: string[] = [];
+
+  if (!Array.isArray(selected) || !selected.includes("KG") || selected.length > 5 ||
+      new Set(selected).size !== selected.length ||
+      selected.some((country) => !countries.some((code) => code === country))) errors.push("countries");
+  if ((!flexible || input.startDate || input.endDate) && (!startDate || !endDate || endDate < startDate ||
+      startDate < new Date().toISOString().slice(0, 10))) errors.push("dates");
+  if (!Number.isInteger(adults) || adults < 1 || adults > 100 ||
+      !Number.isInteger(children) || children < 0 || children > 100) errors.push("travelers");
+  if (!(budget > 0 && budget <= 99999999.99) || Number(budget.toFixed(2)) !== budget) errors.push("budget");
+  if (!Array.isArray(selectedInterests) || selectedInterests.length > interests.length ||
+      new Set(selectedInterests).size !== selectedInterests.length ||
+      selectedInterests.some((interest) => !interests.some((code) => code === interest))) errors.push("interests");
+  if (preferences.length > 3000) errors.push("preferences");
+
+  return {
+    errors,
+    data: {
+      countries: countries.filter((code) => Array.isArray(selected) && selected.includes(code)),
+      startDate: flexible ? null : startDate,
+      endDate: flexible ? null : endDate,
+      flexible,
+      adults,
+      children,
+      budget,
+      interests: interests.filter((code) => Array.isArray(selectedInterests) && selectedInterests.includes(code)),
+      preferences,
+    },
+  };
+}

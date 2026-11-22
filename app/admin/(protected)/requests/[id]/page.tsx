@@ -5,6 +5,17 @@ import { database } from "@/lib/travel-requests/database";
 import { statuses, uuidPattern } from "@/lib/travel-requests/validation";
 import { retryNotification, updateRequest } from "../../../actions";
 
+const travelerFieldLabels: Record<string, string> = {
+  countries: "Destinations", dates: "Travel dates", travelers: "Travelers", budget: "Budget",
+  interests: "Interests", preferences: "Trip preferences",
+};
+
+function travelerChangedFields(changes: Record<string, unknown>) {
+  const fields = changes.fields;
+  if (!fields || typeof fields !== "object" || Array.isArray(fields)) return [];
+  return Object.keys(fields).flatMap((key) => travelerFieldLabels[key] ? [travelerFieldLabels[key]] : []);
+}
+
 export default async function RequestCard({ params, searchParams }: PageProps<"/admin/requests/[id]">) {
   await requireStaff();
   const { id } = await params;
@@ -74,10 +85,16 @@ export default async function RequestCard({ params, searchParams }: PageProps<"/
       <section className="crm-panel">
         <h2>History</h2>
         {history.data?.length ? <ul>{history.data.map((event) => <li key={event.id}>
-          {event.changes.status_from !== event.changes.status_to && <p>{event.changes.status_from} → {event.changes.status_to}</p>}
-          {event.changes.manager_from !== event.changes.manager_to &&
-            <p>{people.get(event.changes.manager_from) ?? "Unassigned"} → {people.get(event.changes.manager_to) ?? "Unassigned"}</p>}
-          <small>{people.get(event.actor_id) ?? "Staff"} · {new Date(event.created_at).toISOString()}</small>
+          {event.changes.event === "traveler_updated_request" ? <>
+            <p>Traveler updated request</p>
+            {travelerChangedFields(event.changes).length > 0 && <p>{travelerChangedFields(event.changes).join(" · ")}</p>}
+            <small>Traveler · {new Date(event.created_at).toISOString()}</small>
+          </> : <>
+            {event.changes.status_from !== event.changes.status_to && <p>{event.changes.status_from} → {event.changes.status_to}</p>}
+            {event.changes.manager_from !== event.changes.manager_to &&
+              <p>{people.get(event.changes.manager_from) ?? "Unassigned"} → {people.get(event.changes.manager_to) ?? "Unassigned"}</p>}
+            <small>{people.get(event.actor_id) ?? "Staff"} · {new Date(event.created_at).toISOString()}</small>
+          </>}
         </li>)}</ul> : <p>No status or assignment changes.</p>}
       </section>
     </div>
