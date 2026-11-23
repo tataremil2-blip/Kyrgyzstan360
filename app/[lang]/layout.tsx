@@ -7,8 +7,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./typography.css";
 import "./design-system.css";
+import "./cookie-mobile-overrides.css";
 import BackButton from "./BackButton";
 import CookieConsent from "./CookieConsent";
+import MobileHeader from "./MobileHeader";
 
 export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -28,6 +30,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
       <body className="min-h-full flex flex-col">
         <LocaleProvider locale={lang}>
           <LanguageSwitcher />
+          <MobileHeader />
           {children}
           <BackButton />
           <CookieConsent />

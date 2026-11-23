@@ -5,3 +5,4 @@
 .language-switcher a:focus-visible{outline:2px solid #f6c870;outline-offset:4px}
 .language-switcher-inline{position:static;z-index:auto;gap:18px;align-items:center}
 @media(max-width:700px){.language-switcher{top:16px;right:16px}.language-switcher-inline{display:flex;gap:16px}}
+@media(max-width:700px){.language-switcher:not(.language-switcher-inline){display:none}}

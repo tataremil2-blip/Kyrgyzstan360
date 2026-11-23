@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/lib/i18n";
 import TripRequestForm from "./TripRequestForm";
 import "./trip-request.css";
+import "./mobile-overrides.css";
 
 const origin = "https://kyrgyzstan360.com";
 const path = (lang: string) => `${origin}/${lang}/plan-your-trip`;
