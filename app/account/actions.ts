@@ -47,14 +47,17 @@ export async function updateTravelerRequest(id: string, form: FormData) {
   const user = await requireTraveler();
   if (!uuidPattern.test(id)) redirect("/account");
   const path = `/account/requests/${id}`;
+  const dateMode = String(form.get("dateMode") ?? "flexible");
   const { errors, data } = validateTravelerUpdate({
     countries: form.getAll("countries"),
-    startDate: String(form.get("startDate") ?? ""),
-    endDate: String(form.get("endDate") ?? ""),
-    flexible: form.get("flexible") === "true",
+    startDate: dateMode === "exact" ? String(form.get("startDate") ?? "") : "",
+    endDate: dateMode === "exact" ? String(form.get("endDate") ?? "") : "",
+    dateMode,
+    preferredPeriod: dateMode === "approximate" ? String(form.get("preferredPeriod") ?? "") : "",
+    flexible: dateMode !== "exact",
     adults: Number(form.get("adults")),
     children: Number(form.get("children")),
-    budget: Number(form.get("budget")),
+    budget: String(form.get("budget") ?? "") === "" ? null : Number(form.get("budget")),
     interests: form.getAll("interests"),
     preferences: String(form.get("preferences") ?? ""),
   });

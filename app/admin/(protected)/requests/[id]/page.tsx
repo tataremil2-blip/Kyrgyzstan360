@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireStaff } from "@/lib/admin/auth";
 import { database } from "@/lib/travel-requests/database";
-import { statuses, uuidPattern } from "@/lib/travel-requests/validation";
+import { formatCountries, statuses, uuidPattern } from "@/lib/travel-requests/validation";
 import { retryNotification, updateRequest } from "../../../actions";
 
 const travelerFieldLabels: Record<string, string> = {
@@ -23,7 +23,7 @@ export default async function RequestCard({ params, searchParams }: PageProps<"/
   const { result } = await searchParams;
   const db = database();
   const [request, managers, notes, history, jobs] = await Promise.all([
-    db.from("travel_requests").select("id,reference_number,customer_name,customer_email,locale,countries,start_date,end_date,flexible_dates,adults,children,budget,details,status,manager_id,created_at,consent_at,source").eq("id", id).maybeSingle(),
+    db.from("travel_requests").select("id,reference_number,customer_name,customer_email,locale,countries,start_date,end_date,flexible_dates,preferred_period,adults,children,budget,details,status,manager_id,created_at,consent_at,source").eq("id", id).maybeSingle(),
     db.from("staff_members").select("user_id,display_name,active").order("display_name"),
     db.from("travel_request_notes").select("id,body,actor_id,created_at").eq("request_id", id).order("created_at", { ascending: false }),
     db.from("travel_request_events").select("id,changes,actor_id,created_at").eq("request_id", id).order("created_at", { ascending: false }),
@@ -40,9 +40,9 @@ export default async function RequestCard({ params, searchParams }: PageProps<"/
   const fields = [
     ["Client", trip.customer_name], ["Email", trip.customer_email], ["Preferred contact", details.contact],
     ["WhatsApp / phone", details.phone], ["Telegram", details.telegram], ["Country of residence", details.residence],
-    ["Countries", trip.countries.join(", ")],
-    ["Dates", (trip.start_date ? trip.start_date + " – " + trip.end_date : "Unspecified") + (trip.flexible_dates ? " (flexible)" : "")],
-    ["Travelers", trip.adults + " adults, " + trip.children + " children"], ["Budget per person", "USD " + trip.budget],
+    ["Countries", formatCountries(trip.countries)],
+    ["Dates", trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || "Flexible dates"],
+    ["Travelers", trip.adults + " adults, " + trip.children + " children"], ["Budget per person", trip.budget === null ? "Not specified" : "USD " + trip.budget],
     ["Interests", details.interests?.join(", ")], ["Travel preferences", details.preferences],
     ["Source", trip.source], ["Language", trip.locale], ["Created", new Date(trip.created_at).toISOString()],
     ["Consent recorded", new Date(trip.consent_at).toISOString()], ...Object.entries(details.utm ?? {}),

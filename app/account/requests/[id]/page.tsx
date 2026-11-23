@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { customerProgress, requireTraveler } from "@/lib/account/auth";
 import { database } from "@/lib/travel-requests/database";
-import { uuidPattern } from "@/lib/travel-requests/validation";
+import { formatCountries, uuidPattern } from "@/lib/travel-requests/validation";
 import { addTravelerDetails } from "@/app/account/actions";
 
 const progressSteps = ["Request received", "Finding your local expert", "Preparing your trip", "Offer ready", "Trip confirmed"];
@@ -13,7 +13,7 @@ export default async function AccountRequest({ params, searchParams }: PageProps
   if (!uuidPattern.test(id)) notFound();
   const db = database();
   const [result, activity] = await Promise.all([
-    db.from("travel_requests").select("reference_number,countries,start_date,end_date,flexible_dates,adults,children,budget,details,status,created_at").eq("id", id).eq("traveler_user_id", user.id).maybeSingle(),
+    db.from("travel_requests").select("reference_number,countries,start_date,end_date,flexible_dates,preferred_period,adults,children,budget,details,status,created_at").eq("id", id).eq("traveler_user_id", user.id).maybeSingle(),
     db.from("travel_request_events").select("id,changes,created_at").eq("request_id", id).eq("actor_id", user.id)
       .eq("changes->>event", "traveler_added_details").order("created_at", { ascending: false }),
   ]);
@@ -29,7 +29,7 @@ export default async function AccountRequest({ params, searchParams }: PageProps
     {query.details === "invalid" && <p className="account-alert" role="alert">Please enter up to 3,000 characters.</p>}
     {query.details === "rate" && <p className="account-alert" role="alert">Please wait a few minutes before adding more details.</p>}
     <section className="account-progress" aria-label="Trip request progress"><h2>Trip progress</h2><p>{progress.description}</p><ol>{progressSteps.map((label, index) => <li key={label} className={index + 1 < progress.step ? "complete" : index + 1 === progress.step ? "current" : ""}><span>{index + 1 < progress.step ? "✓" : index + 1 === progress.step ? "●" : "○"}</span>{label}</li>)}</ol></section>
-    <div className="request-grid"><div><span>Destinations</span>{request.countries.join(", ")}</div><div><span>Dates</span>{request.flexible_dates ? "Flexible dates" : `${request.start_date} – ${request.end_date}`}</div><div><span>Travelers</span>{request.adults} adults, {request.children} children</div><div><span>Budget</span>USD {request.budget} per person</div><div><span>Interests</span>{interests}</div></div>
+    <div className="request-grid"><div><span>Destinations</span>{formatCountries(request.countries)}</div><div><span>Dates</span>{request.start_date ? `${request.start_date} – ${request.end_date}` : request.preferred_period || "Flexible dates"}</div><div><span>Travelers</span>{request.adults} adults, {request.children} children</div><div><span>Budget</span>{request.budget === null ? "Not specified" : `USD ${request.budget} per person`}</div><div><span>Interests</span>{interests}</div></div>
     <div className="account-actions"><Link className="account-primary" href={`/account/requests/${id}/edit`}>Edit request</Link></div>
     <section className="account-details"><h2>Anything else you&apos;d like us to know?</h2><p className="account-muted">Add new information to your request without changing the original trip details.</p><form action={addDetails}><label>Additional details<textarea name="details" rows={5} maxLength={3000} placeholder="For example: We'd love to spend a night in a yurt, one traveler is vegetarian, and we'd like to include horse riding." required /></label><button type="submit">ADD DETAILS</button></form></section>
     <section className="account-updates"><h2>Updates</h2>{activity.error ? <p role="alert">Unable to load your updates.</p> : activity.data?.length ? <ul>{activity.data.map((event) => <li key={event.id}><strong>You added more details</strong><small>{new Date(event.created_at).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}</small><blockquote>{typeof event.changes.body === "string" ? event.changes.body : ""}</blockquote></li>)}</ul> : <p className="account-muted">Your additional messages will appear here.</p>}</section>

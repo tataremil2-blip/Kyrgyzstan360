@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireStaff } from "@/lib/admin/auth";
 import { database } from "@/lib/travel-requests/database";
-import { statuses } from "@/lib/travel-requests/validation";
+import { formatCountries, statuses } from "@/lib/travel-requests/validation";
 
 const metrics = [
   ["Total Requests", []], ["New Requests", ["new"]], ["In Progress", ["contacted", "planning", "negotiating"]],
@@ -21,7 +21,7 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   const sort = value(params.sort);
   const page = Math.min(10000, Math.max(1, parseInt(value(params.page), 10) || 1));
   let query = db.from("travel_requests")
-    .select("id,reference_number,customer_name,countries,start_date,end_date,adults,children,budget,status,created_at,manager_id", { count: "exact" });
+    .select("id,reference_number,customer_name,countries,start_date,end_date,preferred_period,adults,children,budget,status,created_at,manager_id", { count: "exact" });
   if (search) {
     const escaped = search.replace(/[\\%_"]/g, (char) => "\\" + char);
     query = query.or(["reference_number", "customer_name", "customer_email"]
@@ -57,9 +57,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
       <thead><tr>{["Request ID","Client","Countries","Dates","Travelers","Budget","Status","Created At","Assigned Manager"].map((label) => <th scope="col" key={label}>{label}</th>)}</tr></thead>
       <tbody>{requests.data.map((trip) => <tr key={trip.id}>
         <td><Link href={"/admin/requests/" + trip.id}>{trip.reference_number}</Link></td>
-        <td>{trip.customer_name}</td><td>{trip.countries.join(", ")}</td>
-        <td>{trip.start_date ? trip.start_date + " – " + trip.end_date : "Flexible"}</td>
-        <td>{trip.adults + trip.children}</td><td>${trip.budget}</td><td className="crm-status">{statusLabel(trip.status)}</td>
+        <td>{trip.customer_name}</td><td>{formatCountries(trip.countries)}</td>
+        <td>{trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || "Flexible"}</td>
+        <td>{trip.adults + trip.children}</td><td>{trip.budget === null ? "Not specified" : "$" + trip.budget}</td><td className="crm-status">{statusLabel(trip.status)}</td>
         <td>{new Date(trip.created_at).toISOString().slice(0, 10)}</td><td>{names.get(trip.manager_id) ?? "Unassigned"}</td>
       </tr>)}</tbody>
     </table></div>

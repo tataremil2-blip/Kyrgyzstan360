@@ -1,4 +1,5 @@
 import { database } from "./database";
+import { formatCountries } from "./validation";
 
 function required(value: string | undefined) {
   if (!value) throw new Error("Provider is not configured");
@@ -38,7 +39,7 @@ function travelerChangeLines(payload: unknown) {
   const dates = changes.dates && typeof changes.dates === "object" && !Array.isArray(changes.dates)
     ? changes.dates as { from?: unknown; to?: unknown } : null;
   const dateValue = (input: unknown) => input && typeof input === "object" && !Array.isArray(input)
-    ? ((input as { flexible?: unknown }).flexible ? "Flexible dates" : `${value((input as { startDate?: unknown }).startDate)} – ${value((input as { endDate?: unknown }).endDate)}`) : value(input);
+    ? ((input as { startDate?: unknown }).startDate ? `${value((input as { startDate?: unknown }).startDate)} – ${value((input as { endDate?: unknown }).endDate)}` : value((input as { preferredPeriod?: unknown }).preferredPeriod) !== "—" ? value((input as { preferredPeriod?: unknown }).preferredPeriod) : "Flexible dates") : value(input);
   const travelers = changes.travelers && typeof changes.travelers === "object" && !Array.isArray(changes.travelers)
     ? changes.travelers as { from?: unknown; to?: unknown } : null;
   const travelerValue = (input: unknown) => input && typeof input === "object" && !Array.isArray(input)
@@ -88,12 +89,13 @@ export async function deliverTripNotifications(reference?: string) {
     let errorCode: string | null = null;
     try {
       const { data: trip, error } = await db.from("travel_requests")
-        .select("id,reference_number,customer_name,customer_email,locale,countries,start_date,end_date,adults,children,budget,details")
+        .select("id,reference_number,customer_name,customer_email,locale,countries,start_date,end_date,preferred_period,adults,children,budget,details")
         .eq("id", job.request_id).single();
       if (error || !trip) throw new Error("Request unavailable");
       const card = new URL("/admin/requests/" + trip.id, required(process.env.APP_BASE_URL)).href;
       const details = trip.details && typeof trip.details === "object" ? trip.details as Record<string, unknown> : {};
-      const dates = trip.start_date ? trip.start_date + " – " + trip.end_date : "Flexible dates";
+      const dates = trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || "Flexible dates";
+      const budget = trip.budget === null ? "Not specified" : "USD " + trip.budget;
       const travelers = trip.adults + " adults, " + trip.children + " children";
       const interests = Array.isArray(details.interests) ? details.interests.filter((interest): interest is string => typeof interest === "string").join(", ") : "";
       const travelerUpdate = job.kind === "traveler_update_telegram";
@@ -109,8 +111,8 @@ export async function deliverTripNotifications(reference?: string) {
         "KYRGYZSTAN360", "New Travel Request", "",
         "Request: " + trip.reference_number, "Name: " + trip.customer_name,
         "Email: " + trip.customer_email, "Phone / WhatsApp: " + text(details.phone),
-        "Countries: " + trip.countries.join(", "), "Dates: " + dates,
-        "Travelers: " + travelers, "Budget: USD " + trip.budget,
+        "Countries: " + formatCountries(trip.countries), "Dates: " + dates,
+        "Travelers: " + travelers, "Budget: " + budget,
         "Interests: " + (interests || "—"), "", "Special requests:", text(details.preferences), "", "Open in CRM: " + card,
       ].join("\n");
       const telegram = job.kind === "telegram" || travelerUpdate || travelerDetails;
@@ -120,7 +122,7 @@ export async function deliverTripNotifications(reference?: string) {
         "Your Kyrgyzstan360 adventure starts here", "",
         "We've received your travel request. Our team will review your preferences and contact you shortly to start building your personalized Central Asia itinerary.", "",
         "Request number: " + trip.reference_number,
-        "Destinations: " + trip.countries.join(", "),
+        "Destinations: " + formatCountries(trip.countries),
         "Dates: " + dates,
         "Travelers: " + travelers, "",
         "You don't need to submit another request — your request is already in our system.", "",
@@ -129,10 +131,10 @@ export async function deliverTripNotifications(reference?: string) {
       const html = operator
         ? emailShell("New Travel Request", `<p style="margin:0 0 20px">A new website request is ready for review.</p><table style="width:100%;border-collapse:collapse;font-size:14px">${[
           ["Request", trip.reference_number], ["Name", trip.customer_name], ["Email", trip.customer_email],
-          ["Phone / WhatsApp", text(details.phone)], ["Countries", trip.countries.join(", ")], ["Dates", dates],
-          ["Travelers", travelers], ["Budget", "USD " + trip.budget], ["Interests", interests || "—"],
+          ["Phone / WhatsApp", text(details.phone)], ["Countries", formatCountries(trip.countries)], ["Dates", dates],
+          ["Travelers", travelers], ["Budget", budget], ["Interests", interests || "—"],
         ].map(([label, value]) => `<tr><td style="padding:9px 0;border-bottom:1px solid #eee;color:#64748b;width:38%">${escapeHtml(label)}</td><td style="padding:9px 0;border-bottom:1px solid #eee">${escapeHtml(value)}</td></tr>`).join("")}</table><h2 style="font-size:16px;margin:24px 0 8px">Special requests</h2><p style="white-space:pre-wrap;margin:0 0 26px">${escapeHtml(details.preferences)}</p><a href="${escapeHtml(card)}" style="display:inline-block;background:#d97706;color:#fff;text-decoration:none;padding:12px 18px;border-radius:8px;font-weight:700">Open in CRM</a>`)
-        : emailShell("Your Kyrgyzstan360 adventure starts here", `<p style="font-size:16px;line-height:1.6;margin-top:0">Thank you for your request. We&rsquo;ve received your travel request. Our team will review your preferences and contact you shortly to start building your personalized Central Asia itinerary.</p><div style="background:#f8f6f1;border-radius:10px;padding:16px;margin:22px 0"><p style="margin:0 0 8px"><strong>Request number:</strong> ${escapeHtml(trip.reference_number)}</p><p style="margin:0 0 8px"><strong>Destinations:</strong> ${escapeHtml(trip.countries.join(", "))}</p><p style="margin:0 0 8px"><strong>Dates:</strong> ${escapeHtml(dates)}</p><p style="margin:0"><strong>Travelers:</strong> ${escapeHtml(travelers)}</p></div><p style="line-height:1.6">You don&rsquo;t need to submit another request &mdash; your request is already in our system.</p><p style="margin:28px 0 0"><strong>Kyrgyzstan360</strong><br><span style="color:#64748b">Adventure starts where the road ends.</span></p>`);
+        : emailShell("Your Kyrgyzstan360 adventure starts here", `<p style="font-size:16px;line-height:1.6;margin-top:0">Thank you for your request. We&rsquo;ve received your travel request. Our team will review your preferences and contact you shortly to start building your personalized Central Asia itinerary.</p><div style="background:#f8f6f1;border-radius:10px;padding:16px;margin:22px 0"><p style="margin:0 0 8px"><strong>Request number:</strong> ${escapeHtml(trip.reference_number)}</p><p style="margin:0 0 8px"><strong>Destinations:</strong> ${escapeHtml(formatCountries(trip.countries))}</p><p style="margin:0 0 8px"><strong>Dates:</strong> ${escapeHtml(dates)}</p><p style="margin:0"><strong>Travelers:</strong> ${escapeHtml(travelers)}</p></div><p style="line-height:1.6">You don&rsquo;t need to submit another request &mdash; your request is already in our system.</p><p style="margin:28px 0 0"><strong>Kyrgyzstan360</strong><br><span style="color:#64748b">Adventure starts where the road ends.</span></p>`);
       const telegramToken = telegram ? required(process.env.TELEGRAM_BOT_TOKEN) : null;
       if (telegram && shouldVerifyPreviewTelegramIdentity()) {
         errorCode = await verifyPreviewTelegramIdentity(telegramToken!);

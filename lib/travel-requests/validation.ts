@@ -1,4 +1,12 @@
-export const countries = ["KG", "KZ", "UZ", "TJ", "TM"] as const;
+export const countries = ["KG", "KZ", "UZ", "TJ", "AF"] as const;
+export const countryLabels: Record<string, string> = {
+  KG: "Kyrgyzstan", KZ: "Kazakhstan", UZ: "Uzbekistan", TJ: "Tajikistan", AF: "Afghanistan",
+  // Historical records remain readable; new requests cannot select this code.
+  TM: "Turkmenistan",
+};
+export function formatCountries(values: readonly string[]) {
+  return values.map((value) => countryLabels[value] ?? value).join(", ");
+}
 export const interests = ["nature", "road", "hiking", "horses", "nomadic", "history", "lakes", "winter", "photo", "family", "culture"] as const;
 export const statuses = ["new", "contacted", "planning", "proposal_sent", "negotiating", "booked", "completed", "lost", "cancelled"] as const;
 export const utmKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
@@ -14,15 +22,27 @@ function text(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function dateMode(input: Record<string, unknown>) {
+  if (input.dateMode === "exact" || input.dateMode === "approximate" || input.dateMode === "flexible") return input.dateMode;
+  return input.flexible === true ? "flexible" : "exact";
+}
+
+function optionalBudget(value: unknown) {
+  if (value === "" || value === null || value === undefined) return null;
+  return typeof value === "number" ? value : NaN;
+}
+
 export function validate(input: Record<string, unknown>, step = 5) {
   const selected = input.countries;
   const selectedInterests = input.interests;
   const startDate = date(input.startDate);
   const endDate = date(input.endDate);
-  const flexible = input.flexible === true;
+  const mode = dateMode(input);
+  const flexible = mode !== "exact";
+  const preferredPeriod = text(input.preferredPeriod);
   const adults = typeof input.adults === "number" ? input.adults : NaN;
   const children = typeof input.children === "number" ? input.children : NaN;
-  const budget = typeof input.budget === "number" ? input.budget : NaN;
+  const budget = optionalBudget(input.budget);
   const name = text(input.name);
   const email = text(input.email);
   const phone = text(input.phone);
@@ -35,11 +55,13 @@ export function validate(input: Record<string, unknown>, step = 5) {
   if (!Array.isArray(selected) || !selected.includes("KG") || selected.length > 5 ||
       selected.some((country) => !countries.some((code) => code === country))) errors.push("countries");
   if (step >= 2) {
-    if ((!flexible || input.startDate || input.endDate) && (!startDate || !endDate || endDate < startDate ||
+    if (mode === "exact" && (!startDate || !endDate || endDate < startDate ||
         startDate < new Date().toISOString().slice(0, 10))) errors.push("dates");
+    if (mode === "approximate" && (!preferredPeriod || preferredPeriod.length > 80)) errors.push("dates");
+    if (mode === "flexible" && (startDate || endDate || preferredPeriod)) errors.push("dates");
     if (!Number.isInteger(adults) || adults < 1 || adults > 100 ||
         !Number.isInteger(children) || children < 0 || children > 100) errors.push("travelers");
-    if (!(budget > 0 && budget <= 99999999.99) || Number(budget.toFixed(2)) !== budget) errors.push("budget");
+    if (budget !== null && (!(budget > 0 && budget <= 99999999.99) || Number(budget.toFixed(2)) !== budget)) errors.push("budget");
   }
   if (step >= 3 && (!Array.isArray(selectedInterests) || selectedInterests.length > interests.length ||
       selectedInterests.some((interest) => !interests.some((code) => code === interest)))) errors.push("interests");
@@ -60,7 +82,9 @@ export function validate(input: Record<string, unknown>, step = 5) {
   return { errors, data: {
     countries: countries.filter((code) => Array.isArray(selected) && selected.includes(code)),
     interests: interests.filter((code) => Array.isArray(selectedInterests) && selectedInterests.includes(code)),
-    startDate, endDate, flexible, adults, children, budget, name, email, phone,
+    startDate: mode === "exact" ? startDate : null, endDate: mode === "exact" ? endDate : null,
+    dateMode: mode, preferredPeriod: mode === "approximate" ? preferredPeriod : null,
+    flexible, adults, children, budget, name, email, phone,
     telegram: contact === "telegram" ? telegram : "", residence, preferences, contact,
     locale: input.locale === "ru" ? "ru" : "en", consent: input.consent === true, utm,
   } };
@@ -71,21 +95,25 @@ export function validateTravelerUpdate(input: Record<string, unknown>) {
   const selectedInterests = input.interests;
   const startDate = date(input.startDate);
   const endDate = date(input.endDate);
-  const flexible = input.flexible === true;
+  const mode = dateMode(input);
+  const flexible = mode !== "exact";
+  const preferredPeriod = text(input.preferredPeriod);
   const adults = typeof input.adults === "number" ? input.adults : NaN;
   const children = typeof input.children === "number" ? input.children : NaN;
-  const budget = typeof input.budget === "number" ? input.budget : NaN;
+  const budget = optionalBudget(input.budget);
   const preferences = text(input.preferences);
   const errors: string[] = [];
 
   if (!Array.isArray(selected) || !selected.includes("KG") || selected.length > 5 ||
       new Set(selected).size !== selected.length ||
       selected.some((country) => !countries.some((code) => code === country))) errors.push("countries");
-  if ((!flexible || input.startDate || input.endDate) && (!startDate || !endDate || endDate < startDate ||
+  if (mode === "exact" && (!startDate || !endDate || endDate < startDate ||
       startDate < new Date().toISOString().slice(0, 10))) errors.push("dates");
+  if (mode === "approximate" && (!preferredPeriod || preferredPeriod.length > 80)) errors.push("dates");
+  if (mode === "flexible" && (startDate || endDate || preferredPeriod)) errors.push("dates");
   if (!Number.isInteger(adults) || adults < 1 || adults > 100 ||
       !Number.isInteger(children) || children < 0 || children > 100) errors.push("travelers");
-  if (!(budget > 0 && budget <= 99999999.99) || Number(budget.toFixed(2)) !== budget) errors.push("budget");
+  if (budget !== null && (!(budget > 0 && budget <= 99999999.99) || Number(budget.toFixed(2)) !== budget)) errors.push("budget");
   if (!Array.isArray(selectedInterests) || selectedInterests.length > interests.length ||
       new Set(selectedInterests).size !== selectedInterests.length ||
       selectedInterests.some((interest) => !interests.some((code) => code === interest))) errors.push("interests");
@@ -95,8 +123,10 @@ export function validateTravelerUpdate(input: Record<string, unknown>) {
     errors,
     data: {
       countries: countries.filter((code) => Array.isArray(selected) && selected.includes(code)),
-      startDate: flexible ? null : startDate,
-      endDate: flexible ? null : endDate,
+      startDate: mode === "exact" ? startDate : null,
+      endDate: mode === "exact" ? endDate : null,
+      dateMode: mode,
+      preferredPeriod: mode === "approximate" ? preferredPeriod : null,
       flexible,
       adults,
       children,

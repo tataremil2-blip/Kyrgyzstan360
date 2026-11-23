@@ -53,7 +53,10 @@ function loadDashboard() {
       };
       if (name === "@/lib/admin/auth") return { requireStaff: async () => { protectedCalls += 1; } };
       if (name === "@/lib/travel-requests/database") return { database: () => db };
-      if (name === "@/lib/travel-requests/validation") return { statuses: ["new", "planning"] };
+      if (name === "@/lib/travel-requests/validation") return {
+        statuses: ["new", "planning"],
+        formatCountries: (values) => values.map((value) => ({ KG: "Kyrgyzstan" })[value] ?? value).join(", "),
+      };
       throw new Error(`Unexpected import: ${name}`);
     },
     URLSearchParams,

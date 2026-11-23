@@ -34,6 +34,21 @@ test("fixed dates require a complete, real, ordered range; flexible dates allow 
   assert.deepEqual(validate({ ...request, flexible: false, startDate: "2099-03-01", endDate: "2099-03-03" }).errors, []);
 });
 
+test("accepts Afghanistan, an approximate period, and an empty budget without reusing Turkmenistan", () => {
+  const approximate = validate({ ...request, countries: ["KG", "KZ", "AF"], dateMode: "approximate", flexible: false,
+    preferredPeriod: "2027-09", startDate: "", endDate: "", budget: null });
+  assert.deepEqual(approximate.errors, []);
+  assert.deepEqual(approximate.data.countries, ["KG", "KZ", "AF"]);
+  assert.equal(approximate.data.preferredPeriod, "2027-09");
+  assert.equal(approximate.data.budget, null);
+  assert.ok(validate({ ...request, countries: ["KG", "TM"] }).errors.includes("countries"));
+});
+
+test("keeps flexible dates truly empty and rejects hidden date values", () => {
+  assert.deepEqual(validate({ ...request, dateMode: "flexible", budget: null }).errors, []);
+  assert.ok(validate({ ...request, dateMode: "flexible", startDate: "2099-03-01" }).errors.includes("dates"));
+});
+
 test("WhatsApp and Telegram each require their own contact channel", () => {
   assert.ok(validate({ ...request, contact: "whatsapp", telegram: "@test_guest" }).errors.includes("contact"));
   assert.ok(validate({ ...request, contact: "telegram", phone: "+996 555 111 222" }).errors.includes("contact"));

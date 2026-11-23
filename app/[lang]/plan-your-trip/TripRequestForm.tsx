@@ -7,7 +7,7 @@ import Turnstile from "./Turnstile";
 import { track, useTripPageAnalytics } from "./analytics";
 
 const initial = {
-  countries: ["KG"], interests: [] as string[], startDate: "", endDate: "", flexible: false,
+  countries: ["KG"], interests: [] as string[], startDate: "", endDate: "", dateMode: "exact" as "exact" | "approximate" | "flexible", preferredPeriod: "",
   adults: "2", children: "0", budget: "", preferences: "", name: "", email: "", phone: "",
   contact: "email", telegram: "", residence: "", consent: false,
 };
@@ -15,10 +15,10 @@ const labels = {
   en: {
     steps: ["Destinations", "Dates & Travelers", "Travel Interests", "Travel Preferences", "Contact Details"],
     headings: ["Which countries would you like to visit?", "When are you planning to travel?", "What would you love to experience?", "Tell us about your dream adventure", "How can we reach you?"],
-    countries: ["Kyrgyzstan", "Kazakhstan", "Uzbekistan", "Tajikistan", "Turkmenistan"],
+    countries: ["Kyrgyzstan", "Kazakhstan", "Uzbekistan", "Tajikistan", "Afghanistan"],
     interests: ["Nature & Mountains", "Road Trips & 4×4 Adventures", "Hiking & Trekking", "Horse Riding", "Nomadic Culture", "Historical Cities & Silk Road", "Lakes & Canyons", "Winter Adventures & Freeride", "Photography", "Family Travel", "Cultural Experiences"],
-    required: "Included in every trip", start: "Start date", end: "End date", flexible: "My dates are flexible",
-    adults: "Number of adults", children: "Number of children", budget: "Approximate budget per person (USD)",
+    required: "Included in every trip", datesQuestion: "Do you know your travel dates?", exact: "I know my exact dates", approximate: "I have approximate dates", flexible: "My dates are flexible", start: "Start date", end: "End date", preferredPeriod: "Preferred month / period", flexibleHint: "That's fine — your local expert can help you choose the best dates.",
+    adults: "Number of adults", children: "Number of children", budget: "Budget per person", budgetHint: "If you're not sure yet, leave this blank. Your local expert can help estimate the trip cost.",
     preferences: "Describe your dream trip, the places you would love to visit, your preferred travel pace, accommodation preferences or any special requests.",
     name: "Full name", email: "Email", phone: "WhatsApp / Phone", contact: "Preferred contact method",
     telegram: "Telegram username", residence: "Country of residence", consent: "I agree to the", policy: "Privacy Policy",
@@ -28,7 +28,7 @@ const labels = {
     reference: "Request number", optional: "optional",
     createAccount: "Create your free account", accountHint: "Create an account to track your request, manage your trip details and keep everything in one place.",
     errors: {
-      countries: "Your trip must include Kyrgyzstan.", dates: "Enter a valid date range starting today or later, or select flexible dates and leave both dates blank.",
+      countries: "Your trip must include Kyrgyzstan.", dates: "Choose valid exact dates, an approximate period, or flexible dates.",
       travelers: "Enter 1–100 adults and 0–100 children.", budget: "Enter a positive USD budget with up to two decimal places.",
       interests: "Choose from the listed interests.", preferences: "Use 3,000 characters or fewer.",
       name: "Enter your full name (up to 120 characters).", email: "Enter a valid email address.",
@@ -41,10 +41,10 @@ const labels = {
   ru: {
     steps: ["Страны", "Даты и участники", "Интересы", "Пожелания", "Контакты"],
     headings: ["Какие страны вы хотите посетить?", "Когда вы планируете путешествие?", "Что вы хотите увидеть и попробовать?", "Расскажите о путешествии своей мечты", "Как с вами связаться?"],
-    countries: ["Кыргызстан", "Казахстан", "Узбекистан", "Таджикистан", "Туркменистан"],
+    countries: ["Кыргызстан", "Казахстан", "Узбекистан", "Таджикистан", "Афганистан"],
     interests: ["Природа и горы", "Автопутешествия и 4×4", "Походы и треккинг", "Верховая езда", "Кочевая культура", "Исторические города и Шёлковый путь", "Озёра и каньоны", "Зимние приключения и фрирайд", "Фотография", "Семейные путешествия", "Культурные мероприятия"],
-    required: "Входит в каждое путешествие", start: "Дата начала", end: "Дата окончания", flexible: "Мои даты гибкие",
-    adults: "Количество взрослых", children: "Количество детей", budget: "Примерный бюджет на человека (USD)",
+    required: "Входит в каждое путешествие", datesQuestion: "Вы знаете даты путешествия?", exact: "Я знаю точные даты", approximate: "У меня примерные даты", flexible: "Мои даты гибкие", start: "Дата начала", end: "Дата окончания", preferredPeriod: "Предпочтительный месяц / период", flexibleHint: "Это нормально — местный эксперт поможет выбрать лучшие даты.",
+    adults: "Количество взрослых", children: "Количество детей", budget: "Бюджет на человека", budgetHint: "Если пока не уверены, оставьте поле пустым. Местный эксперт поможет оценить стоимость.",
     preferences: "Опишите путешествие мечты, места, которые хотите посетить, желаемый темп, варианты размещения или особые пожелания.",
     name: "Имя и фамилия", email: "Электронная почта", phone: "WhatsApp / телефон", contact: "Предпочтительный способ связи",
     telegram: "Имя пользователя Telegram", residence: "Страна проживания", consent: "Я принимаю", policy: "Политику конфиденциальности",
@@ -54,7 +54,7 @@ const labels = {
     reference: "Номер заявки", optional: "необязательно",
     createAccount: "Создать бесплатный аккаунт", accountHint: "Создайте аккаунт, чтобы отслеживать заявку, хранить детали поездки и держать всё в одном месте.",
     errors: {
-      countries: "Маршрут должен включать Кыргызстан.", dates: "Укажите корректные даты, начиная с сегодняшнего дня, или выберите гибкие даты и оставьте оба поля пустыми.",
+      countries: "Маршрут должен включать Кыргызстан.", dates: "Укажите корректные точные даты, примерный период или гибкие даты.",
       travelers: "Укажите от 1 до 100 взрослых и от 0 до 100 детей.", budget: "Введите положительную сумму в USD с точностью до двух знаков после запятой.",
       interests: "Выберите интересы из списка.", preferences: "Используйте не более 3 000 символов.",
       name: "Укажите имя и фамилию (до 120 символов).", email: "Укажите действительный email.",
@@ -112,7 +112,7 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
     const params = new URLSearchParams(window.location.search);
     const { errors: invalid, data } = validate({
       ...form, locale, adults: Number(form.adults), children: form.children === "" ? NaN : Number(form.children),
-      budget: Number(form.budget), utm: Object.fromEntries(utmKeys.map((key) => [key, params.get(key)])),
+      budget: form.budget === "" ? null : Number(form.budget), utm: Object.fromEntries(utmKeys.map((key) => [key, params.get(key)])),
     }, step);
     if (invalid.length) {
       setErrors(invalid);
@@ -159,7 +159,7 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
     }
   }
 
-  function field(key: "startDate" | "endDate" | "adults" | "children" | "budget" | "name" | "email" | "phone" | "telegram" | "residence",
+  function field(key: "startDate" | "endDate" | "preferredPeriod" | "adults" | "children" | "budget" | "name" | "email" | "phone" | "telegram" | "residence",
     label: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) {
     return <label className="trip-field">{label}<input {...props} value={form[key]} onChange={(event) => update(key, event.target.value)} /></label>;
   }
@@ -179,16 +179,26 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
             <span>{copy.countries[index]}{country === "KG" && <small>{copy.required}</small>}</span>
           </label>)}</div>}
           {step === 2 && <>
-            <div className="trip-pair">
-              {field("startDate", copy.start, { type: "date", required: !form.flexible })}
-              {field("endDate", copy.end, { type: "date", min: form.startDate || undefined, required: !form.flexible })}
-            </div>
-            <label className="trip-check"><input type="checkbox" checked={form.flexible} onChange={(event) => update("flexible", event.target.checked)} />{copy.flexible}</label>
+            <fieldset className="trip-date-modes"><legend>{copy.datesQuestion}</legend>
+              {(["exact", "approximate", "flexible"] as const).map((mode) => <label key={mode}>
+                <input type="radio" name="dateMode" checked={form.dateMode === mode} onChange={() => update("dateMode", mode)} />
+                <span>{copy[mode]}</span>
+              </label>)}
+            </fieldset>
+            {form.dateMode === "exact" && <div className="trip-pair">
+              {field("startDate", copy.start, { type: "date", required: true })}
+              {field("endDate", copy.end, { type: "date", min: form.startDate || undefined, required: true })}
+            </div>}
+            {form.dateMode === "approximate" && field("preferredPeriod", copy.preferredPeriod, { type: "month", required: true })}
+            {form.dateMode === "flexible" && <p className="trip-date-help">{copy.flexibleHint}</p>}
             <div className="trip-pair">
               {field("adults", copy.adults, { type: "number", min: 1, max: 100, required: true })}
               {field("children", copy.children, { type: "number", min: 0, max: 100, required: true })}
             </div>
-            {field("budget", copy.budget, { type: "number", min: 0.01, step: 0.01, inputMode: "decimal", required: true })}
+            <label className="trip-field">{copy.budget} <small>({copy.optional})</small>
+              <input type="number" min="0.01" step="0.01" inputMode="decimal" value={form.budget} onChange={(event) => update("budget", event.target.value)} placeholder="USD 2500" />
+              <small className="trip-field-hint">{copy.budgetHint}</small>
+            </label>
           </>}
           {step === 3 && <div className="trip-options">{interests.map((interest, index) => <label key={interest}>
             <input type="checkbox" checked={form.interests.includes(interest)} onChange={() => toggle("interests", interest)} />
