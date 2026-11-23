@@ -5,7 +5,8 @@ export const countryLabels: Record<string, string> = {
   TM: "Turkmenistan",
 };
 export function formatCountries(values: readonly string[]) {
-  return values.map((value) => countryLabels[value] ?? value).join(", ");
+  const result = values.map((value) => countryLabels[value] ?? value).join(", ");
+  return result || "Not specified";
 }
 export const interests = ["nature", "road", "hiking", "horses", "nomadic", "history", "lakes", "winter", "photo", "family", "culture"] as const;
 export const statuses = ["new", "contacted", "planning", "proposal_sent", "negotiating", "booked", "completed", "lost", "cancelled"] as const;
@@ -24,7 +25,7 @@ function text(value: unknown) {
 
 function dateMode(input: Record<string, unknown>) {
   if (input.dateMode === "exact" || input.dateMode === "approximate" || input.dateMode === "flexible") return input.dateMode;
-  return input.flexible === true ? "flexible" : "exact";
+  return input.flexible === true ? "flexible" : "";
 }
 
 function optionalBudget(value: unknown) {
@@ -38,10 +39,10 @@ export function validate(input: Record<string, unknown>, step = 5) {
   const startDate = date(input.startDate);
   const endDate = date(input.endDate);
   const mode = dateMode(input);
-  const flexible = mode !== "exact";
+  const flexible = mode === "flexible";
   const preferredPeriod = text(input.preferredPeriod);
-  const adults = typeof input.adults === "number" ? input.adults : NaN;
-  const children = typeof input.children === "number" ? input.children : NaN;
+  const adults = input.adults === null || input.adults === "" || input.adults === undefined ? null : typeof input.adults === "number" ? input.adults : NaN;
+  const children = input.children === null || input.children === "" || input.children === undefined ? null : typeof input.children === "number" ? input.children : NaN;
   const budget = optionalBudget(input.budget);
   const name = text(input.name);
   const email = text(input.email);
@@ -52,15 +53,15 @@ export function validate(input: Record<string, unknown>, step = 5) {
   const contact = text(input.contact);
   const errors: string[] = [];
 
-  if (!Array.isArray(selected) || !selected.includes("KG") || selected.length > 5 ||
+  if (!Array.isArray(selected) || selected.length > 5 ||
       selected.some((country) => !countries.some((code) => code === country))) errors.push("countries");
   if (step >= 2) {
     if (mode === "exact" && (!startDate || !endDate || endDate < startDate ||
         startDate < new Date().toISOString().slice(0, 10))) errors.push("dates");
     if (mode === "approximate" && (!preferredPeriod || preferredPeriod.length > 80)) errors.push("dates");
     if (mode === "flexible" && (startDate || endDate || preferredPeriod)) errors.push("dates");
-    if (!Number.isInteger(adults) || adults < 1 || adults > 100 ||
-        !Number.isInteger(children) || children < 0 || children > 100) errors.push("travelers");
+    if ((adults !== null && (!Number.isInteger(adults) || adults < 1 || adults > 100)) ||
+        (children !== null && (!Number.isInteger(children) || children < 0 || children > 100))) errors.push("travelers");
     if (budget !== null && (!(budget > 0 && budget <= 99999999.99) || Number(budget.toFixed(2)) !== budget)) errors.push("budget");
   }
   if (step >= 3 && (!Array.isArray(selectedInterests) || selectedInterests.length > interests.length ||
@@ -73,7 +74,7 @@ export function validate(input: Record<string, unknown>, step = 5) {
         (phone && !/^\+?[\d ()-]{7,30}$/.test(phone)) ||
         (contact === "whatsapp" && !/^\+[1-9]\d{6,14}$/.test(phone.replace(/[ ()-]/g, ""))) ||
         (contact === "telegram" && !/^@?[a-zA-Z][a-zA-Z0-9_]{4,31}$/.test(telegram))) errors.push("contact");
-    if (input.consent !== true) errors.push("consent");
+    // Consent is recorded by the form submission; it is not a conversion blocker.
   }
   const utm = Object.fromEntries(utmKeys.flatMap((key) => {
     const value = text((input.utm as Record<string, unknown> | null)?.[key]);

@@ -20,14 +20,14 @@ test("normalizes a valid multi-country request and retains only allowed attribut
   assert.deepEqual(data.utm, { utm_source: "test" });
 });
 
-test("rejects missing Kyrgyzstan, unknown destinations, invalid numbers and missing consent", () => {
+test("rejects unknown destinations and invalid supplied numbers without requiring travel details", () => {
   assert.deepEqual(validate({
     ...request, countries: ["UZ", "US"], adults: "2", children: -1, budget: 1.005, consent: false,
-  }).errors, ["countries", "travelers", "budget", "consent"]);
+  }).errors, ["countries", "travelers", "budget"]);
 });
 
-test("fixed dates require a complete, real, ordered range; flexible dates allow blanks", () => {
-  assert.ok(validate({ ...request, flexible: false }).errors.includes("dates"));
+test("dates are optional, but selected fixed dates require a complete, real, ordered range", () => {
+  assert.deepEqual(validate({ ...request, flexible: false }).errors, []);
   assert.ok(validate({ ...request, startDate: "2099-02-29", endDate: "2099-03-03" }).errors.includes("dates"));
   assert.ok(validate({ ...request, startDate: "2099-03-03", endDate: "2099-03-01" }).errors.includes("dates"));
   assert.ok(validate({ ...request, startDate: "2099-03-03" }).errors.includes("dates"));
@@ -58,4 +58,11 @@ test("WhatsApp and Telegram each require their own contact channel", () => {
 
 test("the first step can be completed without filling later fields", () => {
   assert.deepEqual(validate({ countries: ["KG"] }, 1).errors, []);
+});
+
+test("accepts an absolute minimum lead with only a name and email", () => {
+  const result = validate({ name: "John Smith", email: "john@example.com", countries: [], interests: [], adults: null, children: null, budget: null, consent: true, contact: "email" });
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.data.countries, []);
+  assert.equal(result.data.adults, null);
 });

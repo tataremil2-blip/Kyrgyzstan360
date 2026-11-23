@@ -40,9 +40,9 @@ export default async function RequestCard({ params, searchParams }: PageProps<"/
   const fields = [
     ["Client", trip.customer_name], ["Email", trip.customer_email], ["Preferred contact", details.contact],
     ["WhatsApp / phone", details.phone], ["Telegram", details.telegram], ["Country of residence", details.residence],
-    ["Countries", formatCountries(trip.countries)],
-    ["Dates", trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || "Flexible dates"],
-    ["Travelers", trip.adults + " adults, " + trip.children + " children"], ["Budget per person", trip.budget === null ? "Not specified" : "USD " + trip.budget],
+    ["Countries", formatCountries(trip.countries ?? [])],
+    ["Dates", trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || (trip.flexible_dates ? "Flexible dates" : "Not specified")],
+    ["Travelers", trip.adults === null ? "Not specified" : trip.adults + " travelers"], ["Budget per person", trip.budget === null ? "Not specified" : "USD " + trip.budget],
     ["Interests", details.interests?.join(", ")], ["Travel preferences", details.preferences],
     ["Source", trip.source], ["Language", trip.locale], ["Created", new Date(trip.created_at).toISOString()],
     ["Consent recorded", new Date(trip.consent_at).toISOString()], ...Object.entries(details.utm ?? {}),

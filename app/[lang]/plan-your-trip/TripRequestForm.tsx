@@ -2,74 +2,25 @@
 
 import { useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { countries, interests, utmKeys, validate } from "@/lib/travel-requests/validation";
+import { utmKeys, validate } from "@/lib/travel-requests/validation";
 import Turnstile from "./Turnstile";
 import { track, useTripPageAnalytics } from "./analytics";
 
-const initial = {
-  countries: ["KG"], interests: [] as string[], startDate: "", endDate: "", dateMode: "exact" as "exact" | "approximate" | "flexible", preferredPeriod: "",
-  adults: "2", children: "0", budget: "", preferences: "", name: "", email: "", phone: "",
-  contact: "email", telegram: "", residence: "", consent: false,
-};
-const labels = {
+type DateMode = "" | "exact" | "approximate" | "flexible";
+const initial = { name: "", email: "", phone: "", dateMode: "" as DateMode, startDate: "", endDate: "", preferredPeriod: "", travelers: "", budget: "", preferences: "" };
+
+const copy = {
   en: {
-    steps: ["Destinations", "Dates & Travelers", "Travel Interests", "Travel Preferences", "Contact Details"],
-    headings: ["Which countries would you like to visit?", "When are you planning to travel?", "What would you love to experience?", "Tell us about your dream adventure", "How can we reach you?"],
-    countries: ["Kyrgyzstan", "Kazakhstan", "Uzbekistan", "Tajikistan", "Afghanistan"],
-    interests: ["Nature & Mountains", "Road Trips & 4×4 Adventures", "Hiking & Trekking", "Horse Riding", "Nomadic Culture", "Historical Cities & Silk Road", "Lakes & Canyons", "Winter Adventures & Freeride", "Photography", "Family Travel", "Cultural Experiences"],
-    required: "Included in every trip", datesQuestion: "Do you know your travel dates?", exact: "I know my exact dates", approximate: "I have approximate dates", flexible: "My dates are flexible", start: "Start date", end: "End date", preferredPeriod: "Preferred month / period", flexibleHint: "That's fine — your local expert can help you choose the best dates.",
-    adults: "Number of adults", children: "Number of children", budget: "Budget per person", budgetHint: "If you're not sure yet, leave this blank. Your local expert can help estimate the trip cost.",
-    preferences: "Describe your dream trip, the places you would love to visit, your preferred travel pace, accommodation preferences or any special requests.",
-    name: "Full name", email: "Email", phone: "WhatsApp / Phone", contact: "Preferred contact method",
-    telegram: "Telegram username", residence: "Country of residence", consent: "I agree to the", policy: "Privacy Policy",
-    next: "Continue", back: "Back", send: "Send My Trip Request", sending: "Sending…",
-    free: "Free request. No payment required. No booking commitment.",
-    success: "Your request has been received", thanks: "Thank you for your request! Our local travel experts will review your preferences and contact you to help create your perfect Central Asia journey.",
-    reference: "Request number", optional: "optional",
-    createAccount: "Create your free account", accountHint: "Create an account to track your request, manage your trip details and keep everything in one place.",
-    errors: {
-      countries: "Your trip must include Kyrgyzstan.", dates: "Choose valid exact dates, an approximate period, or flexible dates.",
-      travelers: "Enter 1–100 adults and 0–100 children.", budget: "Enter a positive USD budget with up to two decimal places.",
-      interests: "Choose from the listed interests.", preferences: "Use 3,000 characters or fewer.",
-      name: "Enter your full name (up to 120 characters).", email: "Enter a valid email address.",
-      contact: "Check your contact details. For WhatsApp use an international number with +. For Telegram enter your username.",
-      consent: "Agree to the Privacy Policy to continue.", challenge: "Please complete the verification again.",
-      rate: "Too many attempts. Please wait 15 minutes and try again.", unavailable: "We couldn't confirm your request. Please try again.",
-      conflict: "This submission was already used. Please try again.",
-    },
+    name: "Full name", email: "Email", whatsapp: "WhatsApp", dates: "When are you thinking of traveling?", exact: "Exact dates", approximate: "Approximate dates", flexible: "Flexible dates", start: "Start date", end: "End date", period: "Approximate month", travelers: "Number of travelers", budget: "Budget per person", message: "Tell us what you have in mind", send: "SEND MY REQUEST", sending: "Sending…", privacy: "By sending, you agree to our", policy: "Privacy Policy", success: "Thanks, {name}. We've received your request.", thanks: "We'll review what you've shared and get back to you by email.", account: "Create an account to follow your request", errors: { name: "Enter your full name.", email: "Enter a valid email address.", dates: "Check the travel dates.", travelers: "Enter a number from 1 to 100.", budget: "Enter a positive amount with up to two decimal places.", preferences: "Use 3,000 characters or fewer.", challenge: "Please complete the verification again.", rate: "Too many attempts. Please wait 15 minutes and try again.", unavailable: "We couldn't confirm your request. Please try again.", conflict: "This submission was already used. Please try again." },
   },
   ru: {
-    steps: ["Страны", "Даты и участники", "Интересы", "Пожелания", "Контакты"],
-    headings: ["Какие страны вы хотите посетить?", "Когда вы планируете путешествие?", "Что вы хотите увидеть и попробовать?", "Расскажите о путешествии своей мечты", "Как с вами связаться?"],
-    countries: ["Кыргызстан", "Казахстан", "Узбекистан", "Таджикистан", "Афганистан"],
-    interests: ["Природа и горы", "Автопутешествия и 4×4", "Походы и треккинг", "Верховая езда", "Кочевая культура", "Исторические города и Шёлковый путь", "Озёра и каньоны", "Зимние приключения и фрирайд", "Фотография", "Семейные путешествия", "Культурные мероприятия"],
-    required: "Входит в каждое путешествие", datesQuestion: "Вы знаете даты путешествия?", exact: "Я знаю точные даты", approximate: "У меня примерные даты", flexible: "Мои даты гибкие", start: "Дата начала", end: "Дата окончания", preferredPeriod: "Предпочтительный месяц / период", flexibleHint: "Это нормально — местный эксперт поможет выбрать лучшие даты.",
-    adults: "Количество взрослых", children: "Количество детей", budget: "Бюджет на человека", budgetHint: "Если пока не уверены, оставьте поле пустым. Местный эксперт поможет оценить стоимость.",
-    preferences: "Опишите путешествие мечты, места, которые хотите посетить, желаемый темп, варианты размещения или особые пожелания.",
-    name: "Имя и фамилия", email: "Электронная почта", phone: "WhatsApp / телефон", contact: "Предпочтительный способ связи",
-    telegram: "Имя пользователя Telegram", residence: "Страна проживания", consent: "Я принимаю", policy: "Политику конфиденциальности",
-    next: "Продолжить", back: "Назад", send: "Отправить заявку", sending: "Отправляем…",
-    free: "Заявка бесплатна и не обязывает к оплате или бронированию.",
-    success: "Ваша заявка получена", thanks: "Спасибо за заявку! Наши местные эксперты изучат ваши пожелания и свяжутся с вами, чтобы составить маршрут по Центральной Азии.",
-    reference: "Номер заявки", optional: "необязательно",
-    createAccount: "Создать бесплатный аккаунт", accountHint: "Создайте аккаунт, чтобы отслеживать заявку, хранить детали поездки и держать всё в одном месте.",
-    errors: {
-      countries: "Маршрут должен включать Кыргызстан.", dates: "Укажите корректные точные даты, примерный период или гибкие даты.",
-      travelers: "Укажите от 1 до 100 взрослых и от 0 до 100 детей.", budget: "Введите положительную сумму в USD с точностью до двух знаков после запятой.",
-      interests: "Выберите интересы из списка.", preferences: "Используйте не более 3 000 символов.",
-      name: "Укажите имя и фамилию (до 120 символов).", email: "Укажите действительный email.",
-      contact: "Проверьте контакты. Для WhatsApp используйте международный номер с +, для Telegram — имя пользователя.",
-      consent: "Примите Политику конфиденциальности, чтобы продолжить.", challenge: "Пожалуйста, пройдите проверку ещё раз.",
-      rate: "Слишком много попыток. Повторите через 15 минут.", unavailable: "Не удалось подтвердить отправку. Попробуйте ещё раз.",
-      conflict: "Эта отправка уже использована. Попробуйте ещё раз.",
-    },
+    name: "Имя и фамилия", email: "Электронная почта", whatsapp: "WhatsApp", dates: "Когда вы планируете путешествие?", exact: "Точные даты", approximate: "Примерные даты", flexible: "Гибкие даты", start: "Дата начала", end: "Дата окончания", period: "Примерный месяц", travelers: "Количество путешественников", budget: "Бюджет на человека", message: "Расскажите, что вы хотите", send: "ОТПРАВИТЬ ЗАЯВКУ", sending: "Отправляем…", privacy: "Отправляя форму, вы принимаете", policy: "Политику конфиденциальности", success: "Спасибо, {name}. Мы получили вашу заявку.", thanks: "Мы изучим то, чем вы поделились, и свяжемся с вами по email.", account: "Создайте аккаунт, чтобы следить за заявкой", errors: { name: "Укажите имя и фамилию.", email: "Укажите действительный email.", dates: "Проверьте даты путешествия.", travelers: "Укажите число от 1 до 100.", budget: "Введите положительную сумму с точностью до двух знаков.", preferences: "Используйте не более 3 000 символов.", challenge: "Пожалуйста, пройдите проверку ещё раз.", rate: "Слишком много попыток. Повторите через 15 минут.", unavailable: "Не удалось подтвердить отправку. Попробуйте ещё раз.", conflict: "Эта отправка уже использована. Попробуйте ещё раз." },
   },
 };
 
 export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
-  const copy = labels[locale];
+  const text = copy[locale];
   const [form, setForm] = useState(initial);
-  const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<string[]>([]);
   const [reference, setReference] = useState("");
   const [token, setToken] = useState("");
@@ -77,164 +28,53 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
   const [sending, setSending] = useState(false);
   const pending = useRef(false);
   const submission = useRef<{ payload: string; key: string } | null>(null);
-  const completed = useRef(new Set<number>());
   const started = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   useTripPageAnalytics(locale);
 
-  function markStarted() {
-    if (!started.current) { started.current = true; track("started", locale); }
-  }
-
-  function update<K extends keyof typeof initial>(key: K, value: (typeof initial)[K]) {
-    setForm((current) => ({ ...current, [key]: value }));
-  }
-
-  function toggle(key: "countries" | "interests", value: string) {
-    update(key, form[key].includes(value) ? form[key].filter((entry) => entry !== value) : [...form[key], value]);
-  }
-
-  function move(next: number) {
-    setErrors([]);
-    setStep(next);
-    requestAnimationFrame(() => heading.current?.focus());
-  }
-
-  function complete() {
-    if (completed.current.has(step)) return;
-    completed.current.add(step);
-    track("step_completed", locale, { step });
-  }
+  function update<K extends keyof typeof initial>(key: K, value: (typeof initial)[K]) { setForm((current) => ({ ...current, [key]: value })); }
+  function startedOnce() { if (!started.current) { started.current = true; track("started", locale); } }
+  function clearDates(mode: DateMode) { update("dateMode", mode); if (mode !== "exact") { update("startDate", ""); update("endDate", ""); } if (mode !== "approximate") update("preferredPeriod", ""); }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (pending.current) return;
     const params = new URLSearchParams(window.location.search);
     const { errors: invalid, data } = validate({
-      ...form, locale, adults: Number(form.adults), children: form.children === "" ? NaN : Number(form.children),
-      budget: form.budget === "" ? null : Number(form.budget), utm: Object.fromEntries(utmKeys.map((key) => [key, params.get(key)])),
-    }, step);
-    if (invalid.length) {
-      setErrors(invalid);
-      return;
-    }
-    if (!started.current) { started.current = true; track("started", locale); }
-    if (step < 5) {
-      complete();
-      move(step + 1);
-      return;
-    }
+      ...form, locale, countries: [], interests: [], flexible: form.dateMode === "flexible", adults: form.travelers === "" ? null : Number(form.travelers), children: null,
+      budget: form.budget === "" ? null : Number(form.budget), contact: form.phone ? "whatsapp" : "email", consent: true,
+      utm: Object.fromEntries(utmKeys.map((key) => [key, params.get(key)])),
+    });
+    if (invalid.length) { setErrors(invalid); return; }
+    startedOnce();
     if (!token) { setErrors(["challenge"]); return; }
-    complete();
-    pending.current = true;
-    setSending(true);
-    setErrors([]);
+    pending.current = true; setSending(true); setErrors([]);
     try {
       const payload = JSON.stringify(data);
       if (submission.current?.payload !== payload) submission.current = { payload, key: crypto.randomUUID() };
-      const response = await fetch("/api/trip-requests", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, key: submission.current.key, token }), signal: AbortSignal.timeout(25000),
-      });
+      const response = await fetch("/api/trip-requests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, key: submission.current.key, token }), signal: AbortSignal.timeout(25_000) });
       const result = await response.json();
-      if (!response.ok || typeof result.reference !== "string") {
-        const reason = ["challenge", "rate", "conflict", "validation"].includes(result.code) ? result.code : "unavailable";
-        if (reason === "conflict") submission.current = null;
-        setErrors(reason === "validation" && Array.isArray(result.errors) ? result.errors : [reason]);
-        track("failed", locale, { reason });
-        return;
-      }
-      setReference(result.reference);
-      track("submitted", locale, { reference: result.reference });
-      track("conversion", locale, { reference: result.reference });
-      requestAnimationFrame(() => heading.current?.focus());
-    } catch {
-      setErrors(["unavailable"]);
-      track("failed", locale, { reason: "network" });
-    } finally {
-      pending.current = false;
-      setSending(false);
-      setToken("");
-      setReset((current) => current + 1);
-    }
+      if (!response.ok || typeof result.reference !== "string") { const reason = ["challenge", "rate", "conflict", "validation"].includes(result.code) ? result.code : "unavailable"; if (reason === "conflict") submission.current = null; setErrors(reason === "validation" && Array.isArray(result.errors) ? result.errors : [reason]); track("failed", locale, { reason }); return; }
+      setReference(result.reference); track("submitted", locale, { reference: result.reference }); track("conversion", locale, { reference: result.reference }); requestAnimationFrame(() => heading.current?.focus());
+    } catch { setErrors(["unavailable"]); track("failed", locale, { reason: "network" }); }
+    finally { pending.current = false; setSending(false); setToken(""); setReset((value) => value + 1); }
   }
 
-  function field(key: "startDate" | "endDate" | "preferredPeriod" | "adults" | "children" | "budget" | "name" | "email" | "phone" | "telegram" | "residence",
-    label: string, props: React.InputHTMLAttributes<HTMLInputElement> = {}) {
-    return <label className="trip-field">{label}<input {...props} value={form[key]} onChange={(event) => update(key, event.target.value)} /></label>;
-  }
-
+  if (reference) return <section className="trip-form-shell trip-success" id="trip-form"><h2 ref={heading} tabIndex={-1}>{text.success.replace("{name}", form.name)}</h2><p>{text.thanks}</p><Link href="/account/register">{text.account}</Link></section>;
   return <section className="trip-form-shell" id="trip-form" aria-labelledby="trip-form-heading">
-    {reference ? <div className="trip-success">
-      <h2 ref={heading} tabIndex={-1} id="trip-form-heading">{copy.success}</h2>
-      <p>{copy.thanks}</p><p>{copy.reference} <strong>{reference}</strong></p><p>{copy.accountHint}</p><Link href="/account/register">{copy.createAccount}</Link>
-    </div> : <>
-      <div className="trip-progress"><span>{copy.steps[step - 1]}</span><span>{step} / 5</span></div>
-      <progress value={step} max={5} aria-label={locale === "ru" ? "Прогресс заполнения" : "Form progress"} />
-      <h2 ref={heading} tabIndex={-1} id="trip-form-heading">{copy.headings[step - 1]}</h2>
-      <form onSubmit={submit} onChange={markStarted} noValidate aria-describedby={errors.length ? "trip-errors" : undefined}>
-        <fieldset disabled={sending} className="trip-fields" aria-labelledby="trip-form-heading">
-          {step === 1 && <div className="trip-options">{countries.map((country, index) => <label key={country}>
-            <input type="checkbox" checked={form.countries.includes(country)} disabled={country === "KG"} onChange={() => toggle("countries", country)} />
-            <span>{copy.countries[index]}{country === "KG" && <small>{copy.required}</small>}</span>
-          </label>)}</div>}
-          {step === 2 && <>
-            <fieldset className="trip-date-modes"><legend>{copy.datesQuestion}</legend>
-              {(["exact", "approximate", "flexible"] as const).map((mode) => <label key={mode}>
-                <input type="radio" name="dateMode" checked={form.dateMode === mode} onChange={() => update("dateMode", mode)} />
-                <span>{copy[mode]}</span>
-              </label>)}
-            </fieldset>
-            {form.dateMode === "exact" && <div className="trip-pair">
-              {field("startDate", copy.start, { type: "date", required: true })}
-              {field("endDate", copy.end, { type: "date", min: form.startDate || undefined, required: true })}
-            </div>}
-            {form.dateMode === "approximate" && field("preferredPeriod", copy.preferredPeriod, { type: "month", required: true })}
-            {form.dateMode === "flexible" && <p className="trip-date-help">{copy.flexibleHint}</p>}
-            <div className="trip-pair">
-              {field("adults", copy.adults, { type: "number", min: 1, max: 100, required: true })}
-              {field("children", copy.children, { type: "number", min: 0, max: 100, required: true })}
-            </div>
-            <label className="trip-field">{copy.budget} <small>({copy.optional})</small>
-              <input type="number" min="0.01" step="0.01" inputMode="decimal" value={form.budget} onChange={(event) => update("budget", event.target.value)} placeholder="USD 2500" />
-              <small className="trip-field-hint">{copy.budgetHint}</small>
-            </label>
-          </>}
-          {step === 3 && <div className="trip-options">{interests.map((interest, index) => <label key={interest}>
-            <input type="checkbox" checked={form.interests.includes(interest)} onChange={() => toggle("interests", interest)} />
-            <span>{copy.interests[index]}</span>
-          </label>)}</div>}
-          {step === 4 && <label className="trip-field">{copy.preferences} ({copy.optional})
-            <textarea rows={6} maxLength={3000} value={form.preferences} onChange={(event) => update("preferences", event.target.value)} />
-          </label>}
-          {step === 5 && <>
-            <div className="trip-pair">
-              {field("name", copy.name, { autoComplete: "name", maxLength: 120, required: true })}
-              {field("email", copy.email, { type: "email", autoComplete: "email", maxLength: 254, required: true })}
-            </div>
-            <label className="trip-field">{copy.contact}<select value={form.contact} onChange={(event) => update("contact", event.target.value)}>
-              <option value="email">Email</option><option value="whatsapp">WhatsApp</option><option value="telegram">Telegram</option>
-            </select></label>
-            {field("phone", copy.phone + (form.contact === "whatsapp" ? "" : " (" + copy.optional + ")"),
-              { type: "tel", autoComplete: "tel", maxLength: 30, required: form.contact === "whatsapp" })}
-            {form.contact === "telegram" && field("telegram", copy.telegram, { maxLength: 33, required: true })}
-            {field("residence", copy.residence + " (" + copy.optional + ")", { autoComplete: "country-name", maxLength: 100 })}
-            <div className="trip-check">
-              <label><input type="checkbox" checked={form.consent} required aria-describedby="trip-privacy"
-                onChange={(event) => update("consent", event.target.checked)} /> {copy.consent}</label>
-              <a id="trip-privacy" href={"/" + locale + "/privacy"} target="_blank" rel="noopener">{copy.policy}</a>
-            </div>
-            <Turnstile locale={locale} reset={reset} onToken={setToken} />
-          </>}
+    <form onSubmit={submit} onChange={startedOnce} noValidate aria-describedby={errors.length ? "trip-errors" : undefined}>
+      <fieldset disabled={sending} className="trip-fields"><div className="trip-pair"><label className="trip-field">{text.name} *<input autoComplete="name" maxLength={120} required value={form.name} onChange={(event) => update("name", event.target.value)} /></label><label className="trip-field">{text.email} *<input type="email" autoComplete="email" maxLength={254} required value={form.email} onChange={(event) => update("email", event.target.value)} /></label></div>
+        <label className="trip-field">{text.whatsapp}<input type="tel" autoComplete="tel" maxLength={30} value={form.phone} onChange={(event) => update("phone", event.target.value)} /></label>
+        <fieldset className="trip-date-modes"><legend>{text.dates}</legend><div className="trip-date-options">{(["exact", "approximate", "flexible"] as const).map((mode) => <label key={mode}><input type="radio" name="dateMode" checked={form.dateMode === mode} onChange={() => clearDates(mode)} /><span>{text[mode]}</span></label>)}</div>
+          {form.dateMode === "exact" && <div className="trip-pair"><label className="trip-field">{text.start}<input type="date" value={form.startDate} onChange={(event) => update("startDate", event.target.value)} /></label><label className="trip-field">{text.end}<input type="date" min={form.startDate || undefined} value={form.endDate} onChange={(event) => update("endDate", event.target.value)} /></label></div>}
+          {form.dateMode === "approximate" && <label className="trip-field">{text.period}<input type="month" value={form.preferredPeriod} onChange={(event) => update("preferredPeriod", event.target.value)} /></label>}
         </fieldset>
-        {errors.length > 0 && <ul id="trip-errors" className="trip-errors" role="alert">{errors.map((code) =>
-          <li key={code}>{copy.errors[code as keyof typeof copy.errors] ?? copy.errors.unavailable}</li>)}</ul>}
-        <div className="trip-buttons">
-          {step > 1 && <button type="button" className="trip-back" disabled={sending} onClick={() => move(step - 1)}>{copy.back}</button>}
-          <button type="submit" disabled={sending}>{step < 5 ? copy.next : sending ? copy.sending : copy.send}</button>
-        </div>
-        {step === 5 && <p className="trip-free">{copy.free}</p>}
-      </form>
-    </>}
+        <div className="trip-pair"><label className="trip-field">{text.travelers}<input type="number" min="1" max="100" inputMode="numeric" value={form.travelers} onChange={(event) => update("travelers", event.target.value)} /></label><label className="trip-field">{text.budget}<input type="number" min="0.01" step="0.01" inputMode="decimal" value={form.budget} onChange={(event) => update("budget", event.target.value)} /></label></div>
+        <label className="trip-field">{text.message}<textarea rows={5} maxLength={3000} placeholder={locale === "ru" ? "Расскажите всё, что считаете важным…" : "Tell us anything you'd like us to know…"} value={form.preferences} onChange={(event) => update("preferences", event.target.value)} /></label>
+        <p className="trip-privacy">{text.privacy} <a href={`/${locale}/privacy`} target="_blank" rel="noopener">{text.policy}</a>.</p><Turnstile locale={locale} reset={reset} onToken={setToken} />
+      </fieldset>
+      {errors.length > 0 && <ul id="trip-errors" className="trip-errors" role="alert">{errors.map((code) => <li key={code}>{text.errors[code as keyof typeof text.errors] ?? text.errors.unavailable}</li>)}</ul>}
+      <button className="trip-submit" type="submit" disabled={sending}>{sending ? text.sending : text.send}</button>
+    </form>
   </section>;
 }

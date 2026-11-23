@@ -29,8 +29,8 @@ test("only a confirmed Auth email can claim requests, and account details are ow
 });
 
 test("anonymous request success keeps submission open and offers account creation", () => {
-  assert.match(requestForm, /Your request has been received/);
-  assert.match(requestForm, /Create your free account/);
+  assert.match(requestForm, /We've received your request/);
+  assert.match(requestForm, /Create an account to follow your request/);
   assert.match(requestForm, /href="\/account\/register"/);
 });
 

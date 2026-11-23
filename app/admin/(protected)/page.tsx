@@ -57,9 +57,9 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
       <thead><tr>{["Request ID","Client","Countries","Dates","Travelers","Budget","Status","Created At","Assigned Manager"].map((label) => <th scope="col" key={label}>{label}</th>)}</tr></thead>
       <tbody>{requests.data.map((trip) => <tr key={trip.id}>
         <td><Link href={"/admin/requests/" + trip.id}>{trip.reference_number}</Link></td>
-        <td>{trip.customer_name}</td><td>{formatCountries(trip.countries)}</td>
-        <td>{trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || "Flexible"}</td>
-        <td>{trip.adults + trip.children}</td><td>{trip.budget === null ? "Not specified" : "$" + trip.budget}</td><td className="crm-status">{statusLabel(trip.status)}</td>
+        <td>{trip.customer_name}</td><td>{formatCountries(trip.countries ?? [])}</td>
+        <td>{trip.start_date ? trip.start_date + " – " + trip.end_date : trip.preferred_period || "Not specified"}</td>
+        <td>{trip.adults ?? "Not specified"}</td><td>{trip.budget === null ? "Not specified" : "$" + trip.budget}</td><td className="crm-status">{statusLabel(trip.status)}</td>
         <td>{new Date(trip.created_at).toISOString().slice(0, 10)}</td><td>{names.get(trip.manager_id) ?? "Unassigned"}</td>
       </tr>)}</tbody>
     </table></div>

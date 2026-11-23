@@ -6,47 +6,7 @@ import TripRequestForm from "./TripRequestForm";
 import "./trip-request.css";
 
 const origin = "https://kyrgyzstan360.com";
-const path = (lang: string) => origin + "/" + lang + "/plan-your-trip";
-const copy = {
-  en: {
-    title: "Explore Central Asia. Your Way.",
-    description: "Create your own private adventure through Kyrgyzstan and Central Asia. Travel with local experts, enjoy flexible itineraries and book directly without third-party marketplace commissions.",
-    primary: "Get My Free Trip Proposal", secondary: "Build Your Adventure",
-  },
-  ru: {
-    title: "Центральная Азия. По вашему маршруту.",
-    description: "Спланируйте индивидуальное путешествие по Кыргызстану и Центральной Азии. Путешествуйте с местными экспертами, выбирайте гибкий маршрут и бронируйте напрямую без комиссий сторонних площадок.",
-    primary: "Получить бесплатное предложение", secondary: "Собрать свой маршрут",
-  },
-};
-
-export async function generateMetadata({ params }: PageProps<"/[lang]/plan-your-trip">): Promise<Metadata> {
-  const { lang } = await params;
-  if (!isLocale(lang)) notFound();
-  return {
-    title: copy[lang].title + " | Kyrgyzstan360",
-    description: copy[lang].description,
-    alternates: { canonical: path(lang), languages: { en: path("en"), ru: path("ru"), "x-default": path("en") } },
-  };
-}
-
-export default async function PlanYourTrip({ params }: PageProps<"/[lang]/plan-your-trip">) {
-  const { lang } = await params;
-  if (!isLocale(lang)) notFound();
-  const message = copy[lang];
-  return <main className="trip-request">
-    <header className="trip-request-hero">
-      <Image src="/hero-kyrgyzstan.jpg" alt="" fill sizes="100vw" preload />
-      <div className="trip-request-intro">
-        <a href={"/" + lang} className="trip-request-brand">Kyrgyzstan360</a>
-        <h1>{message.title}</h1>
-        <p>{message.description}</p>
-        <div className="trip-request-actions">
-          <a href="#trip-form">{message.primary}</a>
-          <a href={"/" + lang + "/plan-my-trip"}>{message.secondary}</a>
-        </div>
-      </div>
-    </header>
-    <TripRequestForm locale={lang} />
-  </main>;
-}
+const path = (lang: string) => `${origin}/${lang}/plan-your-trip`;
+const copy = { en: { title: "Plan your Central Asia trip", description: "Tell us as much or as little as you like. We’ll take it from there.", geography: "Travel across Central Asia", countries: "Kyrgyzstan · Kazakhstan · Uzbekistan · Tajikistan · Afghanistan", journey: "Real journeys", journeyText: "Follow the landscapes, roads and people that shape our journeys across Central Asia.", meet: "Meet the people behind Kyrgyzstan360", meetText: "Local knowledge, thoughtful planning and a real person at the other end of your request.", home: "Explore Kyrgyzstan360" }, ru: { title: "Спланируйте путешествие по Центральной Азии", description: "Расскажите столько или так мало, сколько хотите. Остальное — за нами.", geography: "Путешествуйте по Центральной Азии", countries: "Кыргызстан · Казахстан · Узбекистан · Таджикистан · Афганистан", journey: "Настоящие путешествия", journeyText: "Следуйте за пейзажами, дорогами и людьми, которые создают наши путешествия по Центральной Азии.", meet: "Познакомьтесь с людьми Kyrgyzstan360", meetText: "Местные знания, внимательное планирование и настоящий человек, который увидит вашу заявку.", home: "Открыть Kyrgyzstan360" } };
+export async function generateMetadata({ params }: PageProps<"/[lang]/plan-your-trip">): Promise<Metadata> { const { lang } = await params; if (!isLocale(lang)) notFound(); return { title: `${copy[lang].title} | Kyrgyzstan360`, description: copy[lang].description, alternates: { canonical: path(lang), languages: { en: path("en"), ru: path("ru"), "x-default": path("en") } } }; }
+export default async function PlanYourTrip({ params }: PageProps<"/[lang]/plan-your-trip">) { const { lang } = await params; if (!isLocale(lang)) notFound(); const text = copy[lang]; return <main className="trip-request"><header className="trip-request-hero"><a href={`/${lang}`} className="trip-request-brand">KYRGYZSTAN360</a><p className="trip-kicker">CENTRAL ASIA, PERSONALLY PLANNED</p><h1>{text.title}</h1><p>{text.description}</p><div className="trip-geography"><strong>{text.geography}</strong><span>{text.countries}</span></div></header><TripRequestForm locale={lang} /><section className="trip-trust"><article><p className="trip-kicker">{text.journey}</p><h2>{text.journeyText}</h2><div className="trip-media"><Image src="/individual-tour.jpg" fill sizes="(max-width: 700px) 100vw, 50vw" alt="Central Asia journey" /></div></article><article><p className="trip-kicker">KYRGYZSTAN360</p><h2>{text.meet}</h2><p>{text.meetText}</p><a href={`/${lang}`}>{text.home} →</a></article></section></main>; }
