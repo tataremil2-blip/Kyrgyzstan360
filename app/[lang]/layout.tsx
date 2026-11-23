@@ -7,7 +7,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./typography.css";
 import "./design-system.css";
-import BookTripButton from "./BookTripButton";
 import BackButton from "./BackButton";
 import CookieConsent from "./CookieConsent";
 
@@ -31,7 +30,6 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           <LanguageSwitcher />
           {children}
           <BackButton />
-          <BookTripButton />
           <CookieConsent />
         </LocaleProvider>
       </body>
