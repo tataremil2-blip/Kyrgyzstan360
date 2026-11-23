@@ -19,6 +19,40 @@ function emailShell(title: string, content: string) {
   return `<!doctype html><html><body style="margin:0;background:#f5f2eb;color:#1e293b;font-family:Arial,sans-serif"><main style="max-width:600px;margin:0 auto;padding:28px 16px"><section style="background:#fff;border:1px solid #e7e0d4;border-radius:16px;overflow:hidden"><header style="background:#12372a;color:#fff;padding:28px"><div style="font-size:12px;letter-spacing:2px;font-weight:700">KYRGYZSTAN360</div><h1 style="font-size:26px;line-height:1.2;margin:14px 0 0">${title}</h1></header><div style="padding:28px">${content}</div></section></main></body></html>`;
 }
 
+function value(input: unknown) {
+  if (Array.isArray(input)) return input.filter((item): item is string | number => typeof item === "string" || typeof item === "number").join(", ");
+  if (typeof input === "string" || typeof input === "number") return String(input);
+  return "—";
+}
+
+function travelerChangeLines(payload: unknown) {
+  const fields = payload && typeof payload === "object" && !Array.isArray(payload)
+    ? (payload as { fields?: unknown }).fields : null;
+  if (!fields || typeof fields !== "object" || Array.isArray(fields)) return ["Trip preferences updated"];
+  const changes = fields as Record<string, unknown>;
+  const line = (label: string, change: unknown, render = value) => {
+    if (!change || typeof change !== "object" || Array.isArray(change)) return null;
+    const pair = change as { from?: unknown; to?: unknown };
+    return `${label}: ${render(pair.from)} → ${render(pair.to)}`;
+  };
+  const dates = changes.dates && typeof changes.dates === "object" && !Array.isArray(changes.dates)
+    ? changes.dates as { from?: unknown; to?: unknown } : null;
+  const dateValue = (input: unknown) => input && typeof input === "object" && !Array.isArray(input)
+    ? ((input as { flexible?: unknown }).flexible ? "Flexible dates" : `${value((input as { startDate?: unknown }).startDate)} – ${value((input as { endDate?: unknown }).endDate)}`) : value(input);
+  const travelers = changes.travelers && typeof changes.travelers === "object" && !Array.isArray(changes.travelers)
+    ? changes.travelers as { from?: unknown; to?: unknown } : null;
+  const travelerValue = (input: unknown) => input && typeof input === "object" && !Array.isArray(input)
+    ? `${value((input as { adults?: unknown }).adults)} adults, ${value((input as { children?: unknown }).children)} children` : value(input);
+  return [
+    line("Destinations", changes.countries),
+    dates ? `Travel dates: ${dateValue(dates.from)} → ${dateValue(dates.to)}` : null,
+    travelers ? `Travelers: ${travelerValue(travelers.from)} → ${travelerValue(travelers.to)}` : null,
+    line("Budget", changes.budget, (input) => input === "—" ? input : `USD ${value(input)}`),
+    line("Interests", changes.interests),
+    line("Trip preferences", changes.preferences),
+  ].filter((item): item is string => Boolean(item));
+}
+
 const previewTelegramBot = "Kyrgyzstan_360_leads_bot";
 
 function shouldVerifyPreviewTelegramIdentity() {
@@ -48,7 +82,7 @@ export async function deliverTripNotifications(reference?: string) {
   const jobs = await db.rpc("claim_trip_notifications", { p_reference: reference ?? null });
   if (jobs.error) throw new Error("Could not claim notification jobs");
   await Promise.all((jobs.data ?? []).map(async (job: {
-    id: string; request_id: string; kind: string; attempts: number;
+    id: string; request_id: string; kind: string; attempts: number; payload?: unknown;
   }) => {
     let providerId: string | null = null;
     let errorCode: string | null = null;
@@ -62,7 +96,16 @@ export async function deliverTripNotifications(reference?: string) {
       const dates = trip.start_date ? trip.start_date + " – " + trip.end_date : "Flexible dates";
       const travelers = trip.adults + " adults, " + trip.children + " children";
       const interests = Array.isArray(details.interests) ? details.interests.filter((interest): interest is string => typeof interest === "string").join(", ") : "";
-      const operatorText = [
+      const travelerUpdate = job.kind === "traveler_update_telegram";
+      const travelerDetails = job.kind === "traveler_details_telegram";
+      const operatorText = travelerUpdate ? [
+        "✏️ Traveler updated request", "", "Request: " + trip.reference_number,
+        "Traveler: " + trip.customer_name, "", "Changed:", ...travelerChangeLines(job.payload), "", "Open in CRM: " + card,
+      ].join("\n") : travelerDetails ? [
+        "💬 Traveler added information", "", "Request: " + trip.reference_number,
+        "Traveler: " + trip.customer_name, "", text(job.payload && typeof job.payload === "object" ? (job.payload as { body?: unknown }).body : ""),
+        "", "Open in CRM: " + card,
+      ].join("\n") : [
         "KYRGYZSTAN360", "New Travel Request", "",
         "Request: " + trip.reference_number, "Name: " + trip.customer_name,
         "Email: " + trip.customer_email, "Phone / WhatsApp: " + text(details.phone),
@@ -70,7 +113,7 @@ export async function deliverTripNotifications(reference?: string) {
         "Travelers: " + travelers, "Budget: USD " + trip.budget,
         "Interests: " + (interests || "—"), "", "Special requests:", text(details.preferences), "", "Open in CRM: " + card,
       ].join("\n");
-      const telegram = job.kind === "telegram";
+      const telegram = job.kind === "telegram" || travelerUpdate || travelerDetails;
       const operator = job.kind === "operator_email";
       const title = operator ? "New travel request · " + trip.reference_number : "Your Kyrgyzstan360 adventure starts here";
       const body = operator ? operatorText : [

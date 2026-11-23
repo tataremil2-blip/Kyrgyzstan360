@@ -1,10 +1,12 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { after } from "next/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireTraveler, travelerAuthClient } from "@/lib/account/auth";
 import { database } from "@/lib/travel-requests/database";
+import { deliverTripNotifications } from "@/lib/travel-requests/notifications";
 import { uuidPattern, validateTravelerUpdate } from "@/lib/travel-requests/validation";
 
 function validEmail(value: string) { return value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value); }
@@ -65,8 +67,25 @@ export async function updateTravelerRequest(id: string, form: FormData) {
   // The RPC returns false for a foreign or missing request. Keep the response
   // indistinguishable from a regular missing account resource.
   if (result.error || result.data !== true) redirect("/account");
+  after(async () => { try { await deliverTripNotifications(); } catch { /* Queued changes remain saved. */ } });
   revalidatePath("/account");
   revalidatePath(path);
   revalidatePath(`/admin/requests/${id}`);
   redirect(`${path}?result=saved`);
+}
+
+export async function addTravelerDetails(id: string, form: FormData) {
+  const user = await requireTraveler();
+  if (!uuidPattern.test(id)) redirect("/account");
+  const path = `/account/requests/${id}`;
+  const body = String(form.get("details") ?? "").trim();
+  if (!body || body.length > 3000) redirect(`${path}?details=invalid`);
+  const result = await database().rpc("add_traveler_request_details", { p_actor: user.id, p_id: id, p_body: body });
+  if (result.error || result.data === "not_found") redirect("/account");
+  if (result.data === "rate_limited") redirect(`${path}?details=rate`);
+  if (result.data !== "saved") redirect(`${path}?details=invalid`);
+  after(async () => { try { await deliverTripNotifications(); } catch { /* Queued changes remain saved. */ } });
+  revalidatePath(path);
+  revalidatePath(`/admin/requests/${id}`);
+  redirect(`${path}?details=added`);
 }

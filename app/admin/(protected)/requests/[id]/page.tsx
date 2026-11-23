@@ -83,11 +83,15 @@ export default async function RequestCard({ params, searchParams }: PageProps<"/
         </li>)}</ul> : <p>No internal notes.</p>}
       </section>
       <section className="crm-panel">
-        <h2>History</h2>
+        <h2>Traveler activity and request history</h2>
         {history.data?.length ? <ul>{history.data.map((event) => <li key={event.id}>
           {event.changes.event === "traveler_updated_request" ? <>
             <p>Traveler updated request</p>
             {travelerChangedFields(event.changes).length > 0 && <p>{travelerChangedFields(event.changes).join(" · ")}</p>}
+            <small>Traveler · {new Date(event.created_at).toISOString()}</small>
+          </> : event.changes.event === "traveler_added_details" ? <>
+            <p>Traveler added information</p>
+            {typeof event.changes.body === "string" && <p>{event.changes.body}</p>}
             <small>Traveler · {new Date(event.created_at).toISOString()}</small>
           </> : <>
             {event.changes.status_from !== event.changes.status_to && <p>{event.changes.status_from} → {event.changes.status_to}</p>}
