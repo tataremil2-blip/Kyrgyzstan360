@@ -123,7 +123,8 @@ export async function retryNotification(requestId: string, jobId: string) {
   if (card.error || !card.data) redirect(path + "?result=error");
   const retry = await db.from("notification_jobs").update({
     state: "pending", attempts: 0, available_at: new Date().toISOString(), error_code: null,
-  }).eq("id", jobId).eq("request_id", requestId).eq("state", "failed").select("id").maybeSingle();
+  }).eq("id", jobId).eq("request_id", requestId).in("state", ["failed", "pending"])
+    .gt("attempts", 0).select("id").maybeSingle();
   if (retry.error || !retry.data) redirect(path + "?result=error");
   try { await deliverTripNotifications(card.data.reference_number); }
   catch { console.error("Manual notification processing failed"); }

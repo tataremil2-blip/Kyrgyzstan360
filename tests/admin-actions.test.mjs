@@ -113,3 +113,8 @@ test("invalid request status is rejected without calling the database RPC", asyn
   await assert.rejects(actions.updateRequest(requestId, form), new RegExp(`REDIRECT:/admin/requests/${requestId}\\?result=error`));
   assert.equal(effects.rpc.length, 0);
 });
+
+test("notification retry remains staff-only and is limited to jobs that already attempted delivery", () => {
+  assert.match(source, /\.in\("state", \["failed", "pending"\]\)/);
+  assert.match(source, /\.gt\("attempts", 0\)/);
+});

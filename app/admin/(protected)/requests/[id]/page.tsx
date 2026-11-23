@@ -73,7 +73,7 @@ export default async function RequestCard({ params, searchParams }: PageProps<"/
         <h2>Notifications</h2>
         <ul>{jobs.data?.map((job) => <li key={job.id}>
           {job.kind.replaceAll("_", " ")} · {job.state} · {job.attempts} attempts {job.error_code && " · " + job.error_code}
-          {job.state === "failed" && <form action={retryNotification.bind(null, id, job.id)}><button>Retry</button></form>}
+          {(job.state === "failed" || (job.state === "pending" && job.attempts > 0)) && <form action={retryNotification.bind(null, id, job.id)}><button>Retry</button></form>}
         </li>)}</ul>
       </section>
       <section className="crm-panel">
