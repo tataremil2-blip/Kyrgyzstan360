@@ -266,6 +266,7 @@ body:has(.cookie-consent) .p4-persistent-cta { bottom:132px; }
 .phase4-home .p4-header .language-switcher-inline a { color:var(--p4-ink); opacity:.72; }
 .phase4-home .p4-header .language-switcher-inline a[aria-current] { color:var(--p4-ink); opacity:1; border-color:var(--p4-accent); }
 .phase4-home .p4-header nav .language-switcher-inline a { color:#142d25 !important; }
+.phase4-home .p4-account-link { font-weight: 800; border-bottom: 1px solid var(--p4-accent); padding-bottom: 4px; }
 .phase4-home #why-local { display:none; }
 .phase4-home #trips > h2 { font-size:0 !important; }
 .phase4-home #trips > h2::after { content:"MOST POPULAR TRAVEL PROGRAMS"; display:block; font-size:clamp(36px,4vw,52px); }
