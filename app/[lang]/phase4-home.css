@@ -282,3 +282,25 @@ body:has(.cookie-consent) .p4-persistent-cta { bottom:132px; }
   .phase4-home .emil-home-story p { font-size:16px; }
   .phase4-home .emil-home-story strong { font-size:17px; }
 }
+.p4-footer { background: #10231e; color: #f6f3ec; padding: 72px max(24px, calc((100vw - 1240px) / 2)) 24px; }
+.p4-footer-grid { display: grid; grid-template-columns: minmax(220px, 1.7fr) repeat(3, minmax(130px, 1fr)); gap: 48px; max-width: 1240px; margin: 0 auto; }
+.p4-footer .p4-brand { color: #f6f3ec; display: inline-block; font-size: 15px; }
+.p4-footer-brand > p { max-width: 230px; margin: 22px 0 20px; color: rgba(246,243,236,.62); font-size: 14px; line-height: 1.5; }
+.p4-footer a { color: inherit; text-decoration: none; }
+.p4-footer-email { color: #f6f3ec !important; font-size: 13px; border-bottom: 1px solid rgba(246,243,236,.4); padding-bottom: 4px; }
+.p4-footer-column { display: flex; flex-direction: column; align-items: flex-start; gap: 11px; }
+.p4-footer-column a, .p4-footer-contact p { color: rgba(246,243,236,.68); font-size: 13px; line-height: 1.35; }
+.p4-footer-column a:hover, .p4-footer-email:hover { color: #fff !important; }
+.p4-footer-label { color: rgba(246,243,236,.42) !important; font-size: 10px !important; font-weight: 800; letter-spacing: .16em; margin: 0 0 8px !important; }
+.p4-footer-contact p { margin: 0; }
+.p4-footer-bottom { display: flex; gap: 18px; align-items: center; max-width: 1240px; margin: 64px auto 0; padding-top: 18px; border-top: 1px solid rgba(246,243,236,.16); color: rgba(246,243,236,.42); font-size: 10px; }
+.p4-footer-bottom span:first-child { margin-right: auto; }
+.p4-footer-bottom a { color: rgba(246,243,236,.58); }
+@media (max-width: 700px) {
+  .p4-footer { padding: 52px 17px 20px; }
+  .p4-footer-grid { grid-template-columns: 1fr 1fr; gap: 38px 24px; }
+  .p4-footer-brand { grid-column: 1 / -1; }
+  .p4-footer-brand > p { margin: 16px 0; }
+  .p4-footer-bottom { align-items: flex-start; flex-wrap: wrap; gap: 9px 16px; margin-top: 46px; line-height: 1.4; }
+  .p4-footer-bottom span:first-child { width: 100%; margin-right: 0; }
+}
