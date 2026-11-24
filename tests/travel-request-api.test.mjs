@@ -15,7 +15,7 @@ function transpile(source) {
 const validationExports = {};
 vm.runInNewContext(transpile(validationSource), { exports: validationExports, require: () => { throw new Error("Unexpected validation import"); } });
 
-function loadRoute({ rateAllowed = true, saved = null, created = "K360-TEST", turnstile = true } = {}) {
+function loadRoute({ rateAllowed = true, saved = null, created = "K360-TEST", turnstile = true, hostname = "preview.invalid", action = "trip_request" } = {}) {
   const exports = {};
   const calls = { rpc: [], fetch: [], after: [] };
   const db = {
@@ -40,7 +40,7 @@ function loadRoute({ rateAllowed = true, saved = null, created = "K360-TEST", tu
     Response, Request, AbortSignal, TextDecoder, Uint8Array, URL, URLSearchParams,
     fetch: async (url, init) => {
       calls.fetch.push({ url, init });
-      return { ok: true, json: async () => ({ success: turnstile, hostname: "preview.invalid", action: "trip_request" }) };
+      return { ok: true, json: async () => ({ success: turnstile, hostname, action }) };
     },
     console: { error: () => {} },
   });
@@ -101,4 +101,21 @@ test("rate limited, duplicate, conflict, and failed challenge requests stop befo
   const challenge = loadRoute({ turnstile: false });
   assert.equal((await challenge.route.POST(request(validInput()))).status, 422);
   assert.equal(challenge.calls.rpc.some(({ name }) => name === "create_travel_request"), false);
+});
+
+test("a new request requires a token and the verified hostname and action", async () => {
+  const missing = loadRoute();
+  const missingResponse = await missing.route.POST(request(validInput({ token: undefined })));
+  assert.equal(missingResponse.status, 422);
+  assert.equal(missing.calls.fetch.length, 0);
+  assert.deepEqual(missing.calls.rpc.map(({ name }) => name), ["consume_trip_request_limit"]);
+  assert.equal(missing.calls.after.length, 0);
+
+  for (const result of [{ hostname: "another-preview.invalid" }, { action: "another_form" }, { turnstile: false }]) {
+    const { route, calls } = loadRoute(result);
+    assert.equal((await route.POST(request(validInput()))).status, 422);
+    assert.equal(calls.fetch.length, 1);
+    assert.deepEqual(calls.rpc.map(({ name }) => name), ["consume_trip_request_limit"]);
+    assert.equal(calls.after.length, 0);
+  }
 });

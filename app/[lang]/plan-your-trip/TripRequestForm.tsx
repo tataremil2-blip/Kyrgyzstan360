@@ -11,9 +11,11 @@ const initial = { name: "", email: "", phone: "", dateMode: "" as DateMode, star
 
 const copy = {
   en: {
+    invalidWhatsApp: "Enter a WhatsApp number with its country code, or leave it blank.",
     name: "Full name", email: "Email", whatsapp: "WhatsApp", dates: "When are you thinking of traveling?", exact: "Exact dates", approximate: "Approximate dates", flexible: "Flexible dates", start: "Start date", end: "End date", period: "Approximate month", travelers: "Number of travelers", budget: "Budget per person", message: "Tell us what you have in mind", send: "SEND MY REQUEST", sending: "Sending…", privacy: "By sending, you agree to our", policy: "Privacy Policy", success: "Thanks, {name}. We've received your request.", thanks: "We'll review what you've shared and get back to you by email.", account: "Create an account to follow your request", errors: { name: "Enter your full name.", email: "Enter a valid email address.", dates: "Check the travel dates.", travelers: "Enter a number from 1 to 100.", budget: "Enter a positive amount with up to two decimal places.", preferences: "Use 3,000 characters or fewer.", challenge: "Please complete the verification again.", rate: "Too many attempts. Please wait 15 minutes and try again.", unavailable: "We couldn't confirm your request. Please try again.", conflict: "This submission was already used. Please try again." },
   },
   ru: {
+    invalidWhatsApp: "Укажите номер WhatsApp с кодом страны или оставьте поле пустым.",
     name: "Имя и фамилия", email: "Электронная почта", whatsapp: "WhatsApp", dates: "Когда вы планируете путешествие?", exact: "Точные даты", approximate: "Примерные даты", flexible: "Гибкие даты", start: "Дата начала", end: "Дата окончания", period: "Примерный месяц", travelers: "Количество путешественников", budget: "Бюджет на человека", message: "Расскажите, что вы хотите", send: "ОТПРАВИТЬ ЗАЯВКУ", sending: "Отправляем…", privacy: "Отправляя форму, вы принимаете", policy: "Политику конфиденциальности", success: "Спасибо, {name}. Мы получили вашу заявку.", thanks: "Мы изучим то, чем вы поделились, и свяжемся с вами по email.", account: "Создайте аккаунт, чтобы следить за заявкой", errors: { name: "Укажите имя и фамилию.", email: "Укажите действительный email.", dates: "Проверьте даты путешествия.", travelers: "Укажите число от 1 до 100.", budget: "Введите положительную сумму с точностью до двух знаков.", preferences: "Используйте не более 3 000 символов.", challenge: "Пожалуйста, пройдите проверку ещё раз.", rate: "Слишком много попыток. Повторите через 15 минут.", unavailable: "Не удалось подтвердить отправку. Попробуйте ещё раз.", conflict: "Эта отправка уже использована. Попробуйте ещё раз." },
   },
 };
@@ -73,7 +75,7 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
         <label className="trip-field">{text.message}<textarea rows={5} maxLength={3000} placeholder={locale === "ru" ? "Расскажите всё, что считаете важным…" : "Tell us anything you'd like us to know…"} value={form.preferences} onChange={(event) => update("preferences", event.target.value)} /></label>
         <p className="trip-privacy">{text.privacy} <a href={`/${locale}/privacy`} target="_blank" rel="noopener">{text.policy}</a>.</p><Turnstile locale={locale} reset={reset} onToken={setToken} />
       </fieldset>
-      {errors.length > 0 && <ul id="trip-errors" className="trip-errors" role="alert">{errors.map((code) => <li key={code}>{text.errors[code as keyof typeof text.errors] ?? text.errors.unavailable}</li>)}</ul>}
+      {errors.length > 0 && <ul id="trip-errors" className="trip-errors" role="alert">{errors.map((code) => <li key={code}>{code === "contact" ? text.invalidWhatsApp : text.errors[code as keyof typeof text.errors] ?? text.errors.unavailable}</li>)}</ul>}
       <button className="trip-submit" type="submit" disabled={sending}>{sending ? text.sending : text.send}</button>
     </form>
   </section>;
