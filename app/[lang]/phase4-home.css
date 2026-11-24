@@ -265,6 +265,11 @@ body:has(.cookie-consent) .p4-persistent-cta { bottom:132px; }
 .phase4-home .emil-home-story .p4-button { width:max-content; background:transparent; color:var(--p4-ink) !important; min-height:auto; padding:0 0 7px; border-bottom:1px solid var(--p4-accent); }
 .phase4-home .p4-header .language-switcher-inline a { color:var(--p4-ink); opacity:.72; }
 .phase4-home .p4-header .language-switcher-inline a[aria-current] { color:var(--p4-ink); opacity:1; border-color:var(--p4-accent); }
+.phase4-home .p4-header nav .language-switcher-inline a { color:#142d25 !important; }
+.phase4-home #why-local { display:none; }
+.phase4-home #trips > h2 { font-size:0 !important; }
+.phase4-home #trips > h2::after { content:"MOST POPULAR TRAVEL PROGRAMS"; display:block; font-size:clamp(36px,4vw,52px); }
+.phase4-home .emil-home-story h2 { font-size:clamp(34px,3.8vw,48px) !important; }
 @media (max-width:760px) {
   .phase4-home .p4-section h2,
   .phase4-home .p4-help h2,
@@ -272,7 +277,8 @@ body:has(.cookie-consent) .p4-persistent-cta { bottom:132px; }
   .phase4-home .emil-home-story { display:flex; flex-direction:column; align-items:stretch; gap:30px; padding:70px 17px; }
   .phase4-home .emil-home-story > div { order:1; gap:14px; }
   .phase4-home .emil-home-story > img { order:2; width:100%; aspect-ratio:4/5; }
-  .phase4-home .emil-home-story h2 { font-size:clamp(30px,8.5vw,40px) !important; }
+  .phase4-home .emil-home-story h2 { font-size:clamp(28px,7.8vw,36px) !important; }
+  .phase4-home #trips > h2::after { font-size:clamp(30px,8vw,40px); }
   .phase4-home .emil-home-story p { font-size:16px; }
   .phase4-home .emil-home-story strong { font-size:17px; }
 }
