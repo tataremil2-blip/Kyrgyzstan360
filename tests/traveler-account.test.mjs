@@ -19,6 +19,8 @@ test("traveler linking is nullable, indexed, and callable only by the server rol
   assert.match(migration, /revoke all on function public\.claim_traveler_requests/);
   assert.match(migration, /grant execute on function public\.claim_traveler_requests\(uuid, text\) to service_role/);
   assert.doesNotMatch(migration, /grant execute on function public\.claim_traveler_requests\(uuid, text\) to authenticated/);
+  assert.match(migration, /set traveler_user_id = p_actor\s+where traveler_user_id is null\s+and lower\(customer_email\) = lower\(trim\(p_email\)\)/);
+  assert.doesNotMatch(migration, /insert into|notification_jobs/);
 });
 
 test("only a confirmed Auth email can claim requests, and account details are owner-scoped", () => {
@@ -29,9 +31,8 @@ test("only a confirmed Auth email can claim requests, and account details are ow
 });
 
 test("anonymous request success keeps submission open and offers account creation", () => {
-  assert.match(requestForm, /We've received your request/);
-  assert.match(requestForm, /Create an account to follow your request/);
-  assert.match(requestForm, /href="\/account\/register"/);
+  assert.match(requestForm, /fetch\("\/api\/trip-requests"/);
+  assert.match(requestForm, /if \(reference\) return <TripRequestSuccess locale=\{locale\} reference=\{reference\}/);
 });
 
 test("traveler request updates use an owner-checked service-role allowlist", () => {

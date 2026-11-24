@@ -12,3 +12,37 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.trip-success .trip-success-kicker {
+  margin: 0 0 16px;
+  color: #506559;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.trip-success-account {
+  margin: 24px 0 12px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.trip-success-account h3 { margin: 0; font-size: clamp(1.2rem, 4vw, 1.6rem); }
+.trip-success-account p { margin: 8px 0 14px; }
+.trip-success a.trip-success-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  min-height: 48px;
+  padding: 10px 16px;
+  background: var(--pine);
+  color: white;
+  font-size: .85rem;
+  letter-spacing: .05em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.trip-success a.trip-success-primary:hover { background: #183a2c; }
+.trip-success p.trip-success-sign-in { margin-top: 14px; font-size: .93rem; }
+.trip-success a.trip-success-continue { display: inline-flex; align-items: center; min-height: 44px; font-size: .9rem; font-weight: 600; }

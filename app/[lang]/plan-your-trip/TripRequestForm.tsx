@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef, useState, type FormEvent } from "react";
-import Link from "next/link";
 import { utmKeys, validate } from "@/lib/travel-requests/validation";
 import Turnstile from "./Turnstile";
+import TripRequestSuccess from "./TripRequestSuccess";
 import { track, useTripPageAnalytics } from "./analytics";
 
 type DateMode = "" | "exact" | "approximate" | "flexible";
@@ -12,11 +12,11 @@ const initial = { name: "", email: "", phone: "", dateMode: "" as DateMode, star
 const copy = {
   en: {
     invalidWhatsApp: "Enter a WhatsApp number with its country code, or leave it blank.",
-    name: "Full name", email: "Email", whatsapp: "WhatsApp", dates: "When are you thinking of traveling?", exact: "Exact dates", approximate: "Approximate dates", flexible: "Flexible dates", start: "Start date", end: "End date", period: "Approximate month", travelers: "Number of travelers", budget: "Budget per person", message: "Tell us what you have in mind", send: "SEND MY REQUEST", sending: "Sending…", privacy: "By sending, you agree to our", policy: "Privacy Policy", success: "Thanks, {name}. We've received your request.", thanks: "We'll review what you've shared and get back to you by email.", account: "Create an account to follow your request", errors: { name: "Enter your full name.", email: "Enter a valid email address.", dates: "Check the travel dates.", travelers: "Enter a number from 1 to 100.", budget: "Enter a positive amount with up to two decimal places.", preferences: "Use 3,000 characters or fewer.", challenge: "Please complete the verification again.", rate: "Too many attempts. Please wait 15 minutes and try again.", unavailable: "We couldn't confirm your request. Please try again.", conflict: "This submission was already used. Please try again." },
+    name: "Full name", email: "Email", whatsapp: "WhatsApp", dates: "When are you thinking of traveling?", exact: "Exact dates", approximate: "Approximate dates", flexible: "Flexible dates", start: "Start date", end: "End date", period: "Approximate month", travelers: "Number of travelers", budget: "Budget per person", message: "Tell us what you have in mind", send: "SEND MY REQUEST", sending: "Sending…", privacy: "By sending, you agree to our", policy: "Privacy Policy", errors: { name: "Enter your full name.", email: "Enter a valid email address.", dates: "Check the travel dates.", travelers: "Enter a number from 1 to 100.", budget: "Enter a positive amount with up to two decimal places.", preferences: "Use 3,000 characters or fewer.", challenge: "Please complete the verification again.", rate: "Too many attempts. Please wait 15 minutes and try again.", unavailable: "We couldn't confirm your request. Please try again.", conflict: "This submission was already used. Please try again." },
   },
   ru: {
     invalidWhatsApp: "Укажите номер WhatsApp с кодом страны или оставьте поле пустым.",
-    name: "Имя и фамилия", email: "Электронная почта", whatsapp: "WhatsApp", dates: "Когда вы планируете путешествие?", exact: "Точные даты", approximate: "Примерные даты", flexible: "Гибкие даты", start: "Дата начала", end: "Дата окончания", period: "Примерный месяц", travelers: "Количество путешественников", budget: "Бюджет на человека", message: "Расскажите, что вы хотите", send: "ОТПРАВИТЬ ЗАЯВКУ", sending: "Отправляем…", privacy: "Отправляя форму, вы принимаете", policy: "Политику конфиденциальности", success: "Спасибо, {name}. Мы получили вашу заявку.", thanks: "Мы изучим то, чем вы поделились, и свяжемся с вами по email.", account: "Создайте аккаунт, чтобы следить за заявкой", errors: { name: "Укажите имя и фамилию.", email: "Укажите действительный email.", dates: "Проверьте даты путешествия.", travelers: "Укажите число от 1 до 100.", budget: "Введите положительную сумму с точностью до двух знаков.", preferences: "Используйте не более 3 000 символов.", challenge: "Пожалуйста, пройдите проверку ещё раз.", rate: "Слишком много попыток. Повторите через 15 минут.", unavailable: "Не удалось подтвердить отправку. Попробуйте ещё раз.", conflict: "Эта отправка уже использована. Попробуйте ещё раз." },
+    name: "Имя и фамилия", email: "Электронная почта", whatsapp: "WhatsApp", dates: "Когда вы планируете путешествие?", exact: "Точные даты", approximate: "Примерные даты", flexible: "Гибкие даты", start: "Дата начала", end: "Дата окончания", period: "Примерный месяц", travelers: "Количество путешественников", budget: "Бюджет на человека", message: "Расскажите, что вы хотите", send: "ОТПРАВИТЬ ЗАЯВКУ", sending: "Отправляем…", privacy: "Отправляя форму, вы принимаете", policy: "Политику конфиденциальности", errors: { name: "Укажите имя и фамилию.", email: "Укажите действительный email.", dates: "Проверьте даты путешествия.", travelers: "Укажите число от 1 до 100.", budget: "Введите положительную сумму с точностью до двух знаков.", preferences: "Используйте не более 3 000 символов.", challenge: "Пожалуйста, пройдите проверку ещё раз.", rate: "Слишком много попыток. Повторите через 15 минут.", unavailable: "Не удалось подтвердить отправку. Попробуйте ещё раз.", conflict: "Эта отправка уже использована. Попробуйте ещё раз." },
   },
 };
 
@@ -31,7 +31,6 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
   const pending = useRef(false);
   const submission = useRef<{ payload: string; key: string } | null>(null);
   const started = useRef(false);
-  const heading = useRef<HTMLHeadingElement>(null);
   useTripPageAnalytics(locale);
 
   function update<K extends keyof typeof initial>(key: K, value: (typeof initial)[K]) { setForm((current) => ({ ...current, [key]: value })); }
@@ -57,12 +56,12 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
       const response = await fetch("/api/trip-requests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, key: submission.current.key, token }), signal: AbortSignal.timeout(25_000) });
       const result = await response.json();
       if (!response.ok || typeof result.reference !== "string") { const reason = ["challenge", "rate", "conflict", "validation"].includes(result.code) ? result.code : "unavailable"; if (reason === "conflict") submission.current = null; setErrors(reason === "validation" && Array.isArray(result.errors) ? result.errors : [reason]); track("failed", locale, { reason }); return; }
-      setReference(result.reference); track("submitted", locale, { reference: result.reference }); track("conversion", locale, { reference: result.reference }); requestAnimationFrame(() => heading.current?.focus());
+      setReference(result.reference); track("submitted", locale, { reference: result.reference }); track("conversion", locale, { reference: result.reference });
     } catch { setErrors(["unavailable"]); track("failed", locale, { reason: "network" }); }
     finally { pending.current = false; setSending(false); setToken(""); setReset((value) => value + 1); }
   }
 
-  if (reference) return <section className="trip-form-shell trip-success" id="trip-form"><h2 ref={heading} tabIndex={-1}>{text.success.replace("{name}", form.name)}</h2><p>{text.thanks}</p><Link href="/account/register">{text.account}</Link></section>;
+  if (reference) return <TripRequestSuccess locale={locale} reference={reference} />;
   return <section className="trip-form-shell" id="trip-form" aria-labelledby="trip-form-heading">
     <form onSubmit={submit} onChange={startedOnce} noValidate aria-describedby={errors.length ? "trip-errors" : undefined}>
       <fieldset disabled={sending} className="trip-fields"><div className="trip-pair"><label className="trip-field">{text.name} *<input autoComplete="name" maxLength={120} required value={form.name} onChange={(event) => update("name", event.target.value)} /></label><label className="trip-field">{text.email} *<input type="email" autoComplete="email" maxLength={254} required value={form.email} onChange={(event) => update("email", event.target.value)} /></label></div>

@@ -8,6 +8,7 @@
 .request-card h2 { margin: 7px 0 10px; font-size: clamp(24px, 3vw, 34px); line-height: 1; letter-spacing: -.04em; text-transform: uppercase; }
 .request-kicker { margin: 0; }
 .request-summary { margin: 0; color: #506359; }
+.request-message-preview { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; margin: 10px 0 0; overflow: hidden; overflow-wrap: anywhere; color: #506359; font-size: .9rem; }
 .request-card-status { border-left: 1px solid #e4ded3; padding-left: 28px; }
 .request-card-status p { color: #64746b; font-size: 14px; line-height: 1.5; margin: 14px 0 20px; }
 .request-link { color: #2d5b45; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
@@ -19,7 +20,8 @@
 .request-status-line { margin: 0 0 6px; }
 .request-trip-data,.request-message { border-top: 1px solid #e4ded3; margin-top: 26px; padding-top: 22px; }
 .request-trip-data h2,.request-message h2 { margin: 0 0 13px; font-size: 18px; text-transform: uppercase; }
-.request-message p { color: #506359; white-space: pre-wrap; }
+.request-message p { color: #506359; white-space: pre-wrap; overflow-wrap: anywhere; }
+.request-detail-reference { margin: 22px 0 0; color: #64746b; font-size: .75rem; }
 .account-new-trip { color: #2d5b45 !important; font-weight: 700; }
 .account-danger { border: 1px solid #c97962; border-radius: 8px; background: transparent; color: #a3482c; padding: 9px 13px; font: inherit; font-size: 14px; cursor: pointer; }
 .account-danger:hover { background: #fff1ed; }
