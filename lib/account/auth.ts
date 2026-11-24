@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { database } from "@/lib/travel-requests/database";
+import { formatCountries } from "@/lib/travel-requests/validation";
 
 function configuration() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -58,4 +59,17 @@ export function customerProgress(status: string) {
     cancelled: { step: 1, label: "Request received", description: "We've received your trip request." },
   } as Record<string, { step: number; label: string; description: string }>)[status]
     ?? { step: 1, label: "Request received", description: "We've received your trip request." };
+}
+
+export function travelerTripTitle(countries: readonly string[]) {
+  const names = formatCountries(countries).split(", ").filter(Boolean);
+  if (!names.length || names[0] === "Not specified") return "Your Travel Request";
+  if (names.length === 1) return `Your ${names[0]} Trip`;
+  return "Your Central Asia Trip";
+}
+
+export function travelerDateLabel(start: string | null, end: string | null, preferred: string | null, flexible: boolean) {
+  if (start && end) return `${start} – ${end}`;
+  if (preferred) return preferred;
+  return flexible ? "Flexible dates" : null;
 }
