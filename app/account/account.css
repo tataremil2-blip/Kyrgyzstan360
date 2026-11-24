@@ -20,4 +20,8 @@
 .request-trip-data,.request-message { border-top: 1px solid #e4ded3; margin-top: 26px; padding-top: 22px; }
 .request-trip-data h2,.request-message h2 { margin: 0 0 13px; font-size: 18px; text-transform: uppercase; }
 .request-message p { color: #506359; white-space: pre-wrap; }
+.account-new-trip { color: #2d5b45 !important; font-weight: 700; }
+.account-danger { border: 1px solid #c97962; border-radius: 8px; background: transparent; color: #a3482c; padding: 9px 13px; font: inherit; font-size: 14px; cursor: pointer; }
+.account-danger:hover { background: #fff1ed; }
+.account-secondary { display: inline-flex; align-items: center; padding: 9px 13px; border: 1px solid #c7d3c8; border-radius: 8px; text-decoration: none; }
 @media(max-width:600px){.account-intro{padding:38px 0 12px}.request-card{grid-template-columns:1fr;gap:18px;padding:21px}.request-card-status{border-left:0;border-top:1px solid #e4ded3;padding:18px 0 0}.request-technical{position:static;margin-top:4px}.request-detail h1{font-size:34px}}

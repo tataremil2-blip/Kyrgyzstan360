@@ -92,3 +92,12 @@ export async function addTravelerDetails(id: string, form: FormData) {
   revalidatePath(`/admin/requests/${id}`);
   redirect(`${path}?details=added`);
 }
+
+export async function deleteTravelerRequest(id: string) {
+  const user = await requireTraveler();
+  if (!uuidPattern.test(id)) redirect("/account");
+  const result = await database().from("travel_requests").delete().eq("id", id).eq("traveler_user_id", user.id).select("id").maybeSingle();
+  if (result.error || !result.data) redirect("/account");
+  revalidatePath("/account");
+  redirect("/account?deleted=1");
+}
