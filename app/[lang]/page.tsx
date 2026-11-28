@@ -1,42 +1,27 @@
-import "./plan-my-trip/planner.css";
-import LanguageSwitcher from "@/app/LanguageSwitcher";
-import MobileNav from "./MobileNav";
-import { getTranslator } from "@/lib/server-translations";
-import { dictionaries, isLocale } from "@/lib/i18n";
-import { notFound } from "next/navigation";
-import { LocalizedAnchor } from "@/app/LocalizedLink";
 import Image from "next/image";
-import "./hero.css";
-import "./home-hero-links.css";
-import "./home-sticky-nav.css";
-import "./home-reviews.css";
-import "./home-contact.css";
-import "./home-founder.css";
-import "./phase4-home.css";
-import InquiryForm from "./InquiryForm";
-import ReviewForm from "./ReviewForm";
-import WinterPromoModal from "./WinterPromoModal";
+import { LocalizedAnchor } from "@/app/LocalizedLink";
+import LanguageSwitcher from "@/app/LanguageSwitcher";
+import { getTranslator } from "@/lib/server-translations";
+import MobileNav from "./MobileNav";
+import HomeNavLinks from "./HomeNavLinks";
 import JourneySection from "./journeys/JourneySection";
+import "./phase4-home.css";
 
-
-const adventures = [
-  { number: "01", title: "INDIVIDUAL TOUR", description: "From 1 guest. A private route, built around you.", href: "/tours/individual", image: "/individual-tour.jpg" },
-  { number: "02", title: "GROUP TOUR", description: "From 3 guests. Share the road and the stories.", href: "/tours/group", image: "/group-tour.jpg" },
-  { number: "03", title: "RENT SERVICE", description: "Prepared 4×4 vehicles, motorcycles and hiking gear for journeys made on your own terms.", href: "/rent", id: "rent", image: "/rent-service-camp.jpg" },
-  { number: "04", title: "KYRGYZSTAN GUIDE BOOK", description: "Explore Kyrgyzstan on your own using my carefully prepared guide book.", href: "/guide-book", image: "/guide-book-hiker-map.png" },
+const programs = [
+  { title: "Private tour", text: "A route built around your interests.", href: "/tours/individual", image: "/individual-tour.jpg" },
+  { title: "Group tour", text: "Explore Kyrgyzstan together by 4×4.", href: "/tours/group", image: "/group-tour.jpg" },
+  { title: "Gear & vehicle rental", text: "Vehicles and equipment for independent travel.", href: "/rent", image: "/rent-service-camp.jpg" },
 ];
 
-const googleReviews = [
-  { label: "Alphina Zakirova", rating: 5, text: "Everything was perfectly organized, and the whole experience was unforgettable.", url: "https://share.google/eY90bIhSpMSBJO4wV" },
-  { label: "Diliara Utiusheva", rating: 5, text: "Sometimes one trip can recharge you better than a whole month of vacation.", url: "https://share.google/4kCCbv3fRckwje1Ho" },
-  { label: "Нафиса Анфиса", rating: 5, text: "Всё прошло отлично — было очень интересно, увлекательно и насыщенно.", url: "https://share.google/MbHIJ9WFA9a3PsLOD" },
-];
-
-const travelStyles = [
-  ["Mountains & Hiking", "/individual-tour.jpg"], ["Horse Riding & Nomadic Life", "/winter/horses.jpg"],
-  ["4×4 Expeditions", "/vehicles/land-cruiser-100-mountains.png"], ["Silk Road & Culture", "/guide-book-hiker-map.png"],
-  ["Nature & Photography", "/hero-kyrgyzstan.jpg"], ["Skiing & Freeride", "/winter/skiers-descent.webp"],
+const activities = [
+  ["Mountain hiking", "M2 19 9 6l4 7 3-5 6 11H2Zm4-7 3 1 2-3"],
+  ["Horse riding & nomadic life", "M5 20c0-5 1-8 5-11L9 4l4 2 3-2 1 5 4 4-2 3-5-2-2 6M15 10h.1"],
+  ["4×4 expeditions", "M2 16V9l3-3h10l4 5h3v5h-3M6 16h8M4 11h13M8 6v5M7 17a2 2 0 1 1-4 0 2 2 0 1 1 4 0Zm12 0a2 2 0 1 1-4 0 2 2 0 1 1 4 0Z"],
+  ["Silk Road culture", "M3 20h18M5 20v-9l7-7 7 7v9M9 20v-5c0-2 3-4 3-4s3 2 3 4v5"],
+  ["Nature & photography", "M2 8h5l2-3h6l2 3h5v12H2V8Zm14 6a4 4 0 1 1-8 0 4 4 0 1 1 8 0Z"],
+  ["Skiing & freeride", "M14 5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 1 1 3 0Zm-3 3-3 5 5 2-2 4M10 10l5 2h4M17 12l2 6M3 17l14 4 4-1"],
 ] as const;
+
 const countries = [
   ["KYRGYZSTAN", "Wild Mountains", "Tian Shan · Yurts · Horses · Alpine Lakes · Hiking · 4×4", "/hero-kyrgyzstan.jpg"],
   ["KAZAKHSTAN", "Epic Landscapes", "Canyons · Steppe · Lakes · Almaty · Road Trips", "/rent-service-camp.jpg"],
@@ -44,55 +29,74 @@ const countries = [
   ["TAJIKISTAN", "Remote Adventure", "Pamir Highway · Fann Mountains · Trekking · Expeditions", "/individual-tour.jpg"],
 ] as const;
 
-function TourIcon({ kind }: { kind: "jeep" | "freeride" | "rent" | "guide" }) {
-  if (kind === "jeep") return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M3 16v-5l2-4h10l3 4h3v5M5 16h14M7 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm14 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM7 11h7" /></svg>;
-  if (kind === "freeride") return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="13.5" cy="4.5" r="1.5" /><path d="m12.5 7-2.5 5 4 3m-3-5 5 1m-2 4 3 3M4 19h16" /></svg>;
-  if (kind === "rent") return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m3 19 7-12 7 12M10 7l7 12M3 19h18M10 19v-4l2-2 2 2v4" /></svg>;
-  return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 5.5A3.5 3.5 0 0 1 8 5c2 0 3 .8 4 2 1-1.2 2-2 4-2a3.5 3.5 0 0 1 4 3.5V19a4 4 0 0 0-4-2c-2 0-3 .8-4 2-1-1.2-2-2-4-2a4 4 0 0 0-4 2V5.5ZM12 7v12" /></svg>;
-}
-
-export default async function Home({ params }: PageProps<"/[lang]">) {
+export default async function Home() {
   const translate = await getTranslator();
-  const { lang } = await params;
-  if (!isLocale(lang)) notFound();
-  const dictionary = dictionaries[lang];
+  const cta = translate("Build Your Adventure");
   return <main className="phase4-page">
     <div className="phase4-home">
-      <header className="p4-header"><LocalizedAnchor className="p4-brand" href="#p4-top">KYRGYZSTAN360</LocalizedAnchor><nav aria-label="Primary navigation"><a href="#countries">Destinations</a><a href="#trips">Trips</a><a href="#how-it-works">How It Works</a><a href="#why-local">About</a><LanguageSwitcher inline /></nav><div><LocalizedAnchor className="p4-button" href="/plan-your-trip" data-build-adventure>{lang === "ru" ? "СОЗДАТЬ ПУТЕШЕСТВИЕ" : "BUILD YOUR ADVENTURE"}</LocalizedAnchor></div><MobileNav className="p4-mobile-menu"><div><nav aria-label="Mobile navigation"><a href="#countries">Destinations</a><a href="#trips">Trips</a><a href="#how-it-works">How It Works</a><a href="#why-local">About</a><LanguageSwitcher inline /><LocalizedAnchor className="p4-button" href="/plan-your-trip" data-build-adventure>{lang === "ru" ? "СОЗДАТЬ ПУТЕШЕСТВИЕ" : "BUILD YOUR ADVENTURE"}</LocalizedAnchor></nav></div></MobileNav></header>
-      <section className="p4-hero" id="p4-top"><Image src="/individual-tour.jpg" fill priority sizes="100vw" alt="Travelers on a Central Asia mountain adventure" /><div className="p4-hero-copy"><p>KYRGYZSTAN · KAZAKHSTAN · UZBEKISTAN · TAJIKISTAN</p><h1>Your Central Asia adventure, built around you.</h1><span>Tell us how you want to travel. We&apos;ll help you find the right local expert and build a trip around your dates, interests and budget.</span><LocalizedAnchor className="p4-button p4-button-light" href="/plan-your-trip" data-build-adventure>{lang === "ru" ? "СОЗДАТЬ ПУТЕШЕСТВИЕ" : "BUILD YOUR ADVENTURE"}</LocalizedAnchor><small>Free request · About 2 minutes · No booking commitment</small><a href="#trips">Explore ready-made trips ↓</a></div></section>
-      <section className="p4-section" id="styles"><p className="p4-kicker">START WITH WHAT EXCITES YOU</p><h2>What kind of adventure are you looking for?</h2><div className="p4-styles">{travelStyles.map(([name, image]) => <LocalizedAnchor href="/plan-your-trip" key={name}><Image src={image} fill sizes="(max-width:700px) 80vw, 32vw" alt="" /><span>{name}</span></LocalizedAnchor>)}</div></section>
-      <section className="p4-section" id="countries"><p className="p4-kicker">ONE INCREDIBLE REGION</p><h2>Four countries. One incredible region.</h2><div className="p4-countries">{countries.map(([country, title, text, image]) => <LocalizedAnchor href="/plan-your-trip" key={country}><Image src={image} fill sizes="(max-width:700px) 100vw, 25vw" alt="" /><div><small>{country}</small><h3>{title}</h3><p>{text}</p></div></LocalizedAnchor>)}</div></section>
-      <section className="p4-band"><div><p className="p4-kicker">CENTRAL ASIA, CONNECTED</p><h2>Can&apos;t choose just one?</h2><p>Combine countries into one Central Asia journey.</p></div><LocalizedAnchor className="p4-button" href="/plan-your-trip">BUILD A MULTI-COUNTRY TRIP</LocalizedAnchor></section>
-      <section className="p4-help"><p className="p4-kicker">START WITHOUT A DESTINATION</p><h2>Not sure where to go?</h2><p>That&apos;s completely fine. Tell us what you enjoy, how much time you have and your approximate budget. We&apos;ll help you figure out which part of Central Asia fits your trip.</p><LocalizedAnchor className="p4-button" href="/plan-your-trip">HELP ME CHOOSE</LocalizedAnchor></section>
-      <section className="p4-section p4-how" id="how-it-works"><p className="p4-kicker">SIMPLE, PERSONAL PLANNING</p><h2>One request. We help with the rest.</h2><ol>{[["01","Tell us about your trip","Dates, interests, group size and approximate budget."],["02","We find the right local expert","Someone who understands the destination and the adventure you&apos;re looking for."],["03","Build your trip","Your route, activities and travel details are shaped around you."],["04","Decide when you&apos;re ready","Review your trip option before moving forward."]].map(([n,t,d])=><li key={n}><b>{n}</b><h3>{t}</h3><p>{d}</p></li>)}</ol><LocalizedAnchor className="p4-button" href="/plan-your-trip">START MY REQUEST</LocalizedAnchor></section>
-      <section className="p4-section" id="trips"><p className="p4-kicker">START WITH AN IDEA</p><h2>Need some inspiration?</h2><p>Start with a proven itinerary. Every trip can still be customized.</p><div className="p4-trips">{adventures.slice(0,3).map((trip)=><article key={trip.title}><Image src={trip.image} fill sizes="(max-width:700px) 100vw, 33vw" alt="" /><div><small>{trip.number}</small><h3>{trip.title}</h3><p>{trip.description}</p><LocalizedAnchor href={trip.href}>VIEW TRIP</LocalizedAnchor><LocalizedAnchor href="/plan-your-trip">CUSTOMIZE THIS TRIP</LocalizedAnchor></div></article>)}</div></section>
-      <section className="p4-why" id="why-local"><p className="p4-kicker">WHY LOCAL</p><h2>Travel with people who actually know the region.</h2><div>{[["LOCAL KNOWLEDGE","Mountain roads, hidden places, local families and experiences that aren&apos;t always easy to find online."],["FLEXIBILITY","Plans can adapt when weather, roads or traveler preferences change."],["BETTER VALUE","Fewer layers of intermediaries mean more of the travel budget can go into the actual experience."],["THE RIGHT PERSON","Different travelers need different local knowledge."]].map(([t,d])=><article key={t}><h3>{t}</h3><p>{d}</p></article>)}</div></section>
+      <header className="p4-header">
+        <a className="p4-brand" href="#p4-top">KYRGYZSTAN360</a>
+        <nav aria-label={translate("Primary navigation")}><HomeNavLinks onHomepage /><LanguageSwitcher inline /></nav>
+        <div><LocalizedAnchor className="p4-button" href="/plan-your-trip" data-build-adventure>{cta}</LocalizedAnchor></div>
+        <MobileNav className="p4-mobile-menu">
+          <div><nav aria-label={translate("Mobile navigation")}>
+            <HomeNavLinks onHomepage /><LanguageSwitcher inline />
+            <LocalizedAnchor className="p4-button" href="/plan-your-trip" data-build-adventure>{cta}</LocalizedAnchor>
+          </nav></div>
+        </MobileNav>
+      </header>
+      <section className="p4-hero" id="p4-top">
+        <Image src="/individual-tour.jpg" fill priority sizes="100vw" alt={translate("Travelers beside a mountain lake")} />
+        <div className="p4-hero-copy">
+          <p id="countries">{["Kyrgyzstan", "Kazakhstan", "Uzbekistan", "Tajikistan"].map(place => translate(place)).join(" · ")}</p>
+          <h1>{translate("Your Central Asia adventure")}</h1>
+          <span id="how-it-works">{translate("We’ll help you find a local guide and plan your trip.")}</span>
+          <LocalizedAnchor className="p4-button" href="/plan-your-trip" data-build-adventure>{cta}</LocalizedAnchor>
+        </div>
+      </section>
+      <section className="p4-section" id="styles">
+        <h2>{translate("What you can experience")}</h2>
+        <ul className="activity-list">{activities.map(([label, path]) => <li key={label}>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d={path} /></svg><span>{translate(label)}</span>
+        </li>)}</ul>
+      </section>
+      <section className="p4-section desktop-geography">
+        <h2>{translate("Four countries. One incredible region.")}</h2>
+        <div className="p4-countries">{countries.map(([country, title, text, image]) => <LocalizedAnchor href="/plan-your-trip" key={country}>
+          <Image src={image} fill sizes="25vw" alt="" /><div><small>{translate(country)}</small><h3>{translate(title)}</h3><p>{translate(text)}</p></div>
+        </LocalizedAnchor>)}</div>
+      </section>
+      <section className="p4-section" id="trips">
+        <h2 id="explore">{translate("Most popular travel programs")}</h2>
+        <div className="program-grid">{programs.map(program => <article key={program.href}>
+          <div className="program-photo"><Image src={program.image} fill sizes="(max-width:760px) 100px, 32vw" alt="" /></div>
+          <div className="program-copy"><h3>{translate(program.title)}</h3><p>{translate(program.text)}</p>
+            <LocalizedAnchor href={program.href}>{translate(program.href === "/rent" ? "View options" : "View trip")} →</LocalizedAnchor>
+          </div>
+        </article>)}</div>
+      </section>
       <JourneySection />
-      <section className="p4-final emil-home-story"><Image src="/founder-kyrgyzstan.jpg" fill sizes="100vw" alt="Emil in the mountains of Kyrgyzstan" /><div><p className="p4-kicker">MEET EMIL</p><h2>I LEFT THE CITY<br />FOR THE MOUNTAINS.</h2><p>I used to live a very different life — businesses, routines, and city days. Then the mountains pulled me in.</p><p>Today, traveling across Central Asia isn&apos;t just my work. It&apos;s the way I live — and something I genuinely want to share with people who come here.</p><strong>I don&apos;t want to show you a tour.<br />I want to show you Central Asia the way I see it.</strong><LocalizedAnchor className="p4-button p4-button-light" href="/about-emil">MY STORY →</LocalizedAnchor></div></section>
-      <footer className="p4-footer">
+      <section className="emil-home-story" id="emil">
+        <div><h2 id="why-local">{translate("Meet Emil")}</h2>
+          <p>{translate("I used to spend my days in the city, running businesses. Then the mountains pulled me in.")}</p>
+          <p>{translate("Today I travel the roads of Central Asia and share the places I love with the people who come here.")}</p>
+          <LocalizedAnchor href="/about-emil">{translate("My story")} →</LocalizedAnchor>
+        </div>
+        <Image src="/founder-kyrgyzstan.jpg" width={900} height={700} sizes="(max-width:760px) 90vw, 40vw" alt={translate("Emil in Kyrgyzstan")} />
+      </section>
+      <footer className="p4-footer" id="contact">
         <div className="p4-footer-grid">
           <div className="p4-footer-brand">
             <LocalizedAnchor className="p4-brand" href="#p4-top">KYRGYZSTAN360</LocalizedAnchor>
             <p>{translate("Adventure begins where the road ends.")}</p>
             <LocalizedAnchor className="p4-footer-email" href="mailto:tataremil2@gmail.com">tataremil2@gmail.com</LocalizedAnchor>
           </div>
-          <div className="p4-footer-column"><p className="p4-footer-label">{translate("EXPLORE")}</p><LocalizedAnchor href="/journeys">{translate("Journeys")}</LocalizedAnchor><LocalizedAnchor href="/about-emil">{translate("About Emil")}</LocalizedAnchor><LocalizedAnchor href="/plan-your-trip">{translate("Plan My Trip")}</LocalizedAnchor></div>
+          <div className="p4-footer-column"><p className="p4-footer-label">{translate("Explore the site")}</p><LocalizedAnchor href="/journeys">{translate("Journeys")}</LocalizedAnchor><LocalizedAnchor href="/about-emil">{translate("About Emil")}</LocalizedAnchor><LocalizedAnchor href="/plan-your-trip">{translate("Build Your Adventure")}</LocalizedAnchor></div>
           <div className="p4-footer-column"><p className="p4-footer-label">{translate("LEGAL")}</p><LocalizedAnchor href="/legal">{translate("Legal Information")}</LocalizedAnchor><LocalizedAnchor href="/terms">{translate("Terms & Conditions")}</LocalizedAnchor><LocalizedAnchor href="/privacy">{translate("Privacy Policy")}</LocalizedAnchor><LocalizedAnchor href="/cookies">{translate("Cookie Policy")}</LocalizedAnchor></div>
-          <div className="p4-footer-column p4-footer-contact"><p className="p4-footer-label">{translate("CONTACT")}</p><p>{translate("Emil Zakirov")}</p><p>{translate("Bishkek, Kyrgyzstan")}</p><p>{translate("WhatsApp: +996 557 444 225")}</p><LocalizedAnchor href="https://www.instagram.com/kyrgyzstan_360_adventures/" target="_blank" rel="noreferrer">Kyrgyzstan360 Instagram ↗</LocalizedAnchor><LocalizedAnchor href="https://www.instagram.com/zakirov_emil_trvl/" target="_blank" rel="noreferrer">Emil&apos;s Instagram ↗</LocalizedAnchor></div>
+          <div className="p4-footer-column p4-footer-contact"><p className="p4-footer-label">{translate("CONTACT")}</p><p>{translate("Emil Zakirov")}</p><p>{translate("Bishkek, Kyrgyzstan")}</p><p>{translate("WhatsApp: +996 557 444 225")}</p><LocalizedAnchor href="https://www.instagram.com/kyrgyzstan_360_adventures/" target="_blank" rel="noreferrer">Kyrgyzstan360 Instagram ↗</LocalizedAnchor><LocalizedAnchor href="https://www.instagram.com/zakirov_emil_trvl/" target="_blank" rel="noreferrer">{translate("Emil’s Instagram")} ↗</LocalizedAnchor></div>
         </div>
         <div className="p4-footer-bottom"><span>© {new Date().getFullYear()} Kyrgyzstan360</span><span>{translate("All rights reserved.")}</span><LocalizedAnchor href="/cookies">{translate("Cookie settings")}</LocalizedAnchor></div>
       </footer>
     </div>
-    <header className="site-header"><div className="nav-shell"><LocalizedAnchor className="brand" href="#top" aria-label={translate("Kyrgyzstan 360 home")}>KYRGYZSTAN<span>360</span></LocalizedAnchor><nav aria-label={translate(dictionary.navigation)}><LocalizedAnchor href="/plan-my-trip">{translate("Trip planner")}</LocalizedAnchor><LocalizedAnchor className="winter-nav-link" href="#winter">{translate(dictionary.winter)}</LocalizedAnchor><LocalizedAnchor href="#explore">{translate(dictionary.explore)}</LocalizedAnchor><LocalizedAnchor href="/guide-book">{translate(dictionary.guideBook)}</LocalizedAnchor><LocalizedAnchor href="#reviews">{translate(dictionary.reviews)}</LocalizedAnchor><LocalizedAnchor href="#contact">{translate(dictionary.contact)}</LocalizedAnchor></nav></div></header>
-    <section className="hero" id="top"><img src="/hero-kyrgyzstan.jpg" alt={translate("Green mountain valley in Kyrgyzstan")} /><div className="hero-shade" /><div className="hero-content container"><p className="eyebrow light">{translate("CENTRAL ASIA ")}{translate("\u00b7")}{translate(" KYRGYZSTAN")}</p><h1>{translate("EXPLORE")}<br />{translate("KYRGYZSTAN")}</h1><div className="hero-bottom"><p>{translate("Private Jeep trips, group routes, winter freeride and independent travel across Kyrgyzstan.")}</p><div className="hero-tour-links"><LocalizedAnchor className="button button-light" href="#explore"><TourIcon kind="jeep" />{translate("INDIVIDUAL JEEP TOURS")}</LocalizedAnchor><LocalizedAnchor className="button button-light winter-season-cta" href="#winter"><TourIcon kind="freeride" />{translate("WINTER SEASON")}</LocalizedAnchor><LocalizedAnchor className="button button-light" href="/rent"><TourIcon kind="rent" />{translate("RENT SERVICE")}</LocalizedAnchor><LocalizedAnchor className="button button-light" href="/guide-book"><TourIcon kind="guide" />{translate("KYRGYZSTAN GUIDE BOOK")}</LocalizedAnchor></div></div></div><p className="coordinates">41{translate(String.fromCharCode(176))}12{translate(String.fromCharCode(8242))}{translate("N ")}{translate("\u00b7")} 74{translate(String.fromCharCode(176))}46{translate(String.fromCharCode(8242))}{translate("E")}</p><LocalizedAnchor className="scroll-cue" href="#explore">{translate("Scroll to explore ")}<span>{translate("\u2193")}</span></LocalizedAnchor></section>
-    <section className="founder-section" aria-labelledby="founder-title"><div className="container founder-inner"><div className="founder-photo"><Image src="/founder-kyrgyzstan.jpg" alt={translate("Kyrgyzstan360 founder by a yurt and lake in Kyrgyzstan")} fill sizes="(max-width: 700px) calc(100vw - 34px), 45vw" /></div><div className="founder-story"><p className="eyebrow">{translate("WHY KYRGYZSTAN360")}</p><h2 id="founder-title">{translate("Travel with a local")}<br />{translate("Discover Kyrgyzstan")}<br />{translate("with me")}</h2><div className="founder-copy"><p>{translate("Kyrgyzstan is more than a destination to me. These mountains are where I spend my life — driving remote roads, hiking, skiing, guiding and constantly discovering new places.")}</p><p>{translate("Over the years, I’ve built a community around me of guides, freeriders, athletes, travellers and friends who are actively developing outdoor culture in Kyrgyzstan — from pushing freeride forward to taking part in some of the country’s major events.")}</p><p>{translate("That means your journey isn’t limited to a standard itinerary. You travel through a network of local people, places and experiences that I genuinely know and trust.")}</p><p>{translate("But the most important thing is simple: I love what I do.")}</p><p>{translate("I love the mountains. I love the road. And I want to share that feeling with people who have the same curiosity and spirit of adventure.")}</p><p>{translate("I’m not inviting you to simply visit Kyrgyzstan.")}</p><p>{translate("I’m inviting you to discover it with me.")}</p></div><div className="founder-values"><span>{translate("MOUNTAINS ARE MY HOME")}</span><span>{translate("LOCAL COMMUNITY")}</span><span>{translate("PERSONAL JOURNEYS")}</span></div><LocalizedAnchor className="founder-instagram" href="https://www.instagram.com/zakirov_emil_trvl/" target="_blank" rel="noreferrer"><span>{translate("MY INSTAGRAM")}</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" /></svg></LocalizedAnchor></div></div></section>
-    <section className="winter-section container" id="winter" aria-labelledby="winter-title"><div className="winter-card"><LocalizedAnchor className="winter-image-link" href="/winter-freeride" aria-label={translate("Explore the Winter Freeride tour")}><img src="https://cdn1.matadornetwork.com/blogs/1/2023/03/nansen-kyrgyzstan-ski-trip.jpg" alt={translate("Freeride skier in the snowy mountains of Kyrgyzstan")} /></LocalizedAnchor><div className="winter-shade" /><div className="winter-copy"><p className="eyebrow light">{translate("WINTER IN THE TIEN SHAN")}</p><h2 id="winter-title">{translate("Explore Kyrgyzstan")}<br /><em>{translate("in Winter")}</em></h2><p className="winter-description">{translate("Deep, dry powder. Wide-open lines. Intimate freeride camps far from the crowds. Ride the Tian Shan with a private guide who knows every turn.")}</p><div className="winter-event-row"><LocalizedAnchor className="winter-fwt" href="/winter-freeride#calendar"><span className="winter-fwt-mark" aria-hidden="true"><svg viewBox="0 0 42 42"><path d="M5 31 15 15l5 8 6-12 11 20" /><path d="m13 31 8-9 5 6 4-5 7 8" /></svg></span><div><strong>{translate("FREERIDE WORLD TOUR QUALIFIER")}</strong><p>{translate("Official qualifier event in the mountains of Kyrgyzstan.")}</p></div></LocalizedAnchor><LocalizedAnchor className="winter-fwt" href="/winter-freeride#calendar"><span className="winter-fwt-mark" aria-hidden="true"><svg viewBox="0 0 42 42"><path d="M6 30h30M10 30l8-15 5 9 4-6 9 12" /><path d="M12 35h18" /></svg></span><div><strong>{translate("SILK ROAD FREERIDE")}</strong><p>{translate("We arrange transfers to the competition on January 14–17, 2027.")}</p></div></LocalizedAnchor></div><LocalizedAnchor className="button button-light" href="/winter-freeride">{translate("EXPLORE")}</LocalizedAnchor></div></div></section>
-    <section className="section container" id="explore"><div className="section-heading split-heading"><div><p className="eyebrow">{translate("START HERE")}</p><h2>{translate("CHOOSE YOUR")}<br />{translate("ADVENTURE")}</h2></div><p className="intro">{translate("Choose how you want to experience Kyrgyzstan. We'll take care of the rest.")}</p></div><div className="adventure-grid">{translate(adventures.map((item) => <LocalizedAnchor className={`adventure-card card-${item.number}`} href={item.href} id={item.id} key={item.title}><img src={item.image} alt={translate("")} /><div className="image-overlay" /><div className="card-copy"><span className="card-number">{translate(item.number)}</span><div><h3>{translate(item.title)}</h3><p>{translate(item.description)}</p></div></div></LocalizedAnchor>))}</div></section>
-    <section className="planner-home-block container" aria-labelledby="home-planner-title"><div><p className="planner-eyebrow">{translate("A TRIP THAT STARTS WITH YOU")}</p><h2 id="home-planner-title">{translate("Build your own")}<br />{translate("Kyrgyzstan journey.")}</h2><p>{translate("Choose your pace, interests and travel style. Explore an example route and plan the real adventure with us.")}</p><LocalizedAnchor className="button button-light" href="/plan-my-trip">{translate("PLAN MY JOURNEY")} ↗</LocalizedAnchor></div><div className="planner-home-number" aria-hidden="true">360°<small>{translate("YOUR ROUTE. YOUR RHYTHM.")}</small></div></section>
-    <section className="reviews-section" id="reviews"><div className="container reviews-inner"><div className="reviews-showcase"><div className="reviews-showcase-heading"><p className="eyebrow">{translate("YOUR REVIEWS")}</p><h2 className="reviews-heading">{translate("Stories from")}<br />{translate("the road")}</h2><p>{translate("Reviews from guests who travelled with Kyrgyzstan360.")}</p><small className="review-average">{translate("GOOGLE MAPS · 5.0 / 5")}</small></div><p className="review-original-note">{translate("Original guest reviews")}</p><div className="reviews-grid">{translate(googleReviews.map((review) => <article className="guest-review" key={review.label}><div className="guest-review-stars" aria-label={translate("{rating} out of 5 stars", { rating: review.rating })}>{translate([1, 2, 3, 4, 5].map((star) => <span className={star <= review.rating ? "is-filled" : ""} key={star}>★</span>))}</div><p>{translate(review.text)}</p><div className="guest-review-meta"><strong>{translate(review.label)}</strong><LocalizedAnchor href={review.url} target="_blank" rel="noreferrer">{translate("Google Maps")}</LocalizedAnchor></div></article>))}</div></div><div className="reviews-bridge" aria-hidden="true" /><div className="leave-review"><p className="eyebrow">{translate("SHARE YOUR EXPERIENCE")}</p><h2 className="reviews-heading">{translate("Leave a")}<br />{translate("review")}</h2><span>{translate("Tell future travellers about your time in Kyrgyzstan. It takes a minute and does not require an account.")}</span><ReviewForm /></div><div className="external-review-links"><span>{translate("Or add your review on")}</span><LocalizedAnchor className="google-maps-link" href="https://www.google.com/maps/place/Kyrgyzstan+360+adventures/@42.9058553,74.5712183,511m/data=!3m2!1e3!4b1!4m6!3m5!1s0x389ec75c73d8cabf:0x339c0d0ba32e5795!8m2!3d42.9058514!4d74.5737932!16s%2Fg%2F11zymf792k!5m1!1e1" target="_blank" rel="noreferrer"><svg className="google-maps-icon" aria-hidden="true" viewBox="0 0 24 24"><path fill="#34A853" d="M12 2a10 10 0 0 0-7.7 16.4L12 22V12H2a10 10 0 0 0 10-10Z" /><path fill="#4285F4" d="M12 2v10l7.7 6.4A10 10 0 0 0 12 2Z" /><path fill="#FBBC04" d="M2 12h10v10L4.3 18.4A10 10 0 0 1 2 12Z" /><path fill="#EA4335" d="M12 12v10l7.7-3.6A10 10 0 0 0 22 12H12Z" /><circle cx="12" cy="12" r="3.2" fill="#fff" /></svg><span>{translate("Google Maps")}</span></LocalizedAnchor></div></div></section>
-    <section className="contact-section" id="contact"><div className="container contact-inner"><p className="eyebrow">{translate("START YOUR JOURNEY")}</p><h2>{translate("Leave an inquiry")}<br />{translate("and we'll contact you")}</h2><p>{translate("Just leave your details and we'll get back to you shortly.")}</p><InquiryForm /></div></section>
-    <footer><div className="container footer-inner"><LocalizedAnchor className="brand" href="#top">KYRGYZSTAN<span>360</span></LocalizedAnchor><p>{translate("Adventure begins where the road ends.")}</p><nav className="footer-legal" aria-label={translate("Legal")}><span>{translate("LEGAL")}</span><LocalizedAnchor href="/legal">{translate("Legal Information")}</LocalizedAnchor><LocalizedAnchor href="/terms">{translate("Terms & Conditions")}</LocalizedAnchor><LocalizedAnchor href="/privacy">{translate("Privacy Policy")}</LocalizedAnchor><LocalizedAnchor href="/cookies">{translate("Cookie Policy")}</LocalizedAnchor></nav><LocalizedAnchor href="mailto:tataremil2@gmail.com">{translate("tataremil2@gmail.com")}</LocalizedAnchor><LocalizedAnchor href="#contact">{translate("PLAN MY TRIP")}</LocalizedAnchor></div></footer>
-  <WinterPromoModal />
   </main>;
 }
-

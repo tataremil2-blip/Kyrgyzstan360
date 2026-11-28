@@ -1,8 +1,10 @@
 "use client";
 
+import { useTranslator } from "@/app/LocaleProvider";
 import { useRef, type MouseEvent, type ReactNode } from "react";
 
 export default function MobileNav({ children, className }: { children: ReactNode; className: string }) {
+  const t = useTranslator();
   const toggle = useRef<HTMLElement>(null);
 
   function selectLink(event: MouseEvent<HTMLDetailsElement>) {
@@ -20,7 +22,7 @@ export default function MobileNav({ children, className }: { children: ReactNode
         toggle.current?.focus();
       }
     }}>
-      <summary aria-label="Open navigation" ref={toggle}>
+      <summary aria-label={t("Navigation menu")} ref={toggle}>
         <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
       </summary>
       {children}
