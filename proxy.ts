@@ -1,10 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { isLocale } from "./lib/i18n";
-import { updateAuthSession } from "./lib/admin/session-proxy";
 
-export async function proxy(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  if (path === "/admin" || path.startsWith("/admin/") || path === "/account" || path.startsWith("/account/")) return updateAuthSession(request);
+  const withoutLocale = path.replace(/^\/(en|ru)(?=\/|$)/, "");
+  // Email-first release: prevent legacy API calls AND Next Server Action POST forwarding.
+  if (path === "/api/email-leads") return NextResponse.next();
+  if (withoutLocale === "/api" || withoutLocale.startsWith("/api/") ||
+      /^\/(admin(?:-v2)?|account)(?:\/|$)/.test(withoutLocale)) {
+    return new NextResponse("Not available in this release", { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+  if (!["GET", "HEAD"].includes(request.method)) return new NextResponse(null, { status: 405, headers: { Allow: "GET, HEAD" } });
+  if (path.includes(".") || path.startsWith("/_next/")) return NextResponse.next();
   const first = path.split("/")[1];
   if (isLocale(first)) return NextResponse.next();
   if (/^[a-z]{2}(?:-[A-Za-z]{2})?$/.test(first)) return NextResponse.next();
@@ -16,7 +23,6 @@ export async function proxy(request: NextRequest) {
   if (path === "/") response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
-
 export const config = {
-  matcher: ["/admin/:path*", "/account/:path*", "/((?!api(?:/|$)|_next(?:/|$)|.*\\..*).*)"],
+  matcher: ["/((?!_next(?:/|$)).*)", { source: "/:path*", has: [{ type: "header", key: "next-action" }] }],
 };

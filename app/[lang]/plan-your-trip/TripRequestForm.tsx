@@ -20,9 +20,9 @@ const copy = {
   },
 };
 
-export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
+export default function TripRequestForm({ locale, context = "" }: { locale: "en" | "ru"; context?: string }) {
   const text = copy[locale];
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState({ ...initial, preferences: context });
   const [errors, setErrors] = useState<string[]>([]);
   const [reference, setReference] = useState("");
   const [token, setToken] = useState("");
@@ -53,10 +53,10 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
     try {
       const payload = JSON.stringify(data);
       if (submission.current?.payload !== payload) submission.current = { payload, key: crypto.randomUUID() };
-      const response = await fetch("/api/trip-requests", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, key: submission.current.key, token }), signal: AbortSignal.timeout(25_000) });
+      const response = await fetch("/api/email-leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, key: submission.current.key, token }), signal: AbortSignal.timeout(25_000) });
       const result = await response.json();
       if (!response.ok || typeof result.reference !== "string") { const reason = ["challenge", "rate", "conflict", "validation"].includes(result.code) ? result.code : "unavailable"; if (reason === "conflict") submission.current = null; setErrors(reason === "validation" && Array.isArray(result.errors) ? result.errors : [reason]); track("failed", locale, { reason }); return; }
-      setReference(result.reference); track("submitted", locale, { reference: result.reference }); track("conversion", locale, { reference: result.reference });
+      setReference(result.reference); if (!result.replayed) { track("submitted", locale, { reference: result.reference }); track("conversion", locale, { reference: result.reference }); }
     } catch { setErrors(["unavailable"]); track("failed", locale, { reason: "network" }); }
     finally { pending.current = false; setSending(false); setToken(""); setReset((value) => value + 1); }
   }
@@ -75,6 +75,7 @@ export default function TripRequestForm({ locale }: { locale: "en" | "ru" }) {
         <p className="trip-privacy">{text.privacy} <a href={`/${locale}/privacy`} target="_blank" rel="noopener">{text.policy}</a>.</p><Turnstile locale={locale} reset={reset} onToken={setToken} />
       </fieldset>
       {errors.length > 0 && <ul id="trip-errors" className="trip-errors" role="alert">{errors.map((code) => <li key={code}>{code === "contact" ? text.invalidWhatsApp : text.errors[code as keyof typeof text.errors] ?? text.errors.unavailable}</li>)}</ul>}
+      {errors.length > 0 && <p className="trip-privacy">{locale === "ru" ? "Нужна помощь? Напишите нам: " : "Need help? Contact us: "}<a href="mailto:travel@kyrgyzstan360.com">travel@kyrgyzstan360.com</a> · <a href="https://wa.me/996557444225" target="_blank" rel="noopener noreferrer">WhatsApp</a>.</p>}
       <button className="trip-submit" type="submit" disabled={sending}>{sending ? text.sending : text.send}</button>
     </form>
   </section>;

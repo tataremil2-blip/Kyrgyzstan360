@@ -30,8 +30,8 @@ test("only a confirmed Auth email can claim requests, and account details are ow
   assert.doesNotMatch(requestPage, /travel_request_notes|notification_jobs/);
 });
 
-test("anonymous request success keeps submission open and offers account creation", () => {
-  assert.match(requestForm, /fetch\("\/api\/trip-requests"/);
+test("email-first form uses the independent endpoint and success receipt", () => {
+  assert.match(requestForm, /fetch\("\/api\/email-leads"/);
   assert.match(requestForm, /if \(reference\) return <TripRequestSuccess locale=\{locale\} reference=\{reference\}/);
 });
 

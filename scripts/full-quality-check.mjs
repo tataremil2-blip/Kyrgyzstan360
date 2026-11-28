@@ -22,6 +22,7 @@ function run(args, cwd = root, env = process.env) {
 }
 
 for (const [label, args] of [
+  ["Next route types", ["--require", path.join(root, "scripts", "deny-env-files.cjs"), path.join(root, "node_modules", "next", "dist", "bin", "next"), "typegen"]],
   ["TypeScript", [path.join(root, "node_modules", "typescript", "bin", "tsc"), "--noEmit"]],
   ["ESLint", [path.join(root, "node_modules", "eslint", "bin", "eslint.js")]],
   ["Automated tests", ["--test"]],
@@ -34,9 +35,6 @@ for (const [label, args] of [
 const buildEnv = { ...safeEnv, NODE_ENV: "production" };
 Object.assign(buildEnv, {
   APP_BASE_URL: "https://preview.invalid",
-  NEXT_PUBLIC_SUPABASE_URL: "https://epyifhlwdhzlpfpnavkg.supabase.co",
-  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "sb_publishable_qa_placeholder",
-  SUPABASE_SECRET_KEY: "sb_secret_qa_placeholder",
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: "turnstile_qa_placeholder",
   NEXT_PUBLIC_GA_MEASUREMENT_ID: "",
   TURNSTILE_SECRET_KEY: "",

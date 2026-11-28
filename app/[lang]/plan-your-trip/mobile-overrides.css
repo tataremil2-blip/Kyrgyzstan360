@@ -13,3 +13,10 @@
   .trip-submit { margin-top: 18px; }
   .trip-trust { margin-top: 54px; gap: 42px; }
 }
+
+/* The request page has a light background, unlike photographic tour heroes. */
+@media (max-width: 700px) {
+  body:has(.trip-request) .mobile-site-header { color: #142d25; }
+  body:has(.trip-request) .mobile-menu summary { background: transparent; border-radius: 0; }
+  body:has(.trip-request) .mobile-menu[open] summary { color: #f6f3ec; }
+}

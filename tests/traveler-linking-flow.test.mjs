@@ -35,12 +35,12 @@ function Link({ prefetch, ...props }) {
   return createElement("a", props);
 }
 
-test("receipt links use the normal account and localized home routes with no resubmission", () => {
+test("email-first receipt hides unavailable account links and has no resubmission", () => {
   const Receipt = load("app/[lang]/plan-your-trip/TripRequestSuccess.tsx", { "next/link": Link }).default;
   for (const locale of ["en", "ru"]) {
     const html = renderToStaticMarkup(createElement(Receipt, { locale, reference: "K360-TEST" }));
-    assert.match(html, /href="\/account\/register"/);
-    assert.match(html, /href="\/account"/);
+    assert.doesNotMatch(html, /href="\/account/);
+
     assert.ok(html.includes(`href="/${locale}"`));
     assert.match(html, locale === "en" ? /Your adventure starts here!/ : /Ваше приключение начинается здесь!/);
     assert.match(html, /K360-TEST/);

@@ -21,7 +21,7 @@ export default function MobileHeader() {
             <Link href="/#how-it-works">How it works</Link>
             <Link href="/#why-local">About</Link>
             <LanguageSwitcher inline />
-            <Link href="/account/login">Sign in</Link>
+
             <Link className="mobile-menu-cta" href="/plan-your-trip">Plan my trip</Link>
           </nav>
         </div>

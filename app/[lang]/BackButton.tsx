@@ -10,7 +10,7 @@ export default function BackButton() {
   const pathname = stripLocale(usePathname());
   const { dictionary } = useLocale();
 
-  if (pathname === "/") return null;
+  if (pathname === "/" || pathname === "/plan-your-trip") return null;
 
   return (
     <Link className="back-button" href="/" aria-label={dictionary.home}>
