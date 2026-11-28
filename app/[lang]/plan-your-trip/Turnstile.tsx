@@ -69,7 +69,10 @@ export default function Turnstile({ locale, reset, onToken }: {
     const node = host.current;
     if (!node || !siteKey) return;
     let active = true;
-    let cleanup: (() => void) | undefined;
+    let widget: Widget | undefined;
+    let widgetId: string | undefined;
+    let size: "compact" | "flexible" | undefined;
+    let generation = 0;
 
     function reportFailure(reason: Failure) {
       if (!active) return;
@@ -77,31 +80,58 @@ export default function Turnstile({ locale, reset, onToken }: {
       setFailure({ reset, reason });
     }
 
-    void loadWidget().then((widget) => {
-      if (!active) return;
-      const id = widget.render(node, {
-        sitekey: siteKey,
-        action: "trip_request",
-        language: locale,
-        size: node.clientWidth < 300 ? "compact" : "flexible",
-        retry: "never",
-        "refresh-expired": "never",
-        "refresh-timeout": "never",
-        callback: (token: string) => {
-          if (!active) return;
-          setFailure(null);
-          onToken(token);
-        },
-        "expired-callback": () => reportFailure("expired"),
-        "timeout-callback": () => reportFailure("expired"),
-        "error-callback": () => reportFailure("unavailable"),
-      });
-      cleanup = () => widget.remove(id);
+    function renderWidget() {
+      if (!active || !widget || node?.hidden || !node?.clientWidth) return;
+      const nextSize = node.clientWidth < 300 ? "compact" : "flexible";
+      if (size === nextSize) return;
+      size = nextSize;
+
+      // Switching layout replaces the widget. Only its current instance may update the form token.
+      const instance = ++generation;
+      if (widgetId !== undefined) {
+        widget.remove(widgetId);
+        widgetId = undefined;
+        onToken("");
+      }
+      const fail = (reason: Failure) => {
+        if (instance === generation) reportFailure(reason);
+      };
+
+      try {
+        widgetId = widget.render(node, {
+          sitekey: siteKey,
+          action: "trip_request",
+          language: locale,
+          size,
+          retry: "never",
+          "refresh-expired": "never",
+          "refresh-timeout": "never",
+          callback: (token: string) => {
+            if (!active || instance !== generation) return;
+            setFailure(null);
+            onToken(token);
+          },
+          "expired-callback": () => fail("expired"),
+          "timeout-callback": () => fail("expired"),
+          "error-callback": () => fail("unavailable"),
+        });
+      } catch {
+        fail("unavailable");
+      }
+    }
+
+    const observer = new ResizeObserver(renderWidget);
+    observer.observe(node);
+
+    void loadWidget().then((loaded) => {
+      widget = loaded;
+      renderWidget();
     }).catch(() => reportFailure("unavailable"));
 
     return () => {
       active = false;
-      cleanup?.();
+      observer.disconnect();
+      if (widgetId !== undefined) widget?.remove(widgetId);
     };
   }, [attempt, locale, onToken, reset]);
 

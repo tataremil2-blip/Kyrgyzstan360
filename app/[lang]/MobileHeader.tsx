@@ -4,6 +4,7 @@ import Link from "@/app/LocalizedLink";
 import LanguageSwitcher from "@/app/LanguageSwitcher";
 import { stripLocale } from "@/lib/i18n";
 import { usePathname } from "next/navigation";
+import MobileNav from "./MobileNav";
 import "./mobile-header.css";
 
 export default function MobileHeader() {
@@ -12,8 +13,7 @@ export default function MobileHeader() {
   return (
     <header className="mobile-site-header">
       <Link className="mobile-site-brand" href="/" aria-label="Kyrgyzstan360 home">KYRGYZSTAN360</Link>
-      <details className="mobile-menu">
-        <summary aria-label="Open navigation"><span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" /></summary>
+      <MobileNav className="mobile-menu">
         <div className="mobile-menu-panel">
           <nav aria-label="Mobile navigation">
             <Link href="/#countries">Destinations</Link>
@@ -25,7 +25,7 @@ export default function MobileHeader() {
             <Link className="mobile-menu-cta" href="/plan-your-trip">Plan my trip</Link>
           </nav>
         </div>
-      </details>
+      </MobileNav>
     </header>
   );
 }

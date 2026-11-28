@@ -4,6 +4,8 @@ import { isLocale, locales, dictionaries } from "@/lib/i18n";
 import { LocaleProvider } from "@/app/LocaleProvider";
 import LanguageSwitcher from "@/app/LanguageSwitcher";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import PublicAnalytics from "./PublicAnalytics";
 import "./globals.css";
 import "./typography.css";
 import "./design-system.css";
@@ -34,6 +36,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
           {children}
           <BackButton />
           <CookieConsent />
+          <Suspense fallback={null}><PublicAnalytics /></Suspense>
         </LocaleProvider>
       </body>
     </html>

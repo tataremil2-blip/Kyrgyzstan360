@@ -6,12 +6,30 @@
   .trip-request h1 { font-size: clamp(2.25rem, 11vw, 3.35rem); line-height: 1; }
   .trip-request-hero > p:not(.trip-kicker) { margin-top: 14px; font-size: 1rem; line-height: 1.45; }
   .trip-geography { margin-top: 22px; gap: 5px; font-size: .86rem; }
+  .trip-fields, .trip-pair, .trip-field, .trip-date-modes, .trip-date-options, .trip-trust { grid-template-columns: minmax(0, 1fr); }
   .trip-fields { gap: 16px; }
+  .trip-date-options label { min-inline-size: 0; }
+  .trip-date-options label span { overflow-wrap: anywhere; }
   .trip-form-shell { padding: 20px 16px; }
   .trip-field { gap: 6px; }
   .trip-field input,.trip-field textarea { padding: 12px; }
   .trip-submit { margin-top: 18px; }
   .trip-trust { margin-top: 54px; gap: 42px; }
+}
+
+:lang(ru) .trip-request h1 {
+  max-inline-size: min(100%, 14ch);
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+:lang(ru) .trip-trust h2 { overflow-wrap: anywhere; hyphens: auto; }
+
+@media (max-width: 430px) {
+  :lang(ru) .trip-request h1 {
+    max-inline-size: 100%;
+    font-size: clamp(1.75rem, 9vw, 2.45rem);
+  }
 }
 
 /* The request page has a light background, unlike photographic tour heroes. */

@@ -4,7 +4,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { utmKeys, validate } from "@/lib/travel-requests/validation";
 import Turnstile from "./Turnstile";
 import TripRequestSuccess from "./TripRequestSuccess";
-import { track, useTripPageAnalytics } from "./analytics";
+import { trackAcceptedTripRequest, trackPublicEvent } from "../analytics";
 
 type DateMode = "" | "exact" | "approximate" | "flexible";
 const initial = { name: "", email: "", phone: "", dateMode: "" as DateMode, startDate: "", endDate: "", preferredPeriod: "", travelers: "", budget: "", preferences: "" };
@@ -31,10 +31,9 @@ export default function TripRequestForm({ locale, context = "" }: { locale: "en"
   const pending = useRef(false);
   const submission = useRef<{ payload: string; key: string } | null>(null);
   const started = useRef(false);
-  useTripPageAnalytics(locale);
 
   function update<K extends keyof typeof initial>(key: K, value: (typeof initial)[K]) { setForm((current) => ({ ...current, [key]: value })); }
-  function startedOnce() { if (!started.current) { started.current = true; track("started", locale); } }
+  function startedOnce() { if (!started.current) { started.current = true; trackPublicEvent("trip_request_started", locale); } }
   function clearDates(mode: DateMode) { update("dateMode", mode); if (mode !== "exact") { update("startDate", ""); update("endDate", ""); } if (mode !== "approximate") update("preferredPeriod", ""); }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -55,9 +54,10 @@ export default function TripRequestForm({ locale, context = "" }: { locale: "en"
       if (submission.current?.payload !== payload) submission.current = { payload, key: crypto.randomUUID() };
       const response = await fetch("/api/email-leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...data, key: submission.current.key, token }), signal: AbortSignal.timeout(25_000) });
       const result = await response.json();
-      if (!response.ok || typeof result.reference !== "string") { const reason = ["challenge", "rate", "conflict", "validation"].includes(result.code) ? result.code : "unavailable"; if (reason === "conflict") submission.current = null; setErrors(reason === "validation" && Array.isArray(result.errors) ? result.errors : [reason]); track("failed", locale, { reason }); return; }
-      setReference(result.reference); if (!result.replayed) { track("submitted", locale, { reference: result.reference }); track("conversion", locale, { reference: result.reference }); }
-    } catch { setErrors(["unavailable"]); track("failed", locale, { reason: "network" }); }
+      if (!response.ok || typeof result.reference !== "string") { const reason = ["challenge", "rate", "conflict", "validation"].includes(result.code) ? result.code : "unavailable"; if (reason === "conflict") submission.current = null; setErrors(reason === "validation" && Array.isArray(result.errors) ? result.errors : [reason]); trackPublicEvent("trip_request_failed", locale, reason); return; }
+      setReference(result.reference);
+      trackAcceptedTripRequest(response.status, result, locale);
+    } catch { setErrors(["unavailable"]); trackPublicEvent("trip_request_failed", locale, "network"); }
     finally { pending.current = false; setSending(false); setToken(""); setReset((value) => value + 1); }
   }
 
