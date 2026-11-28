@@ -2,9 +2,12 @@ import Image from "next/image";
 import { LocalizedAnchor } from "@/app/LocalizedLink";
 import LanguageSwitcher from "@/app/LanguageSwitcher";
 import { getTranslator } from "@/lib/server-translations";
+import { isLocale } from "@/lib/i18n";
+import { notFound } from "next/navigation";
 import MobileNav from "./MobileNav";
 import HomeNavLinks from "./HomeNavLinks";
 import JourneySection from "./journeys/JourneySection";
+import { activities, activityContent, type ActivityIcon } from "@/lib/activities";
 import "./phase4-home.css";
 
 const programs = [
@@ -13,25 +16,32 @@ const programs = [
   { title: "Gear & vehicle rental", text: "Vehicles and equipment for independent travel.", href: "/rent", image: "/rent-service-camp.jpg" },
 ];
 
-const activities = [
-  ["Mountain hiking", "M2 19 9 6l4 7 3-5 6 11H2Zm4-7 3 1 2-3"],
-  ["Horse riding & nomadic life", "M5 20c0-5 1-8 5-11L9 4l4 2 3-2 1 5 4 4-2 3-5-2-2 6M15 10h.1"],
-  ["4×4 expeditions", "M2 16V9l3-3h10l4 5h3v5h-3M6 16h8M4 11h13M8 6v5M7 17a2 2 0 1 1-4 0 2 2 0 1 1 4 0Zm12 0a2 2 0 1 1-4 0 2 2 0 1 1 4 0Z"],
-  ["Silk Road culture", "M3 20h18M5 20v-9l7-7 7 7v9M9 20v-5c0-2 3-4 3-4s3 2 3 4v5"],
-  ["Nature & photography", "M2 8h5l2-3h6l2 3h5v12H2V8Zm14 6a4 4 0 1 1-8 0 4 4 0 1 1 8 0Z"],
-  ["Skiing & freeride", "M14 5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 1 1 3 0Zm-3 3-3 5 5 2-2 4M10 10l5 2h4M17 12l2 6M3 17l14 4 4-1"],
-] as const;
+function ExperienceIcon({ kind }: { kind: ActivityIcon }) {
+  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  if (kind === "mountain") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="m3 19 6-10 3 5 3-7 6 12" /><path d="M3 19h18" /></svg>;
+  if (kind === "horse") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M5 17V9l5-3 4 2 3-1 2 4-3 2v4" /><path d="M8 17v2m7-2v2M9 9l-2-2" /></svg>;
+  if (kind === "jeep") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M3 16v-5l2-4h10l3 4h3v5M5 16h14M7 16a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm14 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM7 11h7" /></svg>;
+  if (kind === "silk-road") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M4 19 10 5l4 8 3-5 3 11M3 19h18" /><path d="M10 5 7 3" /></svg>;
+  if (kind === "camera") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M4 8h4l2-2h4l2 2h4v10H4z" /><circle cx="12" cy="13" r="3" /></svg>;
+  if (kind === "snow") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9" /></svg>;
+  if (kind === "water") return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M3 15c2 2 4 2 6 0 2 2 4 2 6 0 2 2 4 2 6 0M3 19c2 2 4 2 6 0 2 2 4 2 6 0 2 2 4 2 6 0" /></svg>;
+  return <svg aria-hidden="true" viewBox="0 0 24 24" {...common}><path d="M3 13c5-1 7-5 9-9 1 4 3 6 9 8-4 1-7 4-9 8-2-3-5-5-9-7Z" /><circle cx="15.5" cy="10" r=".7" fill="currentColor" stroke="none" /></svg>;
+}
 
-const countries = [
-  ["KYRGYZSTAN", "Wild Mountains", "Tian Shan · Yurts · Horses · Alpine Lakes · Hiking · 4×4", "/hero-kyrgyzstan.jpg"],
-  ["KAZAKHSTAN", "Epic Landscapes", "Canyons · Steppe · Lakes · Almaty · Road Trips", "/rent-service-camp.jpg"],
-  ["UZBEKISTAN", "The Silk Road", "Samarkand · Bukhara · Khiva · Architecture · Food", "/guide-book-hiker-map.png"],
-  ["TAJIKISTAN", "Remote Adventure", "Pamir Highway · Fann Mountains · Trekking · Expeditions", "/individual-tour.jpg"],
-] as const;
+function InstagramIcon() { return <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.7" /><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" /><circle cx="17.4" cy="6.6" r="1" fill="currentColor" /></svg>; }
 
-export default async function Home() {
+export default async function Home({ params }: PageProps<"/[lang]">) {
   const translate = await getTranslator();
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
   const cta = translate("Build Your Adventure");
+  const story = lang === "ru" ? {
+    title: "Почему путешествуют с нами", kicker: "ПОЧЕМУ ПУТЕШЕСТВУЮТ С НАМИ", link: "Моя история", instagram: "Instagram Kyrgyzstan360", emilInstagram: "Instagram Эмиля",
+    paragraphs: ["Я Эмиль — гид и организатор путешествий по Центральной Азии. Я сам езжу по этим маршрутам и работаю с опытными местными гидами, которых знаю лично.", "Расскажите, что вам интересно. Я подберу гида и программу под ваши пожелания, темп и бюджет. В зависимости от поездки с вами поеду я или один из ребят, с которыми мы уже работали и путешествовали вместе.", "Вы общаетесь напрямую с нашей местной командой. До бронирования мы согласуем маршрут, стоимость и то, что в неё входит."],
+  } : {
+    title: "Why travel with us", kicker: "WHY TRAVEL WITH US", link: "My story", instagram: "Kyrgyzstan360 Instagram", emilInstagram: "Emil’s Instagram",
+    paragraphs: ["I’m Emil, a guide and trip organizer from Kyrgyzstan. I travel across Central Asia myself and work with experienced local guides I know personally.", "Tell us what you have in mind. I’ll help choose the right guide and shape the trip around your interests, pace and budget. Depending on the journey, you’ll travel with me or one of the guides I’ve worked and travelled with.", "You’ll speak directly with the local team organizing your trip. Before you book, we’ll agree on the itinerary, the price and what’s included."],
+  };
   return <main className="phase4-page">
     <div className="phase4-home">
       <header className="p4-header">
@@ -56,15 +66,10 @@ export default async function Home() {
       </section>
       <section className="p4-section" id="styles">
         <h2>{translate("What you can experience")}</h2>
-        <ul className="activity-list">{activities.map(([label, path]) => <li key={label}>
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d={path} /></svg><span>{translate(label)}</span>
-        </li>)}</ul>
-      </section>
-      <section className="p4-section desktop-geography">
-        <h2>{translate("Four countries. One incredible region.")}</h2>
-        <div className="p4-countries">{countries.map(([country, title, text, image]) => <LocalizedAnchor href="/plan-your-trip" key={country}>
-          <Image src={image} fill sizes="25vw" alt="" /><div><small>{translate(country)}</small><h3>{translate(title)}</h3><p>{translate(text)}</p></div>
-        </LocalizedAnchor>)}</div>
+        <ul className="activity-list">{activities.map((activity) => {
+          const copy = activityContent(activity, lang);
+          return <li key={activity.slug}><LocalizedAnchor href={`/experiences/${activity.slug}`}><ExperienceIcon kind={activity.icon} /><span>{copy.title}</span></LocalizedAnchor></li>;
+        })}</ul>
       </section>
       <section className="p4-section" id="trips">
         <h2 id="explore">{translate("Most popular travel programs")}</h2>
@@ -76,11 +81,10 @@ export default async function Home() {
         </article>)}</div>
       </section>
       <JourneySection />
-      <section className="emil-home-story" id="emil">
-        <div><h2 id="why-local">{translate("Meet Emil")}</h2>
-          <p>{translate("I used to spend my days in the city, running businesses. Then the mountains pulled me in.")}</p>
-          <p>{translate("Today I travel the roads of Central Asia and share the places I love with the people who come here.")}</p>
-          <LocalizedAnchor href="/about-emil">{translate("My story")} →</LocalizedAnchor>
+      <section className="emil-home-story" id="why-travel-with-us">
+        <div><p className="p4-kicker">{story.kicker}</p><h2>{story.title}</h2>
+          {story.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          <LocalizedAnchor href="/about-emil">{story.link} →</LocalizedAnchor>
         </div>
         <Image src="/founder-kyrgyzstan.jpg" width={900} height={700} sizes="(max-width:760px) 90vw, 40vw" alt={translate("Emil in Kyrgyzstan")} />
       </section>
@@ -93,7 +97,7 @@ export default async function Home() {
           </div>
           <div className="p4-footer-column"><p className="p4-footer-label">{translate("Explore the site")}</p><LocalizedAnchor href="/journeys">{translate("Journeys")}</LocalizedAnchor><LocalizedAnchor href="/about-emil">{translate("About Emil")}</LocalizedAnchor><LocalizedAnchor href="/plan-your-trip">{translate("Build Your Adventure")}</LocalizedAnchor></div>
           <div className="p4-footer-column"><p className="p4-footer-label">{translate("LEGAL")}</p><LocalizedAnchor href="/legal">{translate("Legal Information")}</LocalizedAnchor><LocalizedAnchor href="/terms">{translate("Terms & Conditions")}</LocalizedAnchor><LocalizedAnchor href="/privacy">{translate("Privacy Policy")}</LocalizedAnchor><LocalizedAnchor href="/cookies">{translate("Cookie Policy")}</LocalizedAnchor></div>
-          <div className="p4-footer-column p4-footer-contact"><p className="p4-footer-label">{translate("CONTACT")}</p><p>{translate("Emil Zakirov")}</p><p>{translate("Bishkek, Kyrgyzstan")}</p><p>{translate("WhatsApp: +996 557 444 225")}</p><LocalizedAnchor href="https://www.instagram.com/kyrgyzstan_360_adventures/" target="_blank" rel="noreferrer">Kyrgyzstan360 Instagram ↗</LocalizedAnchor><LocalizedAnchor href="https://www.instagram.com/zakirov_emil_trvl/" target="_blank" rel="noreferrer">{translate("Emil’s Instagram")} ↗</LocalizedAnchor></div>
+          <div className="p4-footer-column p4-footer-contact"><p className="p4-footer-label">{translate("CONTACT")}</p><p>{translate("Emil Zakirov")}</p><p>{translate("Bishkek, Kyrgyzstan")}</p><p>{translate("WhatsApp: +996 557 444 225")}</p><LocalizedAnchor className="p4-instagram-link" href="https://www.instagram.com/kyrgyzstan_360_adventures/" target="_blank" rel="noreferrer"><InstagramIcon /><span>{story.instagram}</span></LocalizedAnchor><LocalizedAnchor className="p4-instagram-link" href="https://www.instagram.com/zakirov_emil_trvl/" target="_blank" rel="noreferrer"><InstagramIcon /><span>{story.emilInstagram}</span></LocalizedAnchor></div>
         </div>
         <div className="p4-footer-bottom"><span>© {new Date().getFullYear()} Kyrgyzstan360</span><span>{translate("All rights reserved.")}</span><LocalizedAnchor href="/cookies">{translate("Cookie settings")}</LocalizedAnchor></div>
       </footer>

@@ -4,10 +4,10 @@ import { LocalizedAnchor } from "@/app/LocalizedLink";
 import { useTranslator } from "@/app/LocaleProvider";
 
 const sections = [
-  ["Activities", "styles"],
+  ["Experiences", "styles"],
   ["Travel programs", "trips"],
   ["Travel stories", "journeys"],
-  ["Meet Emil", "emil"],
+  ["Why travel with us", "why-travel-with-us"],
 ] as const;
 
 export default function HomeNavLinks({ onHomepage = false }: { onHomepage?: boolean }) {
